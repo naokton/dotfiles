@@ -16,6 +16,10 @@
 ;; load path
 (add-to-list 'load-path "~/.emacs.d/manual-lisp")
 
+;; exec-path-from-shell (package.el installed)
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
 ;;;; elscreen (package.el installed)
 (setq elscreen-prefix-key "\C-o")
 (setq elscreen-tab-display-control nil)
@@ -46,6 +50,17 @@
 			"~/.emacs.d/skk-jisyo/SKK-JISYO.station"
 			"~/.emacs.d/skk-jisyo/SKK-JISYO.propernoun"))
 (setq skk-kakutei-when-unique-candidate t)
+
+
+;;;; migemo (package.el)
+(require 'migemo)
+(setq migemo-command "cmigemo")
+(setq migemo-options '("-q" "--emacs"))
+(setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
+(setq migemo-user-dictionary nil)
+(setq migemo-regex-dictionary nil)
+(setq migemo-coding-system 'utf-8-unix)
+(migemo-init)
 
 ;;;; Org-mode
 (add-hook 'org-mode-hook
@@ -107,7 +122,8 @@
 (helm-descbinds-mode)
 (eval-after-load 'helm
   '(progn
-     (define-key helm-map (kbd "C-h") 'delete-backward-char)))
+     (define-key helm-map (kbd "C-h") 'delete-backward-char)
+     (helm-migemo-mode 1)))
 
 (eval-after-load 'helm-files
   '(progn
@@ -139,6 +155,12 @@
 ;;;;----------------------------------------------------------------
 ;;;; Appearance
 ;;;;----------------------------------------------------------------
+;;;; Window position & size
+(setq initial-frame-alist '((top . 100)
+			    (left . 600)
+			    (width . 120)
+			    (height . 65)))
+
 ;;;; Fonts
 (create-fontset-from-ascii-font "Menlo-12:weight=normal:slant=normal" nil "menlokakugo")
 (set-fontset-font "fontset-menlokakugo"
@@ -223,7 +245,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (go-mode docker-compose-mode dockerfile-mode markdown-mode magit auto-highlight-symbol highlight-symbol ddskk helm-descbinds viewer helm recentf-ext key-chord sequential-command color-moccur elscreen nyan-mode open-junk-file org powershell rainbow-mode stripe-buffer))))
+    (helm-swoop exec-path-from-shell go-mode docker-compose-mode dockerfile-mode markdown-mode magit helm-descbinds key-chord sequential-command color-moccur elscreen nyan-mode org powershell stripe-buffer))))
 
 ;; buffer movement
 (global-set-key (kbd "C-,") 'bs-cycle-previous)

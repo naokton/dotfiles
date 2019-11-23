@@ -1,4 +1,8 @@
-PS1="[\t \u@\h \W]\$ "
+PS1="[\[\033[0;32m\]\t \[\033[1;36m\]\u\[\033[0;37m\]@\h \[\033[0;32m\]\w\[\033[0m\]]\$ "
+
+export LANG=en_US.UTF-8
+
+[ -d /usr/local/etc/bash_completion.d ] && . /usr/local/etc/bash_completion.d/*
 
 shopt -s histappend
 export HISTTIMEFORMAT="%F %T "
