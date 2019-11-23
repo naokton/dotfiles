@@ -27,7 +27,7 @@
 (elscreen-start)
 
 ;;;; undo/redo (manual install)
-(require 'redo+)
+;; (require 'redo+)
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-z") 'redo)
 (setq undo-no-redo t)
@@ -38,7 +38,7 @@
 (eval-after-load 'dired
   '(progn
      (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
-     (setq dired-listing-switches "-alGh")))
+     (setq dired-listing-switches "-alh")))
 
 ;;;; DDSKK (package.el install)
 (global-set-key "\C-\\" 'skk-mode)
@@ -130,6 +130,7 @@
      (define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)))
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(global-set-key (kbd "M-s") 'helm-swoop)
 ;; (setq helm-exit-idle-delay 0)
 (setq helm-buffer-max-length 40)
 
