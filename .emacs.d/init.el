@@ -20,6 +20,9 @@
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
 
+;;;; tab/space
+(setq-default indent-tabs-mode nil)
+
 ;;;; elscreen (package.el installed)
 (setq elscreen-prefix-key "\C-o")
 (setq elscreen-tab-display-control nil)
@@ -27,7 +30,8 @@
 (elscreen-start)
 
 ;;;; undo/redo (manual install)
-;; (require 'redo+)
+;;;; https://www.emacswiki.org/emacs/redo+.el
+(require 'redo+)
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "M-z") 'redo)
 (setq undo-no-redo t)
@@ -44,11 +48,25 @@
 (global-set-key "\C-\\" 'skk-mode)
 (setq skk-use-act t)
 (setq skk-extra-jisyo-file-list
-	  (list "~/.emacs.d/skk-jisyo/SKK-JISYO.fullname"
-			"~/.emacs.d/skk-jisyo/SKK-JISYO.geo"
-			"~/.emacs.d/skk-jisyo/SKK-JISYO.jinmei"
-			"~/.emacs.d/skk-jisyo/SKK-JISYO.station"
-			"~/.emacs.d/skk-jisyo/SKK-JISYO.propernoun"))
+      (list "~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS2"
+            '("~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS2004" . euc-jis-2004)
+            '("~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS3_4" . euc-jis-2004)
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.assoc"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.edict"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.fullname"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.geo"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.itaiji"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.jinmei"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.law"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.lisp"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.mazegaki"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.office.zipcode"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.okinawa"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.propernoun"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.pubdic+"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.station"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.zipcode"))
 (setq skk-kakutei-when-unique-candidate t)
 
 
@@ -246,7 +264,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (helm-swoop exec-path-from-shell go-mode docker-compose-mode dockerfile-mode markdown-mode magit helm-descbinds key-chord sequential-command color-moccur elscreen nyan-mode org powershell stripe-buffer))))
+    (ddskk helm-swoop exec-path-from-shell go-mode docker-compose-mode dockerfile-mode markdown-mode magit helm-descbinds key-chord sequential-command color-moccur elscreen nyan-mode org powershell stripe-buffer))))
 
 ;; buffer movement
 (global-set-key (kbd "C-,") 'bs-cycle-previous)
