@@ -1,10 +1,23 @@
 export LANG=en_US.UTF-8
 
+# path
+[ -d $HOME/.local/bin ] && export PATH=$HOME/.local/bin:$PATH
+
 # aliases
 alias vi="vim"
-alias ls="ls -G"
-alias ll="ls -Gl"
-alias la="ls -Gla"
+
+case ${OSTYPE} in
+  darwin*)
+    alias ls="ls -G"
+    alias ll="ls -Gl"
+    alias la="ls -Gla"
+    ;;
+  linux*)
+    alias ls="ls --color=auto"
+    alias ll="ls --color=auto -l"
+    alias la="ls --color=auto -la"
+    ;;
+esac
 
 # completion
 autoload -U compinit && compinit
