@@ -122,8 +122,8 @@
      (setq open-junk-file-format "~/junk/%Y/%Y%m%d-%H%M%S.org")))
 
 ;;;; recentf-ext.el (package.el installed)
-;; (require 'recentf-ext)
-(setq recentf-auto-cleanup 10)
+(require 'recentf-ext)
+(setq recentf-auto-cleanup 600)
 (setq recentf-max-saved-items 200)
 ;; (global-set-key "\C-xf" 'recentf-open-files)
 (recentf-mode 1)
@@ -150,22 +150,7 @@
 ;; (setq helm-exit-idle-delay 0)
 (setq helm-buffer-max-length 40)
 
-;;;; helm recentf - directory only
-;;;; ref> http://d.hatena.ne.jp/syohex/20120911/1347378503
-(defvar helm-c-recentf-directory-source
-  '((name . "Recentf Directry")
-    (candidates . (lambda ()
-                    (loop for file in recentf-list
-                          when (file-directory-p file)
-                          collect file)))
-    (type . file)))
 
-(defun my/helm-recentd ()
-  (interactive)
-  (let ((helm-ff-transformer-show-only-basename nil))
-    (helm-other-buffer helm-c-recentf-directory-source "*helm recentd*")))
-
-(global-set-key (kbd "C-x f") 'my/helm-recentd)
 
 
 
