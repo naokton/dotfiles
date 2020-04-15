@@ -29,12 +29,10 @@
 (setq elscreen-tab-display-kill-screen nil)
 (elscreen-start)
 
-;;;; undo/redo (manual install)
-;;;; https://www.emacswiki.org/emacs/redo+.el
-(require 'redo+)
-(global-set-key (kbd "C-z") 'undo)
-(global-set-key (kbd "M-z") 'redo)
-(setq undo-no-redo t)
+;;;; undo-fu (package.el)
+(global-unset-key (kbd "C-z"))
+(global-set-key (kbd "C-z")   'undo-fu-only-undo)
+(global-set-key (kbd "M-z") 'undo-fu-only-redo)
 (setq undo-limit 600000)
 (setq undo-strong-limit 900000)
 
