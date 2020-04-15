@@ -195,7 +195,17 @@
 ;; (set-face-font 'default "fontset-menlokakugo")
 
 ;; Theme
-(load-theme 'tango-dark)
+;; (load-theme 'tango-dark)
+(require 'color-theme-sanityinc-tomorrow)
+(load-theme 'sanityinc-tomorrow-bright t)
+(custom-theme-set-faces
+ 'sanityinc-tomorrow-bright
+ ;; Set font color from purple to normal foreground color
+ '(mode-line-buffer-id ((t (:foreground "#eaeaea" :weight bold)))))
+(setq mmm-submode-decoration-level 0)
+
+;; Highlight current line
+(global-hl-line-mode)
 
 ;; Highlight-symbol
 (require 'auto-highlight-symbol)
@@ -227,7 +237,7 @@
 (setq-default truncate-lines t)
 
 ;;;; stripe-buffer.el (package.el installeld)
-(add-hook 'dired-mode-hook 'turn-on-stripe-buffer-mode)
+;; (add-hook 'dired-mode-hook 'turn-on-stripe-buffer-mode)
 
 ;;;; view-mode (package.el installed)
 (require 'view)
