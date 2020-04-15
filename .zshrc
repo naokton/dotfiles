@@ -1,7 +1,9 @@
 export LANG=en_US.UTF-8
 
 # path
-[ -d $HOME/.local/bin ] && export PATH=$HOME/.local/bin:$PATH
+[ -d $HOME/.local/bin ] && PATH=$HOME/.local/bin:$PATH
+[ -d /usr/local/opt/qt/bin ] && PATH=/usr/local/opt/qt/bin:$PATH
+export PATH
 
 # aliases
 alias vi="vim"
@@ -38,3 +40,13 @@ autoload -Uz colors && colors
 
 # PS1
 PROMPT="%B[%F{green}%D{%H:%M:%S}%f %F{cyan}%n%f@%m] %F{green}%2~%f %#%b "
+
+# Misc.
+
+# npm install error workaround
+# ref: https://stackoverflow.com/questions/51314888/#answer-55344565
+case ${OSTYPE} in
+  darwin*)
+      export SDKROOT="$(xcrun --show-sdk-path)"
+      ;;
+esac
