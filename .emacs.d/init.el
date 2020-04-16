@@ -153,6 +153,10 @@
 
 
 
+;;;; custom-set-variables and custom-set-faces
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
 
 ;;;;----------------------------------------------------------------
 ;;;; Appearance
@@ -250,15 +254,6 @@
   ""                                    ;モードラインに表示しない
   `((,(kbd "C-t") . other-window)))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (ddskk helm-swoop exec-path-from-shell go-mode docker-compose-mode dockerfile-mode markdown-mode magit helm-descbinds key-chord sequential-command color-moccur elscreen nyan-mode org powershell stripe-buffer))))
-
 ;; buffer movement
 (global-set-key (kbd "C-,") 'bs-cycle-previous)
 (global-set-key (kbd "C-.") 'bs-cycle-next)
@@ -272,13 +267,6 @@
 	  (lambda ()
 	    (define-key org-mode-map (kbd "C-,") 'bs-cycle-previous)
 		(define-key ac-complete-mode-map [tab] 'ac-expand)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
 ;; key-chord.el
 (require 'key-chord)
 (key-chord-mode 1)
