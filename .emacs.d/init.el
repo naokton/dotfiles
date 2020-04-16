@@ -81,9 +81,11 @@
 ;;;; Org-mode
 (add-hook 'org-mode-hook
 	  (lambda ()
-		;; (org-bullets-mode 1)
+            ;; (org-bullets-mode 1)
+            (define-key org-mode-map (kbd "C-c !") 'org-time-stamp-inactive)
+            ;; (define-key flycheck-mode-map (kbd "C-c ! !") 'org-time-stamp-inactive)
 	    (setq indent-tabs-mode nil)))
-;; (global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c a") 'org-agenda)
 (setq org-html-validation-link nil)
 (setq org-html-head
 "<style type=\"text/css\">
@@ -265,6 +267,7 @@
 ;; overwrite keybindings in org-mode
 (add-hook 'org-mode-hook
 	  (lambda ()
+	    (define-key org-mode-map (kbd "C-c ,") 'org-insert-structure-template)
 	    (define-key org-mode-map (kbd "C-,") 'bs-cycle-previous)
 		(define-key ac-complete-mode-map [tab] 'ac-expand)))
 ;; key-chord.el
