@@ -319,7 +319,8 @@
 (key-chord-define-global "fg" 'helm-recentf)
 ;; (key-chord-define-global "fl" 'ns-toggle-fullscreen)
 (key-chord-define-global "gs" 'magit-status)
-(key-chord-define-global "vm" 'view-mode)
+(key-chord-define-global "vw" 'view-mode)
+(key-chord-define-global ".p" 'helm-projectile)
 
 ;;;; Sequential command - C-a/C-e etc. (package.el install)
 (require 'sequential-command-config)
