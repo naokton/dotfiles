@@ -42,6 +42,31 @@
      (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
      (setq dired-listing-switches "-alh")))
 
+;;;; all-the-icons-dired (package.el)
+;; Initial setup: M-x all-the-icons-install-fonts
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+
+;;;; dired-sidebar (package.el)
+(add-hook 'dired-sidebar-mode-hook
+          (lambda ()
+            (unless (file-remote-p default-directory))))
+(global-set-key (kbd "C-x C-n") 'dired-sidebar-toggle-sidebar)
+
+;;;; company-mode (package.el)
+(add-hook 'after-init-hook 'global-company-mode)
+(with-eval-after-load 'company
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 2)
+  (define-key company-active-map (kbd "C-h") nil)
+  (setq company-selection-wrap-around t))
+  
+;;;; projectile (package.el)
+(require 'projectile)
+(define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "C-.") 'projectile-next-project-buffer)
+(define-key projectile-mode-map (kbd "C-,") 'projectile-previous-project-buffer)
+;; (projectile-mode +1)
+
 ;;;; DDSKK (package.el install)
 (global-set-key "\C-\\" 'skk-mode)
 (setq skk-use-act t)
@@ -152,8 +177,23 @@
 ;; (setq helm-exit-idle-delay 0)
 (setq helm-buffer-max-length 40)
 
+;;;; Flycheck
+(add-hook 'after-init-hook #'global-flycheck-mode)
+;; (eval-after-load 'flycheck
+;;   (define-key flycheck-mode-map (kbd "C-c ! !") 'org-time-stamp-inactive))
 
+;;;; vue-mode
+;; https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338222
+(add-hook 'vue-mode-hook (lambda () (setq syntax-ppss-table nil)))
 
+;;;; js-mode
+(setq js-indent-level 2)
+
+;;;; js-prettier (package.el)
+(setq prettier-js-args
+      '("--trailing-comma" "all"
+        "--bracket-spacing" "false"
+        ))
 
 ;;;; custom-set-variables and custom-set-faces
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
