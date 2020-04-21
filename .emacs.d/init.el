@@ -111,6 +111,7 @@
             ;; (define-key flycheck-mode-map (kbd "C-c ! !") 'org-time-stamp-inactive)
 	    (setq indent-tabs-mode nil)))
 (global-set-key (kbd "C-c a") 'org-agenda)
+(setq org-startup-truncated nil)
 (setq org-html-validation-link nil)
 (setq org-html-head
 "<style type=\"text/css\">
@@ -261,9 +262,6 @@
 ;; line number
 (line-number-mode t)
 (global-linum-mode t)
-
-;; truncate default
-(setq-default truncate-lines t)
 
 ;;;; stripe-buffer.el (package.el installeld)
 ;; (add-hook 'dired-mode-hook 'turn-on-stripe-buffer-mode)
