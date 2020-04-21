@@ -58,6 +58,8 @@
   (setq company-idle-delay 0)
   (setq company-minimum-prefix-length 2)
   (define-key company-active-map (kbd "C-h") nil)
+  (define-key company-active-map [tab] 'company-complete-selection)
+  (define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
   (setq company-selection-wrap-around t))
   
 ;;;; projectile (package.el)
@@ -182,7 +184,7 @@
   (global-set-key (kbd "M-y") 'counsel-yank-pop)
   (global-set-key (kbd "C-M-z") 'counsel-fzf)
   (global-set-key (kbd "C-x C-b") 'counsel-ibuffer)
-  (global-set-key (kbd "C-M-f") 'counsel-ag)
+  (global-set-key (kbd "C-M-f") 'counsel-rg)
   (counsel-mode 1))
 
 (when (require 'swiper nil t)
@@ -222,6 +224,10 @@
       '("--trailing-comma" "all"
         "--bracket-spacing" "false"
         ))
+
+;;;; dumb-jump (package.el)
+(setq dumb-jump-selector 'ivy)
+(dumb-jump-mode) ; enable default keybindings
 
 ;;;; custom-set-variables and custom-set-faces
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
