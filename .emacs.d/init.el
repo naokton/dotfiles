@@ -161,22 +161,49 @@
         "\\.cache$"
         ))
 
-;;;; helm.el helm-descbinds.el
-(require 'helm-config)
-(helm-descbinds-mode)
-(eval-after-load 'helm
-  '(progn
-     (define-key helm-map (kbd "C-h") 'delete-backward-char)
-     (helm-migemo-mode 1)))
+;;;; Ivy/counsel/swiper (install counsel by package.el)
+(when (require 'ivy nil t)
+  ;; M-o を ivy-hydra-read-action に割り当てる．
+  (when (require 'ivy-hydra nil t)
+    (setq ivy-read-action-function #'ivy-hydra-read-action))
+  ;; `ivy-switch-buffer' (C-x b) のリストに recent files と bookmark を含める．
+  (setq ivy-use-virtual-buffers t)
+  ;; ミニバッファでコマンド発行を認める
+  (when (setq enable-recursive-minibuffers t)
+    (minibuffer-depth-indicate-mode 1)) ;; 何回層入ったかプロンプトに表示．
+  (define-key ivy-minibuffer-map (kbd "<escape>") 'minibuffer-keyboard-quit)
+  (setq ivy-truncate-lines nil)
+  (setq ivy-wrap t) ;; リスト先頭で `C-p' するとき，リストの最後に移動する
+  (setq ivy-height 30)
+  (ivy-mode 1))
 
-(eval-after-load 'helm-files
-  '(progn
-     (define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)))
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "M-s") 'helm-swoop)
-;; (setq helm-exit-idle-delay 0)
-(setq helm-buffer-max-length 40)
+(when (require 'counsel nil t)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "M-y") 'counsel-yank-pop)
+  (global-set-key (kbd "C-M-z") 'counsel-fzf)
+  (global-set-key (kbd "C-x C-b") 'counsel-ibuffer)
+  (global-set-key (kbd "C-M-f") 'counsel-ag)
+  (counsel-mode 1))
+
+(when (require 'swiper nil t)
+  (global-set-key (kbd "M-s") 'swiper-thing-at-point))
+
+;;;; helm.el helm-descbinds.el
+;; (require 'helm-config)
+;; (helm-descbinds-mode)
+;; (eval-after-load 'helm
+;;   '(progn
+;;      (define-key helm-map (kbd "C-h") 'delete-backward-char)
+;;      (helm-migemo-mode 1)))
+
+;; (eval-after-load 'helm-files
+;;   '(progn
+;;      (define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)))
+;; (global-set-key (kbd "M-x") 'helm-M-x)
+;; (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+;; (global-set-key (kbd "M-s") 'helm-swoop)
+;; ;; (setq helm-exit-idle-delay 0)
+;; (setq helm-buffer-max-length 40)
 
 ;;;; Flycheck
 (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -313,12 +340,12 @@
 (key-chord-mode 1)
 (setq key-chord-two-keys-delay 0.10)
 (key-chord-define-global "jk" 'kill-this-buffer)
-(key-chord-define-global "bm" 'helm-buffers-list)
-(key-chord-define-global "fg" 'helm-recentf)
+(key-chord-define-global "bm" 'counsel-ibuffer)
+(key-chord-define-global "fg" 'counsel-recentf)
 ;; (key-chord-define-global "fl" 'ns-toggle-fullscreen)
 (key-chord-define-global "gs" 'magit-status)
 (key-chord-define-global "vw" 'view-mode)
-(key-chord-define-global ".p" 'helm-projectile)
+(key-chord-define-global ".p" 'counsel-projectile)
 
 ;;;; Sequential command - C-a/C-e etc. (package.el install)
 (require 'sequential-command-config)
