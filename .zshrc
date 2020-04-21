@@ -24,7 +24,8 @@ case ${OSTYPE} in
 esac
 
 # completion
-autoload -U compinit && compinit
+[ -d ~/.zsh/completion ] && fpath=(~/.zsh/completion $fpath)
+autoload -U compinit && compinit -i
 command -v pipenv 1>/dev/null 2>&1 && eval "$(pipenv --completion)"
 
 # history
