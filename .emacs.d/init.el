@@ -320,19 +320,6 @@
 ;;;; stripe-buffer.el (package.el installeld)
 ;; (add-hook 'dired-mode-hook 'turn-on-stripe-buffer-mode)
 
-;;;; view-mode (package.el installed)
-(require 'view)
-(require 'viewer)
-(viewer-stay-in-setup)
-(setq viewer-modeline-color-unwritable "tomato"
-      viewer-modeline-color-view "orange"
-      viewer-modeline-color-default "#888a85") ;same color to comment face
-(viewer-change-modeline-color-setup)
-(setq view-read-only nil)
-;; (setq view-mode-by-default-regexp ".\\(\\.ps\\|\\.gp\\|\\.pl\\|\\.csv\\|\\.el\\|\\.gz\\)$")
-;; (setq view-mode-by-default-regexp ".\\..")
-;; (setq view-mode-by-default-regexp ".")
-
 ;;;; highlight-indent-guides.el (package.el)
 (add-hook 'yaml-mode-hook 'highlight-indent-guides-mode)
 (eval-after-load 'highlight-indent-guides
