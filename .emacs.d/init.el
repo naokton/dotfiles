@@ -366,4 +366,4 @@
 (define-key view-mode-map (kbd "T") 'View-scroll-half-page-backward)
 
 ;;;; highlight
-(global-set-key [(control f3)] 'higqhlight-symbol-at-point)
+(global-set-key [(control f3)] 'highlight-symbol-at-point)
