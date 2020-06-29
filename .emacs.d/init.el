@@ -40,6 +40,7 @@
 (eval-after-load 'dired
   '(progn
      (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
+     (define-key dired-mode-map (kbd "C-o") nil)
      (setq dired-listing-switches "-alh")))
 (add-hook 'dired-mode-hook 'hl-line-mode)
 (add-hook 'dired-mode-hook (lambda () (display-line-numbers-mode -1)))
@@ -61,9 +62,14 @@
   (setq company-minimum-prefix-length 2)
   (define-key company-active-map (kbd "C-h") nil)
   (define-key company-active-map [tab] 'company-complete-selection)
+  (define-key company-active-map (kbd "C-n") 'company-select-next)
+  (define-key company-active-map (kbd "C-p") 'company-select-previous)
+  (define-key company-search-map (kbd "C-n") 'company-select-next)
+  (define-key company-search-map (kbd "C-p") 'company-select-previous)
+  (define-key company-active-map (kbd "C-s") 'company-filter-candidates)
   (define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
   (setq company-selection-wrap-around t))
-  
+
 ;;;; projectile (package.el)
 (require 'projectile)
 (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
@@ -156,7 +162,7 @@
 ;;;; recentf-ext.el (package.el installed)
 (require 'recentf-ext)
 (setq recentf-auto-cleanup 600)
-(setq recentf-max-saved-items 200)
+(setq recentf-max-saved-items 1000)
 ;; (global-set-key "\C-xf" 'recentf-open-files)
 (recentf-mode 1)
 (setq recentf-exclude
@@ -190,10 +196,11 @@
   (global-set-key (kbd "C-M-f") 'counsel-rg)
   ;; add --hidden --smart-case options
   (setq counsel-rg-base-command "rg -M 120 --with-filename --no-heading --line-number --hidden --glob !.git --smart-case --color never %s")
+  (delete '(counsel-M-x . "^") ivy-initial-inputs-alist)
   (counsel-mode 1))
 
 (when (require 'swiper nil t)
-  (global-set-key (kbd "M-s") 'swiper-thing-at-point))
+  (global-set-key (kbd "M-s") 'swiper))
 
 ;;;; helm.el helm-descbinds.el
 ;; (require 'helm-config)
@@ -214,6 +221,7 @@
 
 ;;;; Flycheck
 (add-hook 'after-init-hook #'global-flycheck-mode)
+(setq flycheck-global-modes '(shell-script-mode yaml-mode))
 ;; (eval-after-load 'flycheck
 ;;   (define-key flycheck-mode-map (kbd "C-c ! !") 'org-time-stamp-inactive))
 
@@ -374,16 +382,20 @@
 (key-chord-define-global "gs" 'magit-status)
 (key-chord-define-global "vw" 'view-mode)
 (key-chord-define-global ".p" 'counsel-projectile)
+(key-chord-define-global "tm" 'transpose-frame)
+(key-chord-define-global "tb" 'rotate-frame-clockwise)
 
 ;;;; Sequential command - C-a/C-e etc. (package.el install)
 (require 'sequential-command-config)
 (sequential-command-setup-keys)
 
-;; view-mode + viewer?
-(define-key view-mode-map (kbd "h") 'View-scroll-line-forward)
-(define-key view-mode-map (kbd "t") 'View-scroll-line-backward)
-(define-key view-mode-map (kbd "H") 'View-scroll-half-page-forward)
-(define-key view-mode-map (kbd "T") 'View-scroll-half-page-backward)
+;; view-mode
+(eval-after-load 'view-mode
+  '(progn
+     (define-key view-mode-map (kbd "h") 'View-scroll-line-forward)
+     (define-key view-mode-map (kbd "t") 'View-scroll-line-backward)
+     (define-key view-mode-map (kbd "H") 'View-scroll-half-page-forward)
+     (define-key view-mode-map (kbd "T") 'View-scroll-half-page-backward)))
 
 ;;;; highlight
 (global-set-key [(control f3)] 'highlight-symbol-at-point)
