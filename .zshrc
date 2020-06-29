@@ -53,3 +53,5 @@ case ${OSTYPE} in
       export SDKROOT="$(xcrun --show-sdk-path)"
       ;;
 esac
+
+export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc

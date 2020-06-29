@@ -13,5 +13,6 @@ cp ~/.tmux.conf $1
 [ ! -d $1/.emacs.d ] && mkdir $1/.emacs.d
 cp ~/.emacs.d/init.el $1/.emacs.d/init.el
 cp ~/.vimrc $1
+cp ~/.ripgreprc $1
 
 exit 0

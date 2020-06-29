@@ -185,6 +185,8 @@
   (global-set-key (kbd "C-M-z") 'counsel-fzf)
   (global-set-key (kbd "C-x C-b") 'counsel-ibuffer)
   (global-set-key (kbd "C-M-f") 'counsel-rg)
+  ;; add --hidden --smart-case options
+  (setq counsel-rg-base-command "rg -M 120 --with-filename --no-heading --line-number --hidden --glob !.git --smart-case --color never %s")
   (counsel-mode 1))
 
 (when (require 'swiper nil t)
