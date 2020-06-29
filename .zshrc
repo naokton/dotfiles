@@ -5,6 +5,8 @@ export LANG=en_US.UTF-8
 [ -d /usr/local/opt/qt/bin ] && PATH=/usr/local/opt/qt/bin:$PATH
 [ -d $HOME/Library/Python/3.7/bin ] && PATH=$HOME/Library/Python/3.7/bin:$PATH
 [ -d /usr/local/opt/python/libexec/bin ] && PATH=/usr/local/opt/python/libexec/bin:$PATH
+[ -d /usr/local/opt/python@3.8/bin ] && PATH=/usr/local/opt/python@3.8/bin:$PATH
+[ -d $HOME/Library/Python/3.8/bin ] && PATH=$HOME/Library/Python/3.8/bin:$PATH
 export PATH
 
 # aliases
