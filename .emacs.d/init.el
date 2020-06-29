@@ -41,6 +41,8 @@
   '(progn
      (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
      (setq dired-listing-switches "-alh")))
+(add-hook 'dired-mode-hook 'hl-line-mode)
+(add-hook 'dired-mode-hook (lambda () (display-line-numbers-mode -1)))
 
 ;;;; all-the-icons-dired (package.el)
 ;; Initial setup: M-x all-the-icons-install-fonts
@@ -177,6 +179,7 @@
   (setq ivy-truncate-lines nil)
   (setq ivy-wrap t) ;; リスト先頭で `C-p' するとき，リストの最後に移動する
   (setq ivy-height 30)
+  (setq ivy-count-format "(%d/%d) ")
   (ivy-mode 1))
 
 (when (require 'counsel nil t)
@@ -265,19 +268,25 @@
 (load-theme 'sanityinc-tomorrow-bright t)
 (custom-theme-set-faces
  'sanityinc-tomorrow-bright
- ;; Set font color from purple to normal foreground color
+ '(cursor ((t (:background "#e7c547"))))
+ '(line-number-current-line ((t (:background "#969896" :foreground "#eaeaea" :weight bold))))
  '(mode-line-buffer-id ((t (:foreground "#eaeaea" :weight bold)))))
 (setq mmm-submode-decoration-level 0)
-
-;; Highlight current line
-(global-hl-line-mode)
 
 ;; Highlight-symbol
 (require 'auto-highlight-symbol)
 (global-auto-highlight-symbol-mode t)
 
+;; doom-modeline (package.el)
+(doom-modeline-mode 1)
+(setq doom-modeline-major-mode-color-icon nil)
+(setq doom-modeline-vcs-max-length 24)
+(line-number-mode 0)
+(column-number-mode 0)
+
 ;; nyan-mode
 (nyan-mode)
+(setq nyan-bar-length 16)
 
 ;; don't show default something
 (tool-bar-mode 0)
@@ -295,8 +304,10 @@
 (setq-default fill-column 80)
 
 ;; line number
-(line-number-mode t)
-(global-linum-mode t)
+(global-display-line-numbers-mode)
+
+;;;; git-gutter (package.el)
+(global-git-gutter-mode t)
 
 ;;;; stripe-buffer.el (package.el installeld)
 ;; (add-hook 'dired-mode-hook 'turn-on-stripe-buffer-mode)
@@ -313,6 +324,15 @@
 ;; (setq view-mode-by-default-regexp ".\\(\\.ps\\|\\.gp\\|\\.pl\\|\\.csv\\|\\.el\\|\\.gz\\)$")
 ;; (setq view-mode-by-default-regexp ".\\..")
 ;; (setq view-mode-by-default-regexp ".")
+
+;;;; highlight-indent-guides.el (package.el)
+(add-hook 'yaml-mode-hook 'highlight-indent-guides-mode)
+(eval-after-load 'highlight-indent-guides
+  '(progn
+     (setq highlight-indent-guides-responsive nil)
+     (setq highlight-indent-guides-auto-odd-face-perc 10)
+     (setq highlight-indent-guides-auto-even-face-perc 20)
+     (setq highlight-indent-guides-method 'fill)))
 
 
 ;;;;----------------------------------------------------------------
