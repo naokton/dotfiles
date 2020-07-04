@@ -59,7 +59,7 @@
 (add-hook 'after-init-hook 'global-company-mode)
 (with-eval-after-load 'company
   (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 2)
+  (setq company-minimum-prefix-length 1)
   (define-key company-active-map (kbd "C-h") nil)
   (define-key company-active-map [tab] 'company-complete-selection)
   (define-key company-active-map (kbd "C-n") 'company-select-next)
@@ -147,6 +147,17 @@
     margin: 0.7em 0;
   }
 </style>")
+
+;;;; lsp-mode
+;; performance https://emacs-lsp.github.io/lsp-mode/page/performance/
+(setq gc-cons-threshold 100000000)
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
+;; general conf
+(add-hook 'yaml-mode-hook 'lsp)
+(add-hook 'sh-mode-hook 'lsp)
+;;;; company-lsp
+(require 'company-lsp)
+(push 'company-lsp company-backends)
 
 ;;;; ediff
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
