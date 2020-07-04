@@ -2,6 +2,7 @@ export LANG=en_US.UTF-8
 
 # path
 [ -d $HOME/.local/bin ] && PATH=$HOME/.local/bin:$PATH
+[ -d /usr/local/opt/gnu-sed/libexec/gnubin ] && PATH=/usr/local/opt/gnu-sed/libexec/gnubin:$PATH
 [ -d /usr/local/opt/qt/bin ] && PATH=/usr/local/opt/qt/bin:$PATH
 [ -d $HOME/Library/Python/3.7/bin ] && PATH=$HOME/Library/Python/3.7/bin:$PATH
 [ -d /usr/local/opt/python/libexec/bin ] && PATH=/usr/local/opt/python/libexec/bin:$PATH
