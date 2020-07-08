@@ -155,6 +155,7 @@
 ;; general conf
 (add-hook 'yaml-mode-hook 'lsp)
 (add-hook 'sh-mode-hook 'lsp)
+(add-hook 'python-mode-hook 'lsp)
 ;;;; company-lsp
 (require 'company-lsp)
 (push 'company-lsp company-backends)

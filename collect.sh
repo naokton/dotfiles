@@ -14,5 +14,7 @@ cp ~/.tmux.conf $1
 cp ~/.emacs.d/init.el $1/.emacs.d/init.el
 cp ~/.vimrc $1
 cp ~/.ripgreprc $1
+[ ! -d $1/.config ] && mkdir $1/.config
+cp ~/.config/pycodestyle $1/.config/pycodestyle
 
 exit 0
