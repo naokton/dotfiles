@@ -1,20 +1,23 @@
-#!/bin/zsh
-if [ $# -ne 1 ]; then
-    echo "collect.sh path/to/copy"
-    exit 1
-fi
+#!/bin/bash
+CUR_DIR=$(dirname $0)
 
-[ ! -d $1 ] && mkdir $1
+copy_file(){
+    FILE=$1
+    DIR=$2
+    [ -n "$DIR" ] && mkdir -p $CUR_DIR/$DIR
+    cp $FILE $CUR_DIR/$DIR
+}
 
-cp ~/.screenrc $1
-cp ~/.bashrc $1
-cp ~/.zshrc $1
-cp ~/.tmux.conf $1
-[ ! -d $1/.emacs.d ] && mkdir $1/.emacs.d
-cp ~/.emacs.d/init.el $1/.emacs.d/init.el
-cp ~/.vimrc $1
-cp ~/.ripgreprc $1
-[ ! -d $1/.config ] && mkdir $1/.config
-cp ~/.config/pycodestyle $1/.config/pycodestyle
+# copy only file
+copy_file ~/.screenrc
+copy_file ~/.bashrc
+copy_file ~/.zshrc
+copy_file ~/.tmux.conf
+copy_file ~/.vimrc
+copy_file ~/.ripgreprc
+
+# mkdir and copy file into it
+copy_file ~/.emacs.d/init.el    .emacs.d
+copy_file ~/.config/pycodestyle .config
 
 exit 0
