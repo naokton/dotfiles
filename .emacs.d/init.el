@@ -254,6 +254,9 @@
 (setq dumb-jump-selector 'ivy)
 (dumb-jump-mode) ; enable default keybindings
 
+;;;; smart-jump (package.el)
+(smart-jump-setup-default-registers)
+
 ;;;; custom-set-variables and custom-set-faces
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
