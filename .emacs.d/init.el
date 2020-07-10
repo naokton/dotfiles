@@ -134,18 +134,13 @@
   :ensure t
   :setq
   ;; performance https://emacs-lsp.github.io/lsp-mode/page/performance/
-  `(read-process-output-max . ,(* 1024 1024)) ;; 1mb
+  `(read-process-output-max . ,(* 1024 1024 3)) ;; 1mb
   (gc-cons-threshold . 100000000)
   :hook
   ((yaml-mode-hook sh-mode-hook python-mode-hook) . lsp)
   :config
   (leaf lsp-ui
-    :ensure t)
-  (leaf company-lsp
-    :ensure t
-    :require t
-    :config
-    (push 'company-lsp company-backends)))
+    :ensure t))
 
 (leaf *ediff
   :setq
@@ -255,6 +250,8 @@
   :config
   (global-set-key (kbd "C-x j") 'open-junk-file))
 
+(leaf rainbow-mode :ensure t)
+
 ;;;;----------------------------------------------------------------
 ;;;; Major modes/Language config
 ;;;;----------------------------------------------------------------
@@ -357,6 +354,9 @@
            markdown-mode
            dockerfile-mode
            docker-compose-mode
+           nginx-mode
+           vue-mode
+           groovy-mode
            powershell))
 
 ;;;;----------------------------------------------------------------
