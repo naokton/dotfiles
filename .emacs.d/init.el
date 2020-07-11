@@ -28,11 +28,12 @@
 ;;;; System config
 ;;;;----------------------------------------------------------------
 (leaf *saving
+  :setq
+  (auto-save-default . nil)
+  (delete-auto-save-files . t)
+  (make-backup-files . nil)
+  (create-lockfiles . nil)
   :config
-  (setq auto-save-default nil)
-  (setq delete-auto-save-files t)
-  (setq make-backup-files nil)
-  (setq create-lockfiles nil)
   (auto-save-visited-mode t))
 
 (leaf *path
@@ -47,7 +48,7 @@
 (leaf *custom-export
   ;; custom-set-variables and custom-set-faces
   :setq
-  `((custom-file . ,(expand-file-name "custom.el" user-emacs-directory)))
+  `(custom-file . ,(expand-file-name "custom.el" user-emacs-directory))
   :config
   (when (file-exists-p custom-file)
     (load custom-file)))
@@ -57,20 +58,22 @@
 ;;;;----------------------------------------------------------------
 (leaf elscreen
   :ensure t
+  :setq
+  (elscreen-prefix-key . "\C-o")
+  (elscreen-tab-display-control . nil)
+  (elscreen-tab-display-kill-screen . nil)
   :config
-  (setq elscreen-prefix-key "\C-o")
-  (setq elscreen-tab-display-control nil)
-  (setq elscreen-tab-display-kill-screen nil)
   (elscreen-start))
 
 (leaf undo-fu
   :ensure t
+  :setq
+  (undo-limit . 600000)
+  (undo-strong-limit . 900000)
   :config
   (global-unset-key (kbd "C-z"))
   (global-set-key (kbd "C-z")   'undo-fu-only-undo)
-  (global-set-key (kbd "M-z") 'undo-fu-only-redo)
-  (setq undo-limit 600000)
-  (setq undo-strong-limit 900000))
+  (global-set-key (kbd "M-z") 'undo-fu-only-redo))
 
 (leaf company
   :ensure t
@@ -92,30 +95,31 @@
 
 (leaf ddskk
   :ensure t
+  :setq
+  (skk-use-act . t)
+  (skk-kakutei-when-unique-candidate . t)
+  (skk-extra-jisyo-file-list
+   . '("~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS2"
+       ("~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS2004" . euc-jis-2004)
+       ("~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS3_4" . euc-jis-2004)
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.assoc"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.edict"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.fullname"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.geo"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.itaiji"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.jinmei"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.law"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.lisp"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.mazegaki"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.office.zipcode"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.okinawa"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.propernoun"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.pubdic+"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.station"
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.zipcode"))
   :config
-  (global-set-key "\C-\\" 'skk-mode)
-  (setq skk-use-act t)
-  (setq skk-extra-jisyo-file-list
-        (list "~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS2"
-              '("~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS2004" . euc-jis-2004)
-              '("~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS3_4" . euc-jis-2004)
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.assoc"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.edict"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.fullname"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.geo"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.itaiji"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.jinmei"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.law"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.lisp"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.mazegaki"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.office.zipcode"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.okinawa"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.propernoun"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.pubdic+"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.station"
-              "~/.emacs.d/skk-get-jisyo/SKK-JISYO.zipcode"))
-  (setq skk-kakutei-when-unique-candidate t))
+  (global-set-key "\C-\\" 'skk-mode))
 
 (leaf migemo
   :ensure t
@@ -188,6 +192,9 @@
   (leaf counsel
     :ensure t
     :require t
+    :setq
+    (counsel-rg-base-command
+     . "rg -M 120 --with-filename --no-heading --line-number --hidden --glob !.git --smart-case --color never %s")
     :config
     (global-set-key (kbd "M-x") 'counsel-M-x)
     (global-set-key (kbd "M-y") 'counsel-yank-pop)
@@ -195,7 +202,6 @@
     (global-set-key (kbd "C-x C-b") 'counsel-ibuffer)
     (global-set-key (kbd "C-M-f") 'counsel-rg)
     ;; add --hidden --smart-case options
-    (setq counsel-rg-base-command "rg -M 120 --with-filename --no-heading --line-number --hidden --glob !.git --smart-case --color never %s")
     (delete '(counsel-M-x . "^") ivy-initial-inputs-alist)
     (counsel-mode 1))
 
@@ -279,18 +285,11 @@
 
 (leaf org
   :ensure t
-  :config
-  (add-hook 'org-mode-hook
-            (lambda ()
-              ;; (org-bullets-mode 1)
-              (define-key org-mode-map (kbd "C-c !") 'org-time-stamp-inactive)
-              ;; (define-key flycheck-mode-map (kbd "C-c ! !") 'org-time-stamp-inactive)
-              (setq indent-tabs-mode nil)))
-  (global-set-key (kbd "C-c a") 'org-agenda)
-  (setq org-startup-truncated nil)
-  (setq org-html-validation-link nil)
-  (setq org-html-head
-        "<style type=\"text/css\">
+  :setq
+  (org-startup-truncated . nil)
+  (org-html-validation-link . nil)
+  (org-html-head
+   . "<style type=\"text/css\">
   body {
     margin: 0 auto;
     max-width: 90%;
@@ -312,7 +311,15 @@
   li {
     margin: 0.7em 0;
   }
-</style>"))
+</style>")
+  :config
+  (add-hook 'org-mode-hook
+            (lambda ()
+              ;; (org-bullets-mode 1)
+              (define-key org-mode-map (kbd "C-c !") 'org-time-stamp-inactive)
+              ;; (define-key flycheck-mode-map (kbd "C-c ! !") 'org-time-stamp-inactive)
+              (setq indent-tabs-mode nil)))
+  (global-set-key (kbd "C-c a") 'org-agenda))
 
 (leaf vue-mode
   :ensure t
@@ -363,21 +370,25 @@
 ;;;; Appearance
 ;;;;----------------------------------------------------------------
 (leaf *window-config
-  :config
+  :setq
+  (inhibit-startup-message . t)
+  ;; window title
+  (frame-title-format . "%b [%f]")
   ;; initial size and position
-  (setq initial-frame-alist '((top . 100)
-                              (left . 600)
-                              (width . 160)
-                              (height . 85)))
+  (initial-frame-alist . '((top . 100)
+                           (left . 600)
+                           (width . 160)
+                           (height . 85)))
+  :config
   ;; don't show default something
   (tool-bar-mode 0)
   (menu-bar-mode 0)
-  (setq inhibit-startup-message t)
-  (scroll-bar-mode 0)
-  ;; window title
-  (setq frame-title-format "%b [%f]"))
+  (scroll-bar-mode 0))
 
 (leaf *font-confnig
+  :setq
+  ;; font-size rescale 対策
+  (face-font-rescale-alist . '((".*Hiragino.*" . 1.2) (".*Menlo.*" . 1.0)))
   :config
   (create-fontset-from-ascii-font "Menlo-12:weight=normal:slant=normal" nil "menlokakugo")
   (set-fontset-font "fontset-menlokakugo"
@@ -385,9 +396,7 @@
                     (font-spec :family "Hiragino Kaku Gothic ProN")
                     nil
                     'append)
-  (add-to-list 'default-frame-alist '(font . "fontset-menlokakugo"))
-  ;; font-size rescale 対策
-  (setq face-font-rescale-alist '((".*Hiragino.*" . 1.2) (".*Menlo.*" . 1.0))))
+  (add-to-list 'default-frame-alist '(font . "fontset-menlokakugo")))
 
 (leaf *theme-config
   :config
@@ -401,8 +410,9 @@
      '(cursor ((t (:background "#e7c547"))))
      '(line-number-current-line ((t (:background "#969896" :foreground "#eaeaea" :weight bold))))
      '(mode-line-buffer-id ((t (:foreground "#eaeaea" :weight bold))))))
-
-  (setq mmm-submode-decoration-level 0))
+  (leaf *mmm-mode
+    :setq
+    (mmm-submode-decoration-level . 0)))
 
 (leaf *appearance-config
   :setq-default
@@ -504,6 +514,6 @@
 (leaf sequential-command
   ;; Ex. C-a multiple times; cycle beginning-of-line > beginning-of-buffer > return
   :ensure t
+  :require sequential-command-config
   :config
-  (require 'sequential-command-config)
   (sequential-command-setup-keys))
