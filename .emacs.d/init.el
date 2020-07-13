@@ -67,13 +67,17 @@
 
 (leaf undo-fu
   :ensure t
+  ;; undo-limit/undo-strong-limit should be set when startup. If undo-limit is
+  ;; set after load, undo limit remains default until you call undo.
+  :leaf-defer nil
+  :bind
+  ("C-z" . nil)
+  ("C-z" . undo-fu-only-undo)
+  ("M-z" . undo-fu-only-redo)
   :setq
+  ;; These are not undo-fu's variable.
   (undo-limit . 600000)
-  (undo-strong-limit . 900000)
-  :config
-  (global-unset-key (kbd "C-z"))
-  (global-set-key (kbd "C-z")   'undo-fu-only-undo)
-  (global-set-key (kbd "M-z") 'undo-fu-only-redo))
+  (undo-strong-limit . 900000))
 
 (leaf company
   :ensure t
@@ -83,18 +87,13 @@
   (with-eval-after-load 'company
     (setq company-idle-delay 0)
     (setq company-minimum-prefix-length 1)
-    (define-key company-active-map (kbd "C-h") nil)
-    (define-key company-active-map [tab] 'company-complete-selection)
-    (define-key company-active-map (kbd "C-n") 'company-select-next)
-    (define-key company-active-map (kbd "C-p") 'company-select-previous)
-    (define-key company-search-map (kbd "C-n") 'company-select-next)
-    (define-key company-search-map (kbd "C-p") 'company-select-previous)
-    (define-key company-active-map (kbd "C-s") 'company-filter-candidates)
-    (define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
     (setq company-selection-wrap-around t)))
 
 (leaf ddskk
   :ensure t
+  :leaf-defer nil
+  :bind
+  ("C-\\" . skk-mode)
   :setq
   (skk-use-act . t)
   (skk-kakutei-when-unique-candidate . t)
@@ -117,9 +116,7 @@
        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.propernoun"
        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.pubdic+"
        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.station"
-       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.zipcode"))
-  :config
-  (global-set-key "\C-\\" 'skk-mode))
+       "~/.emacs.d/skk-get-jisyo/SKK-JISYO.zipcode")))
 
 (leaf migemo
   :ensure t
@@ -138,8 +135,8 @@
   :ensure t
   :setq
   ;; performance https://emacs-lsp.github.io/lsp-mode/page/performance/
-  `(read-process-output-max . ,(* 1024 1024 3)) ;; 1mb
-  (gc-cons-threshold . 100000000)
+  `(read-process-output-max . ,(* 3 1024 1024))
+  `(gc-cons-threshold . ,(* 100 1024 1024))
   :hook
   ((yaml-mode-hook sh-mode-hook python-mode-hook) . lsp)
   :config
@@ -165,7 +162,6 @@
                        "\\.cache$"
                        ))
   :config
-  ;; (global-set-key "\C-xf" 'recentf-open-files)
   (recentf-mode 1))
 
 (leaf *ivy-counsel-swiper
@@ -182,7 +178,6 @@
     ;; ミニバッファでコマンド発行を認める
     (when (setq enable-recursive-minibuffers t)
       (minibuffer-depth-indicate-mode 1)) ;; 何回層入ったかプロンプトに表示．
-    (define-key ivy-minibuffer-map (kbd "<escape>") 'minibuffer-keyboard-quit)
     (setq ivy-truncate-lines nil)
     (setq ivy-wrap t) ;; リスト先頭で `C-p' するとき，リストの最後に移動する
     (setq ivy-height 30)
@@ -196,11 +191,6 @@
     (counsel-rg-base-command
      . "rg -M 120 --with-filename --no-heading --line-number --hidden --glob !.git --smart-case --color never %s")
     :config
-    (global-set-key (kbd "M-x") 'counsel-M-x)
-    (global-set-key (kbd "M-y") 'counsel-yank-pop)
-    (global-set-key (kbd "C-M-z") 'counsel-fzf)
-    (global-set-key (kbd "C-x C-b") 'counsel-ibuffer)
-    (global-set-key (kbd "C-M-f") 'counsel-rg)
     ;; add --hidden --smart-case options
     (delete '(counsel-M-x . "^") ivy-initial-inputs-alist)
     (counsel-mode 1))
@@ -208,16 +198,13 @@
   (leaf swiper
     :ensure t
     :require t
-    :config
-    (global-set-key (kbd "M-s") 'swiper)))
+    :bind
+    ("M-s" . swiper)))
 
 (leaf projectile
   :ensure t counsel-projectile
   :require t
   :config
-  (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-.") 'projectile-next-project-buffer)
-  (define-key projectile-mode-map (kbd "C-,") 'projectile-previous-project-buffer)
   (projectile-mode +1))
 
 (leaf flycheck
@@ -250,11 +237,10 @@
 
 (leaf open-junk-file
   :ensure t
-  :after open-junk-file
   :setq
   (open-junk-file-format . "~/junk/%Y/%Y%m%d-%H%M%S.org")
-  :config
-  (global-set-key (kbd "C-x j") 'open-junk-file))
+  :bind
+  ("C-x j" . open-junk-file))
 
 (leaf rainbow-mode :ensure t)
 
@@ -269,8 +255,6 @@
   (dired-mode-hook . hl-line-mode)
   (dired-mode-hook . (lambda () (display-line-numbers-mode -1)))
   :config
-  (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
-  (define-key dired-mode-map (kbd "C-o") nil)
   (leaf all-the-icons-dired
     :ensure t
     ;; Initial setup: M-x all-the-icons-install-fonts
@@ -280,8 +264,7 @@
     :config
     (add-hook 'dired-sidebar-mode-hook
               (lambda ()
-                (unless (file-remote-p default-directory))))
-    (global-set-key (kbd "C-x C-n") 'dired-sidebar-toggle-sidebar)))
+                (unless (file-remote-p default-directory))))))
 
 (leaf org
   :ensure t
@@ -316,10 +299,7 @@
   (add-hook 'org-mode-hook
             (lambda ()
               ;; (org-bullets-mode 1)
-              (define-key org-mode-map (kbd "C-c !") 'org-time-stamp-inactive)
-              ;; (define-key flycheck-mode-map (kbd "C-c ! !") 'org-time-stamp-inactive)
-              (setq indent-tabs-mode nil)))
-  (global-set-key (kbd "C-c a") 'org-agenda))
+              (setq indent-tabs-mode nil))))
 
 (leaf vue-mode
   :ensure t
@@ -457,10 +437,12 @@
 (leaf *keybindings
   :config
   (leaf *key-delete-with-c-h
-    :config
-    (global-set-key "\C-h" 'delete-backward-char)
-    (define-key isearch-mode-map (kbd "C-h") 'isearch-delete-char))
+    :bind
+    ("C-h" . delete-backward-char)
+    (isearch-mode-map
+     ("C-h" . isearch-delete-char)))
   (leaf *key-other-window
+    ;; https://rubikitch.hatenadiary.org/entry/20101126/keymap
     :config
     (define-minor-mode overriding-minor-mode
       "強制的にC-tを割り当てる"             ;説明文字列
@@ -468,31 +450,69 @@
       ""                                    ;モードラインに表示しない
       `((,(kbd "C-t") . other-window))))
   (leaf *key-buffer
-    :config
-    (global-set-key (kbd "C-,") 'bs-cycle-previous)
-    (global-set-key (kbd "C-.") 'bs-cycle-next))
-  (leaf *key-elstreen
-    :config
-    (global-set-key (kbd "C->") 'elscreen-next)
-    (global-set-key (kbd "C-<") 'elscreen-previous))
-  (leaf *key-org-mode
-    :config
-    (add-hook 'org-mode-hook
-              (lambda ()
-                (define-key org-mode-map (kbd "C-c ,") 'org-insert-structure-template)
-                (define-key org-mode-map (kbd "C-,") 'bs-cycle-previous)
-		(define-key ac-complete-mode-map [tab] 'ac-expand))))
+    :bind
+    ("C-," . bs-cycle-previous)
+    ("C-." . bs-cycle-next))
   (leaf *key-highlight
-    :config
-    (global-set-key [(control f3)] 'highlight-symbol-at-point)
-    (global-set-key [(control shift f3)] 'unhighlight-regexp))
-  (leaf *key-view-mode
-    :after view-mode
-    :config
-    (define-key view-mode-map (kbd "h") 'View-scroll-line-forward)
-    (define-key view-mode-map (kbd "t") 'View-scroll-line-backward)
-    (define-key view-mode-map (kbd "H") 'View-scroll-half-page-forward)
-    (define-key view-mode-map (kbd "T") 'View-scroll-half-page-backward)))
+    :bind
+    ("C-<f3>" . highlight-symbol-at-point)
+    ("C-S-<f3>" . unhighlight-regexp))
+  (leaf elscreen
+    :bind
+    ("C->" . elscreen-next)
+    ("C-<" . elscreen-previous))
+  (leaf org
+    :bind
+    ("C-c a" . org-agenda)
+    (org-mode-map
+     ("C-c !" . org-time-stamp-inactive)
+     ("C-c ," . org-insert-structure-template)
+     ("C-," . bs-cycle-previous)))
+  (leaf view
+    :bind
+    (view-mode-map
+     ("h" . View-scroll-line-forward)
+     ("t" . View-scroll-line-backward)
+     ("H" . View-scroll-half-page-forward)
+     ("T" . View-scroll-half-page-backward)))
+  (leaf ivy
+    :bind
+    (ivy-minibuffer-map
+     ("<escape>" . minibuffer-keyboard-quit)))
+  (leaf counsel
+    :bind
+    ("M-x" . counsel-M-x)
+    ("M-y" . counsel-yank-pop)
+    ("C-M-z" . counsel-fzf)
+    ("C-x C-b" . counsel-ibuffer)
+    ("C-M-f" . counsel-rg))
+  (leaf company
+    :bind
+    (company-active-map
+     ("C-h" . nil)
+     ("<tab>" . company-complete-selection)
+     ("C-n" . company-select-next)
+     ("C-p" . company-select-previous)
+     ("C-s" . company-filter-candidates))
+    (company-search-map
+     ("C-n" . company-select-next)
+     ("C-p" . company-select-previous))
+    (emacs-lisp-mode-map
+     ("C-M-i" . company-complete)))
+  (leaf projectile
+    :bind
+    (projectile-mode-map
+     ("M-p" . projectile-command-map)
+     ("C-." . projectile-next-project-buffer)
+     ("C-," . projectile-previous-project-buffer)))
+  (leaf dired
+    :bind
+    (dired-mode-map
+     ("r" . wdired-change-to-wdired-mode)
+     ("C-o" . nil)))
+  (leaf dired-sidebar
+    :bind
+    ("C-x C-n" . dired-sidebar-toggle-sidebar)))
 
 (leaf key-chord
   :ensure t
