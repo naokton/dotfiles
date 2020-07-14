@@ -408,6 +408,7 @@
 (leaf *appearance-config
   :setq-default
   (indent-tabs-mode . nil)   ; use spaces
+  (tab-width . 4)            ; default is 8
   (fill-column . 80)
   :config
   (show-paren-mode t)
