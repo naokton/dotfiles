@@ -133,15 +133,26 @@
 
 (leaf lsp-mode
   :ensure t
+  :custom
+  (lsp-enable-folding . nil)
+  (lsp-enable-snippet . nil)
+  (lsp-enable-symbol-highlighting . nil)
+  (lsp-enable-links . nil)
   :setq
   ;; performance https://emacs-lsp.github.io/lsp-mode/page/performance/
   `(read-process-output-max . ,(* 3 1024 1024))
   `(gc-cons-threshold . ,(* 100 1024 1024))
   :hook
-  ((yaml-mode-hook sh-mode-hook python-mode-hook) . lsp)
-  :config
-  (leaf lsp-ui
-    :ensure t))
+  (yaml-mode-hook . lsp)
+  (sh-mode-hook . lsp)
+  (python-mode-hook . lsp)
+  (go-mode-hook . lsp)
+  (js-mode-hook . lsp))
+
+(leaf lsp-ui
+  :ensure t
+  :custom
+  (lsp-ui-doc-position . 'top))
 
 (leaf *ediff
   :setq
