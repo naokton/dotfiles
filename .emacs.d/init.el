@@ -152,6 +152,7 @@
 (leaf lsp-ui
   :ensure t
   :custom
+  (lsp-ui-doc-enable . nil)
   (lsp-ui-doc-position . 'top))
 
 (leaf *ediff
@@ -280,7 +281,7 @@
 (leaf org
   :ensure t
   :setq
-  (org-startup-truncated . nil)
+  (org-startup-truncated . t)
   (org-html-validation-link . nil)
   (org-html-head
    . "<style type=\"text/css\">
@@ -477,9 +478,14 @@
     :bind
     ("C-c a" . org-agenda)
     (org-mode-map
-     ("C-c !" . org-time-stamp-inactive)
      ("C-c ," . org-insert-structure-template)
-     ("C-," . bs-cycle-previous)))
+     ("C-c ." . my/org-insert-timestamp-today-inactive)
+     ("C-," . bs-cycle-previous))
+    :config
+    (defun my/org-insert-timestamp-today-inactive ()
+      "Insert inactive timestamp of today"
+      (interactive)
+      (org-insert-time-stamp (current-time) nil t)))
   (leaf view
     :bind
     (view-mode-map
