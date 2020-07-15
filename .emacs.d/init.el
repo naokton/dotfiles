@@ -180,38 +180,26 @@
   :config
   (leaf ivy
     :ensure t
-    :require t
+    :custom
+    (ivy-truncate-lines . nil)
+    (ivy-wrap . t) ;; リスト先頭で `C-p' するとき，リストの最後に移動する
+    (ivy-height . 30)
+    (ivy-count-format . "(%d/%d) ")
     :config
-    ;; M-o を ivy-hydra-read-action に割り当てる．
-    (when (require 'ivy-hydra nil t)
-      (setq ivy-read-action-function #'ivy-hydra-read-action))
-    ;; `ivy-switch-buffer' (C-x b) のリストに recent files と bookmark を含める．
-    (setq ivy-use-virtual-buffers t)
     ;; ミニバッファでコマンド発行を認める
     (when (setq enable-recursive-minibuffers t)
       (minibuffer-depth-indicate-mode 1)) ;; 何回層入ったかプロンプトに表示．
-    (setq ivy-truncate-lines nil)
-    (setq ivy-wrap t) ;; リスト先頭で `C-p' するとき，リストの最後に移動する
-    (setq ivy-height 30)
-    (setq ivy-count-format "(%d/%d) ")
     (ivy-mode 1))
-
   (leaf counsel
     :ensure t
-    :require t
-    :setq
+    :custom
+    ;; add --hidden --smart-case options
     (counsel-rg-base-command
      . "rg -M 120 --with-filename --no-heading --line-number --hidden --glob !.git --smart-case --color never %s")
     :config
-    ;; add --hidden --smart-case options
     (delete '(counsel-M-x . "^") ivy-initial-inputs-alist)
     (counsel-mode 1))
-
-  (leaf swiper
-    :ensure t
-    :require t
-    :bind
-    ("M-s" . swiper)))
+  (leaf swiper :ensure t))
 
 (leaf projectile
   :ensure t counsel-projectile
@@ -228,7 +216,7 @@
 
 (leaf dumb-jump
   :ensure t
-  :setq
+  :custom
   (dumb-jump-selector . 'ivy)
   :config
   (dumb-jump-mode)) ; enable default keybindings
@@ -243,44 +231,36 @@
   :config
   (global-git-gutter-mode t))
 
-(leaf macrostep
-  :ensure t
-  :bind ("C-c e" . macrostep-expand))
+(leaf macrostep :ensure t)
 
 (leaf open-junk-file
   :ensure t
-  :setq
-  (open-junk-file-format . "~/junk/%Y/%Y%m%d-%H%M%S.org")
-  :bind
-  ("C-x j" . open-junk-file))
+  :custom
+  (open-junk-file-format . "~/junk/%Y/%Y%m%d-%H%M%S.org"))
 
 (leaf rainbow-mode :ensure t)
 
 ;;;;----------------------------------------------------------------
 ;;;; Major modes/Language config
 ;;;;----------------------------------------------------------------
-(leaf dired
-  :after dired
-  :setq
-  (dired-listing-switches . "-alh")
-  :hook
-  (dired-mode-hook . hl-line-mode)
-  (dired-mode-hook . (lambda () (display-line-numbers-mode -1)))
+(leaf *dired
   :config
+  (leaf dired
+    :custom
+    (dired-listing-switches . "-alh")
+    :hook
+    (dired-mode-hook . hl-line-mode)
+    (dired-mode-hook . (lambda () (display-line-numbers-mode -1))))
   (leaf all-the-icons-dired
     :ensure t
     ;; Initial setup: M-x all-the-icons-install-fonts
     :hook dired-mode-hook)
   (leaf dired-sidebar
-    :ensure t
-    :config
-    (add-hook 'dired-sidebar-mode-hook
-              (lambda ()
-                (unless (file-remote-p default-directory))))))
+    :ensure t))
 
 (leaf org
   :ensure t
-  :setq
+  :custom
   (org-startup-truncated . t)
   (org-html-validation-link . nil)
   (org-html-head
@@ -306,12 +286,7 @@
   li {
     margin: 0.7em 0;
   }
-</style>")
-  :config
-  (add-hook 'org-mode-hook
-            (lambda ()
-              ;; (org-bullets-mode 1)
-              (setq indent-tabs-mode nil))))
+</style>"))
 
 (leaf vue-mode
   :ensure t
@@ -322,12 +297,12 @@
 (leaf *javascript
   :config
   (leaf js-mode
-    :setq
+    :custom
     (js-indent-level . 2))
 
   (leaf prettier-js
     :ensure t
-    :setq
+    :custom
     (prettier-js-args . '("--trailing-comma" "all"
                           "--bracket-spacing" "false"
                           ))))
@@ -337,15 +312,13 @@
   :config
   (leaf highlight-indent-guides
     :ensure t
+    :custom
+    (highlight-indent-guides-responsive . nil)
+    (highlight-indent-guides-auto-odd-face-perc . 10)
+    (highlight-indent-guides-auto-even-face-perc . 20)
+    (highlight-indent-guides-method . 'fill)
     :hook
-    (yaml-mode-hook . highlight-indent-guides-mode)
-    :config
-    (eval-after-load 'highlight-indent-guides
-      '(progn
-         (setq highlight-indent-guides-responsive nil)
-         (setq highlight-indent-guides-auto-odd-face-perc 10)
-         (setq highlight-indent-guides-auto-even-face-perc 20)
-         (setq highlight-indent-guides-method 'fill)))))
+    (yaml-mode-hook . highlight-indent-guides-mode)))
 
 (leaf *install-language-modes-without-config
   :ensure (go-mode
@@ -393,6 +366,7 @@
 (leaf *theme-config
   :config
   (leaf color-theme-sanityinc-tomorrow
+    :if (window-system)
     :ensure t
     :require t
     :config
@@ -403,11 +377,11 @@
      '(line-number-current-line ((t (:background "#969896" :foreground "#eaeaea" :weight bold))))
      '(mode-line-buffer-id ((t (:foreground "#eaeaea" :weight bold))))))
   (leaf *mmm-mode
-    :setq
+    :custom
     (mmm-submode-decoration-level . 0)))
 
 (leaf *appearance-config
-  :setq-default
+  :custom
   (indent-tabs-mode . nil)   ; use spaces
   (tab-width . 4)            ; default is 8
   (fill-column . 80)
@@ -424,7 +398,7 @@
   :config
   (leaf doom-modeline
     :ensure t
-    :setq
+    :custom
     (doom-modeline-major-mode-color-icon . nil)
     (doom-modeline-vcs-max-length . 24)
     :config
@@ -434,7 +408,7 @@
 
   (leaf nyan-mode
     :ensure t
-    :setq
+    :custom
     (nyan-bar-length . 16)
     :config
     (nyan-mode)))
@@ -504,6 +478,9 @@
     ("C-M-z" . counsel-fzf)
     ("C-x C-b" . counsel-ibuffer)
     ("C-M-f" . counsel-rg))
+  (leaf swiper
+    :bind
+    ("M-s" . swiper))
   (leaf company
     :bind
     (company-active-map
@@ -528,6 +505,12 @@
     (dired-mode-map
      ("r" . wdired-change-to-wdired-mode)
      ("C-o" . nil)))
+  (leaf open-junk-file
+    :bind
+    ("C-x j" . open-junk-file))
+  (leaf macrostep
+    :bind
+    ("C-c e" . macrostep-expand))
   (leaf dired-sidebar
     :bind
     ("C-x C-n" . dired-sidebar-toggle-sidebar)))
