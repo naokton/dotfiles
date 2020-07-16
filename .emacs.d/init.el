@@ -119,16 +119,24 @@
        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.zipcode")))
 
 (leaf migemo
+  :when (executable-find "cmigemo")
   :ensure t
   :require t
-  :setq
+  :custom
   (migemo-command . "cmigemo")
   (migemo-options . '("-q" "--emacs"))
-  (migemo-dictionary . "/usr/local/share/migemo/utf-8/migemo-dict")
   (migemo-user-dictionary . nil)
   (migemo-regex-dictionary . nil)
   (migemo-coding-system . 'utf-8-unix)
   :config
+  (leaf *macos-migemo
+    :when (eq system-type "darwin")
+    :custom
+    (migemo-dictionary . "/usr/local/share/migemo/utf-8/migemo-dict"))
+  (leaf *linux-cmigemo
+    :when (eq system-type "gnu/linux")
+    :custom
+    (migemo-dictionary . "/usr/share/cmigemo/utf-8/migemo-dict"))
   (migemo-init))
 
 (leaf lsp-mode
