@@ -49,9 +49,10 @@
   ;; custom-set-variables and custom-set-faces
   :setq
   `(custom-file . ,(expand-file-name "custom.el" user-emacs-directory))
-  :config
-  (when (file-exists-p custom-file)
-    (load custom-file)))
+  ;; :config
+  ;; (when (file-exists-p custom-file)
+  ;;   (load custom-file))
+  )
 
 ;;;;----------------------------------------------------------------
 ;;;; Utilities
