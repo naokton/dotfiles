@@ -8,6 +8,7 @@ add_path(){
     fi
 }
 ADDITIONAL_PATH=(
+    /usr/local/sbin
     $HOME/.local/bin
     $HOME/go/bin
     /usr/local/opt/gnu-sed/libexec/gnubin
@@ -69,3 +70,7 @@ case ${OSTYPE} in
 esac
 
 export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
+
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
