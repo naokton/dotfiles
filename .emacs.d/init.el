@@ -270,7 +270,9 @@
 (leaf org
   :ensure t
   :custom
-  (org-startup-truncated . t)
+  (org-startup-truncated . nil)
+  (org-startup-folded . nil)
+  (org-startup-indented . t)
   (org-html-validation-link . nil)
   (org-html-head
    . "<style type=\"text/css\">
