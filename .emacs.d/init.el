@@ -384,6 +384,9 @@
     :if (window-system)
     :ensure t
     :require t
+    :setq
+    ;; for emacs 27 (https://emacs.stackexchange.com/questions/48365/#answer-52804)
+    (custom--inhibit-theme-enable . nil)
     :config
     (load-theme 'sanityinc-tomorrow-bright t)
     (custom-theme-set-faces
