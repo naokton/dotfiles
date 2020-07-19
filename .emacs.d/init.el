@@ -253,6 +253,8 @@
   :config
   (electric-pair-mode 1))
 
+(leaf symbol-overlay ensure: t)
+
 ;;;;----------------------------------------------------------------
 ;;;; Major modes/Language config
 ;;;;----------------------------------------------------------------
@@ -460,10 +462,10 @@
     :bind
     ("C-," . bs-cycle-previous)
     ("C-." . bs-cycle-next))
-  (leaf *key-highlight
+  (leaf symbol-overlay
     :bind
-    ("C-<f3>" . highlight-symbol-at-point)
-    ("C-S-<f3>" . unhighlight-regexp))
+    ("C-<f3>" . symbol-overlay-put)
+    ("C-S-<f3>" . symbol-overlay-remove-all))
   (leaf elscreen
     :bind
     ("C->" . elscreen-next)
