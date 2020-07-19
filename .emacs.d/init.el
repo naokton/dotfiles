@@ -389,11 +389,13 @@
     (custom--inhibit-theme-enable . nil)
     :config
     (load-theme 'sanityinc-tomorrow-bright t)
-    (custom-theme-set-faces
-     'sanityinc-tomorrow-bright
-     '(cursor ((t (:background "#e7c547"))))
-     '(line-number-current-line ((t (:background "#969896" :foreground "#eaeaea" :weight bold))))
-     '(mode-line-buffer-id ((t (:foreground "#eaeaea" :weight bold))))))
+    (color-theme-sanityinc-tomorrow--with-colors
+     'bright
+     (custom-theme-set-faces
+      'sanityinc-tomorrow-bright
+      `(cursor ((t . (:background ,yellow))))
+      `(line-number-current-line ((t . (:background ,comment :foreground ,foreground :weight bold))))
+      `(mode-line-buffer-id ((t . (:foreground ,foreground :weight bold)))))))
   (leaf *mmm-mode
     :custom
     (mmm-submode-decoration-level . 0)))
