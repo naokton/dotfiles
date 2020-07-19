@@ -249,6 +249,10 @@
 
 (leaf rainbow-mode :ensure t)
 
+(leaf electric-pair-mode
+  :config
+  (electric-pair-mode 1))
+
 ;;;;----------------------------------------------------------------
 ;;;; Major modes/Language config
 ;;;;----------------------------------------------------------------
