@@ -12,6 +12,7 @@ ADDITIONAL_PATH=(
     $HOME/.local/bin
     $HOME/go/bin
     /usr/local/opt/gnu-sed/libexec/gnubin
+    /usr/local/opt/texinfo/bin
     /usr/local/opt/qt/bin
     /usr/local/opt/python/libexec/bin
     /usr/local/opt/python@3.8/bin
