@@ -152,11 +152,10 @@
   `(read-process-output-max . ,(* 3 1024 1024))
   `(gc-cons-threshold . ,(* 100 1024 1024))
   :hook
-  (yaml-mode-hook . lsp)
-  (sh-mode-hook . lsp)
-  (python-mode-hook . lsp)
-  (go-mode-hook . lsp)
-  (js-mode-hook . lsp))
+  (yaml-mode-hook . lsp)                ; npm install -g yaml-language-server
+  (sh-mode-hook . lsp)                  ; npm i -g bash-language-server
+  (python-mode-hook . lsp)              ; pip install --user 'python-language-server[all]'
+  (go-mode-hook . lsp))                 ; GO111MODULE=on go get golang.org/x/tools/gopls@latest
 
 (leaf lsp-ui
   :ensure t
@@ -253,7 +252,7 @@
   :config
   (electric-pair-mode 1))
 
-(leaf symbol-overlay ensure: t)
+(leaf symbol-overlay :ensure t)
 
 ;;;;----------------------------------------------------------------
 ;;;; Major modes/Language config
