@@ -276,8 +276,9 @@
   :ensure t
   :custom
   (org-startup-truncated . nil)
-  (org-startup-folded . nil)
   (org-startup-indented . t)
+  (org-startup-with-inline-images . t)
+  (org-image-actual-width . nil)
   (org-html-validation-link . nil)
   (org-html-head
    . "<style type=\"text/css\">
