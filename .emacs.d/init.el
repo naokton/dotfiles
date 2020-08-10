@@ -371,6 +371,7 @@
   ;; font-size rescale 対策
   (face-font-rescale-alist . '((".*Hiragino.*" . 1.2) (".*Menlo.*" . 1.0)))
   :config
+  (set-fontset-font t 'symbol "Apple Color Emoji")
   (create-fontset-from-ascii-font "Menlo-12:weight=normal:slant=normal" nil "menlokakugo")
   (set-fontset-font "fontset-menlokakugo"
                     'unicode
