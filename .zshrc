@@ -19,6 +19,7 @@ ADDITIONAL_PATH=(
     /usr/local/opt/python@3.9/bin
     $HOME/Library/Python/3.8/bin
     $HOME/Library/Python/3.9/bin
+    $HOME/.poetry/bin
     $HOME/.local/bin
 )
 for P in $ADDITIONAL_PATH; do
