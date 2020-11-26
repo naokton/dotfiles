@@ -140,6 +140,11 @@
     (migemo-dictionary . "/usr/share/cmigemo/utf-8/migemo-dict"))
   (migemo-init))
 
+(leaf vterm
+  ;; requirements: brew install cmake libvterm libtool
+  :ensure t
+  )
+
 (leaf lsp-mode
   :ensure t
   :custom
@@ -154,7 +159,9 @@
   :hook
   (yaml-mode-hook . lsp)                ; npm install -g yaml-language-server
   (sh-mode-hook . lsp)                  ; npm i -g bash-language-server
-  (python-mode-hook . lsp)              ; pip install --user 'python-language-server[all]'
+  (python-mode-hook . lsp)              ; pipx install 'python-language-server[all]' pipenv
+  (js-mode-hook . lsp)                  ; npm i -g javascript-typescript-langserver
+  (vue-mode-hook . lsp)                 ; npm i -g vls
   (go-mode-hook . lsp))                 ; GO111MODULE=on go get golang.org/x/tools/gopls@latest
 
 (leaf lsp-ui
@@ -316,13 +323,16 @@
   (leaf js-mode
     :custom
     (js-indent-level . 2))
-
-  (leaf prettier-js
+  ;; (leaf js2-mode
+  ;;   :ensure t
+  ;;   :mode "\\.js\\'"
+  ;;   :custom
+  ;;   (js-indent-level . 2))
+  (leaf prettier
     :ensure t
-    :custom
-    (prettier-js-args . '("--trailing-comma" "all"
-                          "--bracket-spacing" "false"
-                          ))))
+    :hook
+    (js-mode-hook . prettier-mode))
+  )
 
 (leaf yaml-mode
   :ensure t
