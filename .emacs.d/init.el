@@ -57,14 +57,12 @@
 ;;;;----------------------------------------------------------------
 ;;;; Utilities
 ;;;;----------------------------------------------------------------
-(leaf elscreen
-  :ensure t
-  :setq
-  (elscreen-prefix-key . "\C-o")
-  (elscreen-tab-display-control . nil)
-  (elscreen-tab-display-kill-screen . nil)
+(leaf tab-bar
+  :custom
+  (tab-bar-new-tab-choice . "*scratch*")
   :config
-  (elscreen-start))
+  (tab-bar-mode)
+  )
 
 (leaf undo-fu
   :ensure t
@@ -477,10 +475,10 @@
     :bind
     ("C-<f3>" . symbol-overlay-put)
     ("C-S-<f3>" . symbol-overlay-remove-all))
-  (leaf elscreen
+  (leaf tab-bar
     :bind
-    ("C->" . elscreen-next)
-    ("C-<" . elscreen-previous))
+    ("C->" . tab-next)
+    ("C-<" . tab-previous))
   (leaf org
     :bind
     ("C-c a" . org-agenda)
