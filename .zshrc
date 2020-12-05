@@ -97,8 +97,18 @@ vterm_printf(){
 # fzf history
 fh(){
     print -z $(
-    fc -nl 1 |
-        awk '!a[$0]++' |
-        fzf --tac --cycle --no-sort --layout=reverse --height=40%
+        fc -nl 1 |
+            awk '!a[$0]++' |
+            fzf --tac --cycle --no-sort --layout=reverse --height=40%
+    )
+}
+
+fcd(){
+    print -z "cd "$(
+        fc -nl 1 |
+            awk '/^cd ./&&!a[$0]++' |
+            cut -d' ' -f2- |
+            egrep -v '^([./]*|-)$' |
+            fzf --tac --cycle --no-sort --layout=reverse --height=40%
     )
 }
