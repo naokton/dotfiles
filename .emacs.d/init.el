@@ -118,6 +118,7 @@
        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.zipcode")))
 
 (leaf migemo
+  ;; requirements: brew install cmigemo
   :when (executable-find "cmigemo")
   :ensure t
   :require t
@@ -141,6 +142,45 @@
 (leaf vterm
   ;; requirements: brew install cmake libvterm libtool
   :ensure t
+  :custom
+  (vterm-max-scrollback . 10000)
+  (vterm-buffer-name-string . "vterm: %s")
+  :config
+  ;; Workaround of not working counsel-yank-pop
+  ;; https://github.com/akermu/emacs-libvterm#counsel-yank-pop-doesnt-work
+  (defun my/vterm-counsel-yank-pop-action (orig-fun &rest args)
+    (if (equal major-mode 'vterm-mode)
+        (let ((inhibit-read-only t)
+              (yank-undo-function (lambda (_start _end) (vterm-undo))))
+          (cl-letf (((symbol-function 'insert-for-yank)
+                     (lambda (str) (vterm-send-string str t))))
+            (apply orig-fun args)))
+      (apply orig-fun args)))
+  (advice-add 'counsel-yank-pop-action :around #'my/vterm-counsel-yank-pop-action)
+  :defer-config
+  (customize-set-variable 'vterm-keymap-exceptions
+                          (let ((newlist vterm-keymap-exceptions))
+                            (delete "C-h" newlist)
+                            (add-to-list 'newlist "<f1>")
+                            (add-to-list 'newlist "<f2>"))))
+
+(leaf vterm-toggle
+  :ensure t
+  :custom
+  (vterm-toggle-scope . 'project)
+  :config
+  ;; Show vterm buffer in the window located at bottom
+  (add-to-list 'display-buffer-alist
+               '((lambda(bufname _) (with-current-buffer bufname (equal major-mode 'vterm-mode)))
+                 (display-buffer-reuse-window display-buffer-in-direction)
+                 (direction . bottom)
+                 (reusable-frames . visible)
+                 (window-height . 0.4)))
+  ;; Above display config affects all vterm command, not only vterm-toggle
+  (defun my/vterm-new-buffer-in-current-window()
+    (interactive)
+    (let ((display-buffer-alist nil))
+            (vterm)))
   )
 
 (leaf lsp-mode
@@ -218,7 +258,14 @@
   :ensure t counsel-projectile
   :require t
   :config
-  (projectile-mode +1))
+  (projectile-mode +1)
+  :defer-config
+  (customize-set-variable 'projectile-globally-ignored-modes
+                          (let ((newlist projectile-globally-ignored-modes))
+                            ;; (add-to-list 'newlist "fundamental-mode")
+                            ;; (add-to-list 'newlist "ibuffer-mode")
+                            ;; (add-to-list 'newlist "dired-sidebar-mode")
+                            (add-to-list 'newlist "vterm-mode"))))
 
 (leaf flycheck
   :ensure t
@@ -536,6 +583,14 @@
     (dired-mode-map
      ("r" . wdired-change-to-wdired-mode)
      ("C-o" . nil)))
+  (leaf vterm
+    :bind
+    ("<f2>" . vterm-toggle)
+    (vterm-mode-map
+     ("C-<f2>" . my/vterm-new-buffer-in-current-window)
+     ("C-<return>" . vterm-toggle-insert-cd)
+     ([remap projectile-previous-project-buffer] . vterm-toggle-forward)
+     ([remap projectile-next-project-buffer] . vterm-toggle-backward)))
   (leaf open-junk-file
     :bind
     ("C-x j" . open-junk-file))
