@@ -145,6 +145,9 @@
   :custom
   (vterm-max-scrollback . 10000)
   (vterm-buffer-name-string . "vterm: %s")
+  ;; delete "C-h", add <f1> and <f2>
+  (vterm-keymap-exceptions
+   . '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y"))
   :config
   ;; Workaround of not working counsel-yank-pop
   ;; https://github.com/akermu/emacs-libvterm#counsel-yank-pop-doesnt-work
@@ -156,13 +159,7 @@
                      (lambda (str) (vterm-send-string str t))))
             (apply orig-fun args)))
       (apply orig-fun args)))
-  (advice-add 'counsel-yank-pop-action :around #'my/vterm-counsel-yank-pop-action)
-  :defer-config
-  (customize-set-variable 'vterm-keymap-exceptions
-                          (let ((newlist vterm-keymap-exceptions))
-                            (delete "C-h" newlist)
-                            (add-to-list 'newlist "<f1>")
-                            (add-to-list 'newlist "<f2>"))))
+  (advice-add 'counsel-yank-pop-action :around #'my/vterm-counsel-yank-pop-action))
 
 (leaf vterm-toggle
   :ensure t
