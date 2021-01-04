@@ -194,7 +194,7 @@
   :hook
   (yaml-mode-hook . lsp)                ; npm install -g yaml-language-server
   (sh-mode-hook . lsp)                  ; npm i -g bash-language-server
-  (python-mode-hook . lsp)              ; pipx install 'python-language-server[all]' pipenv
+  (python-mode-hook . lsp)              ; pipx install 'python-language-server[all]' pipenv; pipx inject python-language-server pyls-isort
   (js-mode-hook . lsp)                  ; npm i -g javascript-typescript-langserver
   (vue-mode-hook . lsp)                 ; npm i -g vls
   (go-mode-hook . lsp))                 ; GO111MODULE=on go get golang.org/x/tools/gopls@latest
@@ -203,7 +203,8 @@
   :ensure t
   :custom
   (lsp-ui-doc-enable . nil)
-  (lsp-ui-doc-position . 'top))
+  (lsp-ui-doc-position . 'top)
+  (lsp-ui-sideline-show-code-actions . nil))
 
 (leaf *ediff
   :setq
@@ -396,7 +397,6 @@
            dockerfile-mode
            docker-compose-mode
            nginx-mode
-           vue-mode
            groovy-mode
            powershell))
 
