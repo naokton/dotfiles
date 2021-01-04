@@ -450,6 +450,13 @@
       'sanityinc-tomorrow-bright
       `(cursor ((t . (:background ,yellow))))
       `(line-number-current-line ((t . (:background ,comment :foreground ,foreground :weight bold))))
+      `(mode-line ((t . (:foreground ,foreground :background ,contrast-bg :weight normal
+                                     :box (:line-width 1 :color ,comment)))))
+      `(mode-line-inactive ((t . (:inherit mode-line
+                                    :foreground ,comment
+                                    :background ,highlight
+                                    :weight normal
+                                    :box (:line-width 1 :color ,contrast-bg)))))
       `(mode-line-buffer-id ((t . (:foreground ,foreground :weight bold)))))))
   (leaf *mmm-mode
     :custom
