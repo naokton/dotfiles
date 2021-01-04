@@ -618,7 +618,7 @@
   ;; (key-chord-define-global "fl" 'ns-toggle-fullscreen)
   (key-chord-define-global "gs" 'magit-status)
   (key-chord-define-global "vw" 'view-mode)
-  (key-chord-define-global ".p" 'counsel-projectile)
+  (key-chord-define-global ".p" 'projectile-find-file-dwim)
   (key-chord-define-global "tm" 'transpose-frame)
   (key-chord-define-global "tb" 'rotate-frame-clockwise))
 
