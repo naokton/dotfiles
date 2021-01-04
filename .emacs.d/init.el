@@ -142,12 +142,14 @@
 (leaf vterm
   ;; requirements: brew install cmake libvterm libtool
   :ensure t
+  :hook
+  (vterm-mode-hook . (lambda () (display-line-numbers-mode -1)))
   :custom
   (vterm-max-scrollback . 10000)
   (vterm-buffer-name-string . "vterm: %s")
-  ;; delete "C-h", add <f1> and <f2>
+  ;; delete "C-h", "C-u", add <f1> and <f2>
   (vterm-keymap-exceptions
-   . '("<f1>" "<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y"))
+   . '("<f1>" "<f2>" "C-x" "C-c" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y"))
   :config
   ;; Workaround of not working counsel-yank-pop
   ;; https://github.com/akermu/emacs-libvterm#counsel-yank-pop-doesnt-work
