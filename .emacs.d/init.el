@@ -242,13 +242,15 @@
     ;; ミニバッファでコマンド発行を認める
     (when (setq enable-recursive-minibuffers t)
       (minibuffer-depth-indicate-mode 1)) ;; 何回層入ったかプロンプトに表示．
-    (ivy-mode 1))
+    (ivy-mode 1)
+    (add-to-list 'ivy-more-chars-alist '(counsel-rg . 2))) ;; 検索開始する最小文字数
   (leaf counsel
     :ensure t
     :custom
     ;; add --hidden --smart-case options
+    ;; '|| true' => partial rg error workaround https://github.com/hlissner/doom-emacs/issues/3038#issuecomment-624165004
     (counsel-rg-base-command
-     . "rg -M 120 --with-filename --no-heading --line-number --hidden --glob !.git --smart-case --color never %s")
+     . "rg -M 120 --with-filename --no-heading --line-number --hidden --glob !.git --smart-case --color never %s || true")
     :config
     (delete '(counsel-M-x . "^") ivy-initial-inputs-alist)
     (counsel-mode 1))
