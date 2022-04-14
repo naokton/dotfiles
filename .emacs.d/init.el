@@ -3,8 +3,7 @@
 ;;;;----------------------------------------------------------------
 (eval-and-compile
   (customize-set-variable
-   'package-archives '(("org" . "https://orgmode.org/elpa/")
-                       ("melpa" . "https://melpa.org/packages/")
+   'package-archives '(("melpa" . "https://melpa.org/packages/")
                        ("gnu" . "https://elpa.gnu.org/packages/")))
   (package-initialize)
   (unless (package-installed-p 'leaf)
@@ -189,17 +188,20 @@
   (lsp-enable-snippet . nil)
   (lsp-enable-symbol-highlighting . nil)
   (lsp-enable-links . nil)
+  (lsp-pylsp-plugins-pydocstyle-enabled . nil)
   :setq
   ;; performance https://emacs-lsp.github.io/lsp-mode/page/performance/
   `(read-process-output-max . ,(* 3 1024 1024))
   `(gc-cons-threshold . ,(* 100 1024 1024))
+  :config
+  (add-to-list 'lsp-language-id-configuration '(docker-compose-mode . "yaml"))
   :hook
   (yaml-mode-hook . lsp)                ; npm install -g yaml-language-server
   (sh-mode-hook . lsp)                  ; npm i -g bash-language-server
-  (python-mode-hook . lsp)              ; pipx install 'python-language-server[all]' pipenv; pipx inject python-language-server pyls-isort
+  (python-mode-hook . lsp)              ; pipx install 'python-lsp-server[all]'; pipx inject python-lsp-server pyls-isort
   (js-mode-hook . lsp)                  ; npm i -g javascript-typescript-langserver
   (vue-mode-hook . lsp)                 ; npm i -g vls
-  (go-mode-hook . lsp))                 ; GO111MODULE=on go get golang.org/x/tools/gopls@latest
+  (go-mode-hook . lsp-deferred))        ; go get golang.org/x/tools/gopls@latest
 
 (leaf lsp-ui
   :ensure t
@@ -331,6 +333,7 @@
   :custom
   (org-startup-truncated . nil)
   (org-startup-indented . t)
+  (org-indent-mode-turns-on-hiding-stars . nil)
   (org-startup-with-inline-images . t)
   (org-image-actual-width . nil)
   (org-html-validation-link . nil)

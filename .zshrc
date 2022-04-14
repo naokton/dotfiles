@@ -8,6 +8,7 @@ add_path(){
     fi
 }
 ADDITIONAL_PATH=(
+    /usr/local/bin
     /usr/local/sbin
     $HOME/go/bin
     /usr/local/opt/gnu-sed/libexec/gnubin
@@ -57,6 +58,7 @@ setopt HIST_EXPIRE_DUPS_FIRST
 setopt SHARE_HISTORY
 setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
+setopt HIST_IGNORE_SPACE
 
 # color
 autoload -Uz colors && colors
