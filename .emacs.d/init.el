@@ -59,8 +59,21 @@
 (leaf tab-bar
   :custom
   (tab-bar-new-tab-choice . "*scratch*")
+  (tab-bar-tab-name-function . #'my/project-name-or-default)
+  (tab-bar-new-button-show . nil)
+  (tab-bar-close-button-show . nil)
+  :custom-face
+  (tab-bar . '((t (:height 2.0))))
+  (tab-bar-tab . '((t (:height 0.5 :weight bold :box (:line-width (0 . 2))))))
+  (tab-bar-tab-inactive . '((t (:weight normal :box nil))))
   :config
   (tab-bar-mode)
+  (defun my/project-name-or-default ()
+    "Return project name in project, or default tab-bar tab name"
+    (let ((project-name (projectile-project-name)))
+      (if (string= "-" project-name)
+          (tab-bar-tab-name-current)
+        (projectile-project-name))))
   )
 
 (leaf undo-fu
