@@ -109,3 +109,5 @@ fcd(){
             fzf --tac --cycle --no-sort --layout=reverse --height=40%
     )
 }
+
+source ${HOME}/.docker/init-zsh.sh || true # Added by Docker Desktop

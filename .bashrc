@@ -22,3 +22,5 @@ if [[ $TERM = screen ]] || [[ $TERM = screen-256color ]] ; then
       pipe-pane       "cat >> $LOGDIR/$(date +%Y%m%d_%H%M%S)_#I-#P.log" \; \
       display-message "Started logging to $LOGDIR/$LOGFILE"
 fi
+
+source $HOME/.docker/init-bash.sh || true # Added by Docker Desktop
