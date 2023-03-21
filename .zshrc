@@ -110,4 +110,9 @@ fcd(){
     )
 }
 
+# Environment specific import
+if [[ -f ${HOME}/.zshrc.local ]]; then
+    source ${HOME}/.zshrc.local
+fi
+
 source ${HOME}/.docker/init-zsh.sh || true # Added by Docker Desktop
