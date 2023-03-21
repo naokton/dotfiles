@@ -18,8 +18,10 @@ ADDITIONAL_PATH=(
     /usr/local/opt/python/libexec/bin
     /usr/local/opt/python@3.8/bin
     /usr/local/opt/python@3.9/bin
+    /usr/local/opt/python@3.11/libexec/bin
     $HOME/Library/Python/3.8/bin
     $HOME/Library/Python/3.9/bin
+    $HOME/Library/Python/3.11/bin
     $HOME/.poetry/bin
     $HOME/.local/bin
 )
