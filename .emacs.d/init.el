@@ -408,8 +408,7 @@
   (leaf prettier
     :ensure t
     :hook
-    (js-mode-hook . prettier-mode))
-  )
+    (js-mode-hook . prettier-mode)))
 
 (leaf yaml-mode
   :ensure t
@@ -446,7 +445,7 @@
   (initial-frame-alist . '((top . 100)
                            (left . 600)
                            (width . 160)
-                           (height . 85)))
+                           (height . 80)))
   :config
   ;; don't show default something
   (tool-bar-mode 0)
@@ -500,7 +499,7 @@
   :custom
   (indent-tabs-mode . nil)   ; use spaces
   (tab-width . 4)            ; default is 8
-  (fill-column . 80)
+  (fill-column . 100)
   :config
   (show-paren-mode t)
   (global-display-line-numbers-mode)
@@ -517,6 +516,7 @@
     :custom
     (doom-modeline-major-mode-color-icon . nil)
     (doom-modeline-vcs-max-length . 24)
+    (doom-modeline-enable-word-count . t)
     :config
     (doom-modeline-mode 1)
     (line-number-mode 0)
