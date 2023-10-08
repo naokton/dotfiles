@@ -585,6 +585,7 @@
   (create-fontset-from-ascii-font "Cica-16" nil "mydefault")
   (set-fontset-font "fontset-mydefault" 'unicode "Hiragino Sans" nil 'append)
   (set-fontset-font "fontset-mydefault" 'symbol "Apple Color Emoji" nil 'append)
+  (set-fontset-font "fontset-mydefault" 'emoji "Apple Color Emoji" nil 'append)
   (add-to-list 'default-frame-alist '(font . "fontset-mydefault")))
 
 (leaf *theme-config
