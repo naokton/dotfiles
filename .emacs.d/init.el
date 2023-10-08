@@ -251,6 +251,10 @@
   :config
   (recentf-mode 1))
 
+(leaf savehist
+  :setq
+  (savehist-mode . t))
+
 (leaf *ivy-counsel-swiper
   :config
   (leaf ivy
@@ -269,14 +273,36 @@
   (leaf counsel
     :ensure t
     :custom
-    ;; add --hidden --smart-case options
-    ;; '|| true' => partial rg error workaround https://github.com/hlissner/doom-emacs/issues/3038#issuecomment-624165004
     (counsel-rg-base-command
-     . "rg -M 120 --with-filename --no-heading --line-number --hidden --glob !.git --smart-case --color never %s || true")
+     . `("rg"
+         "--max-columns" "240"
+         "--with-filename"
+         "--no-heading"
+         "--line-number"
+         "--color" "never"
+         "--smart-case"                 ;added
+         "--sort" "path"                ;added
+         "%s"))
+    ;; '|| true' => partial rg error workaround https://github.com/hlissner/doom-emacs/issues/3038#issuecomment-624165004
+    ;; . "rg -M 240 --with-filename --no-heading --line-number --smart-case --sort path --color never %s || true")
     :config
     (delete '(counsel-M-x . "^") ivy-initial-inputs-alist)
     (counsel-mode 1))
-  (leaf swiper :ensure t))
+  (leaf swiper :ensure t)
+  (leaf ivy-migemo :ensure t)
+  (leaf ivy-prescient
+    :after counsel swiper
+    :ensure t
+    :custom
+    (ivy-prescient-enable-filtering . t)
+    (ivy-prescient-enable-sorting . t)
+    :config
+    (ivy-prescient-mode t)
+    (prescient-persist-mode t)
+    ;; Workaround regex build error: https://github.com/radian-software/prescient.el/issues/43
+    (setf (alist-get 'counsel-rg ivy-re-builders-alist) #'ivy--regex-plus)
+    ;; add counsel-rg to ignore list to make '--sort path' option works
+    (add-to-list 'ivy-prescient-sort-commands 'counsel-rg t)))
 
 (leaf projectile
   :ensure t counsel-projectile
@@ -646,6 +672,11 @@
     ("C-M-z" . counsel-fzf)
     ("C-x C-b" . counsel-ibuffer)
     ("C-M-f" . counsel-rg))
+  (leaf ivy-migemo
+    :bind
+    (:ivy-minibuffer-map
+     :package ivy
+     ("M-m" . ivy-migemo-toggle-migemo)))
   (leaf swiper
     :bind
     ("M-s" . swiper))
