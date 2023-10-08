@@ -445,6 +445,7 @@
   :custom
   (gptel-api-key . #'my/retrieve-openapi-token)
   (gptel-default-mode . 'org-mode)
+  (gptel-model . "gpt-4")
   :config
   (defun my/retrieve-password-from-keychain (service account)
     "Retrieve password from macOS Keychain."
