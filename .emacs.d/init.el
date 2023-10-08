@@ -284,6 +284,15 @@
                             ;; (add-to-list 'newlist "dired-sidebar-mode")
                             (add-to-list 'newlist "vterm-mode"))))
 
+(leaf copilot
+  :url "https://github.com/zerolfx/copilot.el"
+  :req "dash" "s" "editorconfig"
+  :config
+  (add-to-list 'load-path "~/.emacs.d/manual-lisp/copilot.el")
+  (require 'copilot)
+  (add-hook 'prog-mode-hook 'copilot-mode)
+)
+
 (leaf flycheck
   :ensure t
   :hook
@@ -336,6 +345,22 @@
   (electric-pair-mode 1))
 
 (leaf symbol-overlay :ensure t)
+
+(leaf gptel
+  :ensure t
+  :custom
+  (gptel-api-key . #'my/retrieve-openapi-token)
+  (gptel-default-mode . 'org-mode)
+  :config
+  (defun my/retrieve-password-from-keychain (service account)
+    "Retrieve password from macOS Keychain."
+    (interactive "sService: \nsAccount: ")
+    (let ((command (format "security find-generic-password -s '%s' -a '%s' -w" service account))
+          (password nil))
+      (setq password (string-trim-right (shell-command-to-string command)))
+      password))
+  (defun my/retrieve-openapi-token ()
+    (my/retrieve-password-from-keychain "OpenAI API Key" "local")))
 
 ;;;;----------------------------------------------------------------
 ;;;; Major modes/Language config
@@ -641,6 +666,10 @@
      ("C-<return>" . vterm-toggle-insert-cd)
      ([remap projectile-previous-project-buffer] . vterm-toggle-forward)
      ([remap projectile-next-project-buffer] . vterm-toggle-backward)))
+  (leaf copilot
+    :bind
+    (copilot-completion-map
+     ("<tab>" . 'copilot-accept-completion)))
   (leaf open-junk-file
     :bind
     ("C-x j" . open-junk-file))
