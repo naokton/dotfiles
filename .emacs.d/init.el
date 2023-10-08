@@ -326,12 +326,29 @@
   (add-hook 'prog-mode-hook 'copilot-mode)
 )
 
+(leaf which-key
+  :ensure t
+  :hook
+  (after-init-hook . which-key-mode)
+  :config
+  (which-key-setup-side-window-right-bottom))
+
 (leaf flycheck
   :ensure t
   :hook
   (after-init-hook . global-flycheck-mode)
   :setq
   (flycheck-global-modes . '(shell-script-mode yaml-mode)))
+
+(leaf imenu-list
+  :ensure t
+  :bind (("s-i" . imenu-list-smart-toggle))
+  :custom
+  (imenu-list-focus-after-activation . t)
+  :config
+  (leaf leaf-tree
+    :diminish leaf-tree
+    :ensure t))
 
 (leaf dumb-jump
   :ensure t
@@ -364,6 +381,19 @@
   :config
   (global-git-gutter-mode t))
 
+(leaf wgrep
+  :ensure t)
+
+(leaf origami
+  :ensure t lsp-origami
+  :hook
+  (lsp-after-open-hook . lsp-origami-try-enable))
+
+(leaf browse-at-remote
+  :ensure t
+  :custom
+  (browse-at-remote-add-line-number-if-no-region-selected . nil))
+
 (leaf macrostep :ensure t)
 
 (leaf open-junk-file
@@ -386,6 +416,10 @@
 (leaf comp
   :custom
   (native-comp-async-report-warnings-errors . nil))
+
+(leaf wdired :ensure t)
+
+(leaf restclient :ensure t)
 
 (leaf gptel
   :ensure t
@@ -642,6 +676,11 @@
     :bind
     ("C->" . tab-next)
     ("C-<" . tab-previous))
+  (leaf origami
+    :bind
+    (origami-mode-map
+     ("C-c f a" . origami-toggle-all-nodes)
+     ("C-c f f" . origami-recursively-toggle-node)))
   (leaf org
     :bind
     ("C-c a" . org-agenda)
