@@ -579,17 +579,13 @@
 
 (leaf *font-confnig
   :setq
-  ;; font-size rescale 対策
-  (face-font-rescale-alist . '((".*Hiragino.*" . 1.2) (".*Menlo.*" . 1.0)))
+  ;; Set fontsize here. rescale doesn't work if size is specified in fontspec
+  ;; (face-font-rescale-alist . '((".*Cica.*" . 1.6)))
   :config
-  (set-fontset-font t 'symbol "Apple Color Emoji")
-  (create-fontset-from-ascii-font "Menlo-12:weight=normal:slant=normal" nil "menlokakugo")
-  (set-fontset-font "fontset-menlokakugo"
-                    'unicode
-                    (font-spec :family "Hiragino Kaku Gothic ProN")
-                    nil
-                    'append)
-  (add-to-list 'default-frame-alist '(font . "fontset-menlokakugo")))
+  (create-fontset-from-ascii-font "Cica-16" nil "mydefault")
+  (set-fontset-font "fontset-mydefault" 'unicode "Hiragino Sans" nil 'append)
+  (set-fontset-font "fontset-mydefault" 'symbol "Apple Color Emoji" nil 'append)
+  (add-to-list 'default-frame-alist '(font . "fontset-mydefault")))
 
 (leaf *theme-config
   :config
