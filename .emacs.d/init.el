@@ -346,6 +346,14 @@
 
 (leaf symbol-overlay :ensure t)
 
+(leaf package
+  :custom
+  (package-native-compile . t))
+
+(leaf comp
+  :custom
+  (native-comp-async-report-warnings-errors . nil))
+
 (leaf gptel
   :ensure t
   :custom
