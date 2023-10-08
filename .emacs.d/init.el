@@ -63,8 +63,8 @@
   (tab-bar-new-button-show . nil)
   (tab-bar-close-button-show . nil)
   :custom-face
-  (tab-bar . '((t (:height 2.0))))
-  (tab-bar-tab . '((t (:height 0.5 :weight bold :box (:line-width (0 . 2))))))
+  (tab-bar . '((t (:height 1.0))))
+  (tab-bar-tab . '((t (:weight bold :box (:line-width (0 . 2))))))
   (tab-bar-tab-inactive . '((t (:weight normal :box nil))))
   :config
   (tab-bar-mode)
@@ -142,11 +142,11 @@
   (migemo-coding-system . 'utf-8-unix)
   :config
   (leaf *macos-migemo
-    :when (eq system-type "darwin")
+    :when (eq system-type 'darwin)
     :custom
     (migemo-dictionary . "/usr/local/share/migemo/utf-8/migemo-dict"))
   (leaf *linux-cmigemo
-    :when (eq system-type "gnu/linux")
+    :when (eq system-type 'gnu/linux)
     :custom
     (migemo-dictionary . "/usr/share/cmigemo/utf-8/migemo-dict"))
   (migemo-init))
@@ -211,8 +211,8 @@
   :hook
   (yaml-mode-hook . lsp)                ; npm install -g yaml-language-server
   (sh-mode-hook . lsp)                  ; npm i -g bash-language-server
-  (python-mode-hook . lsp)              ; pipx install 'python-lsp-server[all]'; pipx inject python-lsp-server pyls-isort
-  (js-mode-hook . lsp)                  ; npm i -g javascript-typescript-langserver
+  (python-mode-hook . lsp)              ; pipx install 'python-lsp-server[all]'; pipx inject python-lsp-server python-lsp-isort
+  (js-mode-hook . lsp)                  ; npm i -g typescript-language-server; npm i -g typescript
   (vue-mode-hook . lsp)                 ; npm i -g vls
   (go-mode-hook . lsp-deferred))        ; go get golang.org/x/tools/gopls@latest
 
@@ -362,6 +362,7 @@
   (org-startup-indented . t)
   (org-indent-mode-turns-on-hiding-stars . nil)
   (org-startup-with-inline-images . t)
+  (org-src-preserve-indentation . t)
   (org-image-actual-width . nil)
   (org-html-validation-link . nil)
   (org-html-head
@@ -393,7 +394,8 @@
   :ensure t
   :hook
   ;; https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338222
-  (vue-mode-hook . (lambda () (setq syntax-ppss-table nil))))
+  (vue-mode-hook . (lambda () (setq syntax-ppss-table nil)))
+  (vue-mode-hook . prettier-mode))
 
 (leaf *javascript
   :config
@@ -423,10 +425,14 @@
     :hook
     (yaml-mode-hook . highlight-indent-guides-mode)))
 
+(leaf markdown-mode
+  :ensure t
+  :setq
+  (markdown-fontify-code-blocks-natively . t))
+
 (leaf *install-language-modes-without-config
   :ensure (go-mode
            csv-mode
-           markdown-mode
            dockerfile-mode
            docker-compose-mode
            nginx-mode
@@ -506,6 +512,7 @@
   (leaf auto-highlight-symbol
     :ensure t
     :require t
+    :hook go-mode-hook
     :config
     (global-auto-highlight-symbol-mode t)))
 
@@ -513,10 +520,12 @@
   :config
   (leaf doom-modeline
     :ensure t
+    ;; Initial setup: M-x nerd-icons-install-fonts
     :custom
     (doom-modeline-major-mode-color-icon . nil)
     (doom-modeline-vcs-max-length . 24)
     (doom-modeline-enable-word-count . t)
+    (doom-modeline-buffer-encoding, nondefault)
     :config
     (doom-modeline-mode 1)
     (line-number-mode 0)
@@ -544,6 +553,9 @@
     ("C-h" . delete-backward-char)
     (isearch-mode-map
      ("C-h" . isearch-delete-char)))
+  (leaf *misc
+    :bind
+    ("M-h" . backward-kill-word))
   (leaf *key-other-window
     ;; https://rubikitch.hatenadiary.org/entry/20101126/keymap
     :config
@@ -643,7 +655,7 @@
   :ensure t
   :require t
   :setq
-  (key-chord-two-keys-delay . 0.10)
+  (key-chord-two-keys-delay . 0.20)
   :config
   (key-chord-mode 1)
   (key-chord-define-global "jk" 'kill-this-buffer)
@@ -659,6 +671,11 @@
 (leaf sequential-command
   ;; Ex. C-a multiple times; cycle beginning-of-line > beginning-of-buffer > return
   :ensure t
-  :require sequential-command-config
   :config
-  (sequential-command-setup-keys))
+  (require 'sequential-command)
+  (define-sequential-command seq-home
+    beginning-of-line beginning-of-buffer seq-return)
+  (define-sequential-command seq-end
+    end-of-line end-of-buffer seq-return)
+  (global-set-key "\C-a" 'seq-home)
+  (global-set-key "\C-e" 'seq-end))
