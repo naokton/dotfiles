@@ -197,11 +197,15 @@
 (leaf lsp-mode
   :ensure t
   :custom
-  (lsp-enable-folding . nil)
+  (lsp-enable-folding . t)
   (lsp-enable-snippet . nil)
   (lsp-enable-symbol-highlighting . nil)
   (lsp-enable-links . nil)
   (lsp-pylsp-plugins-pydocstyle-enabled . nil)
+  (lsp-clients-typescript-log-verbosity . "off")
+  (lsp-vetur-validation-template . nil)
+  (lsp-vetur-format-enable . nil)
+  (lsp-keep-workspace-alive . nil)
   :setq
   ;; performance https://emacs-lsp.github.io/lsp-mode/page/performance/
   `(read-process-output-max . ,(* 3 1024 1024))
@@ -220,8 +224,11 @@
   :ensure t
   :custom
   (lsp-ui-doc-enable . nil)
-  (lsp-ui-doc-position . 'top)
-  (lsp-ui-sideline-show-code-actions . nil))
+  (lsp-ui-sideline-show-code-actions . nil)
+  (lsp-ui-peek-peek-height . 50))
+
+(leaf lsp-ivy
+  :ensure t)
 
 (leaf *ediff
   :setq
@@ -642,6 +649,15 @@
   (leaf swiper
     :bind
     ("M-s" . swiper))
+  (leaf lsp-ui
+    :bind
+    (:lsp-ui-mode-map
+     ("M-." . lsp-ui-peek-find-definitions)
+     ("M-'" . lsp-ui-peek-find-references)))
+  (leaf lsp-ivy
+    :bind
+    (:lsp-mode-map
+     ("M-S" . lsp-ivy-workspace-symbol)))
   (leaf company
     :bind
     (company-active-map
