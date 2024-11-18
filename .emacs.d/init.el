@@ -5,6 +5,7 @@
   (customize-set-variable
    'package-archives '(("melpa" . "https://melpa.org/packages/")
                        ("gnu" . "https://elpa.gnu.org/packages/")))
+  (customize-set-variable 'package-native-compile t)
   (package-initialize)
   (unless (package-installed-p 'leaf)
     (package-refresh-contents)
@@ -12,16 +13,8 @@
 
   (leaf leaf-keywords
     :ensure t
-    ;; :init
-    ;; ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
-    ;; (leaf hydra :ensure t)
-    ;; (leaf el-get :ensure t)
-    ;; (leaf blackout :ensure t)
-
     :config
-    ;; initialize leaf-keywords.el
     (leaf-keywords-init)))
-
 
 ;;;;----------------------------------------------------------------
 ;;;; System config
@@ -33,7 +26,8 @@
   (make-backup-files . nil)
   (create-lockfiles . nil)
   :config
-  (auto-save-visited-mode t))
+  (auto-save-visited-mode t) ; Enable auto save (not auto-save-mode)
+  )
 
 (leaf *path
   :config
@@ -48,9 +42,9 @@
   ;; custom-set-variables and custom-set-faces
   :setq
   `(custom-file . ,(expand-file-name "custom.el" user-emacs-directory))
-  ;; :config
-  ;; (when (file-exists-p custom-file)
-  ;;   (load custom-file))
+  :config
+  (when (file-exists-p custom-file)
+    (load custom-file))
   )
 
 ;;;;----------------------------------------------------------------
@@ -62,19 +56,93 @@
   (tab-bar-tab-name-function . #'my/project-name-or-default)
   (tab-bar-new-button-show . nil)
   (tab-bar-close-button-show . nil)
+  ;; Separate tabs evenly. Without this, the last tab occupies whole right space.
+  (tab-bar-auto-width-max . nil)
+  ;; Add menu button and remove separater.
+  (tab-bar-format . '(tab-bar-format-menu-bar tab-bar-format-tabs))
   :custom-face
-  (tab-bar . '((t (:height 1.0))))
-  (tab-bar-tab . '((t (:weight bold :box (:line-width (0 . 2))))))
-  (tab-bar-tab-inactive . '((t (:weight normal :box nil))))
+  (tab-bar . '((t (:height 1.0 :box (:line-width 1)))))
+  (tab-bar-tab . '((t (:weight bold :box (:line-width 1)))))
+  (tab-bar-tab-inactive . '((t (:box (:line-width 1 :color "black") :background "#dfdfdf"))))
   :config
   (tab-bar-mode)
   (defun my/project-name-or-default ()
-    "Return project name in project, or default tab-bar tab name"
+    "Return project name when in project, or default tab-bar tab name"
     (let ((project-name (projectile-project-name)))
       (if (string= "-" project-name)
           (tab-bar-tab-name-current)
         (projectile-project-name))))
   )
+
+(leaf vertico
+  ;; Minibuffer Completion UI
+  :ensure t
+  :custom
+  (vertico-count . 30)
+  (vertico-cycle . t)
+  ;; Change from default vertico-sort-history-length-alpha (remove length).
+  ;; This function is only used if completion command (completion table) doesn’t specify its own
+  ;; display-sort-function.
+  (vertico-sort-function . 'vertico-sort-history-alpha)
+  ;; Exclude unrelated commands for the current mode from M-x list. 
+  ;; This setting also affect outside of vertico.
+  (read-extended-command-predicate . #'command-completion-default-include-p)
+  ;; Allow recursive command in minibuffers
+  (enable-recursive-minibuffers . t)
+  ;; (read-extended-command-predicate . nil)
+  :init
+  (vertico-mode)
+  )
+
+(leaf savehist
+  :init (savehist-mode))
+
+(leaf orderless
+  ;; Completion style
+  :ensure t
+  :custom
+  (completion-styles . '(orderless basic))
+  (completion-category-defaults . nil)
+  (completion-category-overrides . '((file (styles partial-completion))))
+  )
+
+(leaf consult
+  :ensure t
+  :custom
+  (consult-line-start-from-top . t)
+  :config
+  (defun my/consult-line-symbol-at-point ()
+    (interactive)
+    (consult-line (thing-at-point 'symbol))))
+
+(leaf marginalia
+  :ensure t
+  :init
+  (marginalia-mode)
+  )
+
+(leaf corfu
+  :ensure t
+  :custom
+  (corfu-auto . t)
+  (corfu-auto-delay . 0.1)
+  (corfu-auto-prefix . 1)
+  (corfu-cycle . t)
+  :init
+  (global-corfu-mode))
+
+(leaf kind-icon
+  ;; Add icon to corfu
+  :ensure t
+  :after corfu
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+(leaf embark
+  :ensure t)
+
+(leaf embark-consult
+  :ensure t)
 
 (leaf undo-fu
   :ensure t
@@ -89,16 +157,6 @@
   ;; These are not undo-fu's variable.
   (undo-limit . 600000)
   (undo-strong-limit . 900000))
-
-(leaf company
-  :ensure t
-  :hook
-  (after-init-hook . global-company-mode)
-  :config
-  (with-eval-after-load 'company
-    (setq company-idle-delay 0)
-    (setq company-minimum-prefix-length 1)
-    (setq company-selection-wrap-around t)))
 
 (leaf ddskk
   :ensure t
@@ -129,27 +187,27 @@
        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.station"
        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.zipcode")))
 
-(leaf migemo
-  ;; requirements: brew install cmigemo
-  :when (executable-find "cmigemo")
-  :ensure t
-  :require t
-  :custom
-  (migemo-command . "cmigemo")
-  (migemo-options . '("-q" "--emacs"))
-  (migemo-user-dictionary . nil)
-  (migemo-regex-dictionary . nil)
-  (migemo-coding-system . 'utf-8-unix)
-  :config
-  (leaf *macos-migemo
-    :when (eq system-type 'darwin)
-    :custom
-    (migemo-dictionary . "/usr/local/share/migemo/utf-8/migemo-dict"))
-  (leaf *linux-cmigemo
-    :when (eq system-type 'gnu/linux)
-    :custom
-    (migemo-dictionary . "/usr/share/cmigemo/utf-8/migemo-dict"))
-  (migemo-init))
+;; (leaf migemo
+;;   ;; requirements: brew install cmigemo
+;;   :when (executable-find "cmigemo")
+;;   :ensure t
+;;   :require t
+;;   :custom
+;;   (migemo-command . "cmigemo")
+;;   (migemo-options . '("-q" "--emacs"))
+;;   (migemo-user-dictionary . nil)
+;;   (migemo-regex-dictionary . nil)
+;;   (migemo-coding-system . 'utf-8-unix)
+;;   :config
+;;   (leaf *macos-migemo
+;;     :when (eq system-type 'darwin)
+;;     :custom
+;;     (migemo-dictionary . "/usr/local/share/migemo/utf-8/migemo-dict"))
+;;   (leaf *linux-cmigemo
+;;     :when (eq system-type 'gnu/linux)
+;;     :custom
+;;     (migemo-dictionary . "/usr/share/cmigemo/utf-8/migemo-dict"))
+;;   (migemo-init))
 
 (leaf vterm
   ;; requirements: brew install cmake libvterm libtool
@@ -157,23 +215,25 @@
   :hook
   (vterm-mode-hook . (lambda () (display-line-numbers-mode -1)))
   :custom
-  (vterm-max-scrollback . 10000)
+  (vterm-max-scrollback . 100000)
   (vterm-buffer-name-string . "vterm: %s")
+  (vterm-always-compile-module . t)
   ;; delete "C-h", "C-u", add <f1> and <f2>
   (vterm-keymap-exceptions
    . '("<f1>" "<f2>" "C-x" "C-c" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y"))
-  :config
-  ;; Workaround of not working counsel-yank-pop
-  ;; https://github.com/akermu/emacs-libvterm#counsel-yank-pop-doesnt-work
-  (defun my/vterm-counsel-yank-pop-action (orig-fun &rest args)
-    (if (equal major-mode 'vterm-mode)
-        (let ((inhibit-read-only t)
-              (yank-undo-function (lambda (_start _end) (vterm-undo))))
-          (cl-letf (((symbol-function 'insert-for-yank)
-                     (lambda (str) (vterm-send-string str t))))
-            (apply orig-fun args)))
-      (apply orig-fun args)))
-  (advice-add 'counsel-yank-pop-action :around #'my/vterm-counsel-yank-pop-action))
+  ;; :config
+  ;; ;; Workaround of not working counsel-yank-pop
+  ;; ;; https://github.com/akermu/emacs-libvterm#counsel-yank-pop-doesnt-work
+  ;; (defun my/vterm-counsel-yank-pop-action (orig-fun &rest args)
+  ;;   (if (equal major-mode 'vterm-mode)
+  ;;       (let ((inhibit-read-only t)
+  ;;             (yank-undo-function (lambda (_start _end) (vterm-undo))))
+  ;;         (cl-letf (((symbol-function 'insert-for-yank)
+  ;;                    (lambda (str) (vterm-send-string str t))))
+  ;;           (apply orig-fun args)))
+  ;;     (apply orig-fun args)))
+  ;; (advice-add 'counsel-yank-pop-action :around #'my/vterm-counsel-yank-pop-action)
+  )
 
 (leaf vterm-toggle
   :ensure t
@@ -194,6 +254,44 @@
             (vterm)))
   )
 
+(leaf buffer-env
+  :ensure t
+  :hook
+  (hack-local-variables-hook . buffer-env-update)
+  (comint-mode-hook . buffer-env-update)
+  :custom
+  (buffer-env-script-name . '("uv.lock" "Pipfile" ".envrc"))
+  (buffer-env-verbose . t)
+  :config
+  (add-to-list 'buffer-env-command-alist
+               '("/Pipfile\\'" . "\
+command -v pipenv >/dev/null &&
+pipenv --venv >/dev/null 2>&1 &&
+pipenv run env -0 2>/dev/null"))
+  (add-to-list 'buffer-env-command-alist
+               '("/uv\\.lock\\'" . "\
+command -v uv >/dev/null &&
+uv sync --frozen >/dev/null 2>&1 &&
+uv run env -0 2>/dev/null"))
+  (require 'buffer-env)
+  )
+
+(leaf compilation-mode
+  :custom
+  (compilation-scroll-output . 'first-error)
+  :hook
+  (compilation-filter-hook . ansi-color-compilation-filter) ; colorize output
+  )
+
+(leaf treesit-auto
+  :ensure t
+  :require t
+  :custom
+  (treesit-auto-install . 'prompt)
+  :config
+  (global-treesit-auto-mode)
+  (treesit-auto-add-to-auto-mode-alist 'all))
+
 (leaf lsp-mode
   :ensure t
   :custom
@@ -203,32 +301,56 @@
   (lsp-enable-links . nil)
   (lsp-pylsp-plugins-pydocstyle-enabled . nil)
   (lsp-clients-typescript-log-verbosity . "off")
-  (lsp-vetur-validation-template . nil)
-  (lsp-vetur-format-enable . nil)
   (lsp-keep-workspace-alive . nil)
+  ;; Disable completion by company-mode and use corfu
+  (lsp-completion-provider . :none)
   :setq
   ;; performance https://emacs-lsp.github.io/lsp-mode/page/performance/
   `(read-process-output-max . ,(* 3 1024 1024))
   `(gc-cons-threshold . ,(* 100 1024 1024))
   :config
   (add-to-list 'lsp-language-id-configuration '(docker-compose-mode . "yaml"))
+  (add-to-list 'lsp-disabled-clients '(typescript-mode . vue-semantic-server))
+  (add-to-list 'lsp-disabled-clients '(js-ts-mode . vue-semantic-server))
+  (add-to-list 'lsp-disabled-clients '(typescript-ts-mode . vue-semantic-server))
+  (add-to-list 'lsp-disabled-clients '(typescript-ts-mode . ts-ls))
+  (add-to-list 'lsp-disabled-clients '(js-mode . vue-semantic-server))
+  (add-to-list 'lsp-disabled-clients '(css-mode . vue-semantic-server))
+  ;; Use orderless for completion style
+  ;; ref: https://github.com/minad/corfu/wiki#basic-example-configuration-with-orderless
+  (defun my/lsp-mode-setup-completion ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless)))
+  (defun my/deno-or-js-lsp ()
+    "Configure LSP mode for Deno if deno.json or deno.jsonc exists in project root."
+    (when-let ((project-root (project-root (project-current))))
+      (when (or (file-exists-p (expand-file-name "deno.json" project-root))
+                (file-exists-p (expand-file-name "deno.jsonc" project-root)))
+        (setq-local lsp-enabled-clients '(deno-ls))))
+    (lsp))
+  ;; https://github.com/emacs-lsp/lsp-mode/issues/4313
+  (with-eval-after-load 'lsp-volar
+    (lsp-dependency 'typescript '(:system "/opt/homebrew/bin/tsserver")))
   :hook
-  (yaml-mode-hook . lsp)                ; npm install -g yaml-language-server
-  (sh-mode-hook . lsp)                  ; npm i -g bash-language-server
-  (python-mode-hook . lsp)              ; pipx install 'python-lsp-server[all]'; pipx inject python-lsp-server python-lsp-isort
-  (js-mode-hook . lsp)                  ; npm i -g typescript-language-server; npm i -g typescript
-  (vue-mode-hook . lsp)                 ; npm i -g vls
-  (go-mode-hook . lsp-deferred))        ; go get golang.org/x/tools/gopls@latest
+  (lsp-completion-mode . my/lsp-mode-setup-completion)
+  (yaml-ts-mode-hook . lsp)             ; npm install -g yaml-language-server
+  (sh-ts-mode-hook . lsp)               ; npm i -g bash-language-server
+  (bash-ts-mode-hook . lsp)             ; npm i -g bash-language-server
+  (python-ts-mode-hook . lsp-deferred)  ; uv tool install 'python-lsp-server'
+  ; npm i -g typescript-language-server; npm i -g typescript; brew install deno
+  ((js-ts-mode-hook typescript-ts-mode-hook) . my/deno-or-js-lsp)
+  (vue-mode-hook . lsp)                 ; npm i -g @vue/language-server; npm i -g typescript
+  (go-ts-mode-hook . lsp-deferred)      ; go get golang.org/x/tools/gopls@latest
+  )
 
 (leaf lsp-ui
   :ensure t
   :custom
-  (lsp-ui-doc-enable . nil)
   (lsp-ui-sideline-show-code-actions . nil)
-  (lsp-ui-peek-peek-height . 50))
-
-(leaf lsp-ivy
-  :ensure t)
+  (lsp-ui-peek-peek-height . 50)
+  :hook
+  ;; Prevent rings when hovering mouse over the tab bar. https://github.com/emacs-lsp/lsp-ui/issues/681
+  (lsp-after-initialize-hook . (lambda () (local-set-key (kbd "<tab-bar> <mouse-movement>") #'ignore))))
 
 (leaf *ediff
   :setq
@@ -236,12 +358,13 @@
   (ediff-split-window-function . 'split-window-horizontally))
 
 (leaf magit
-  :ensure t)
-
-(leaf recentf-ext
   :ensure t
-  :require t
-  :setq
+  :custom
+  (magit-display-buffer-function . 'magit-display-buffer-same-window-except-diff-v1)
+  )
+
+(leaf recentf
+  :custom
   (recentf-auto-cleanup . 600)
   (recentf-max-saved-items . 1000)
   (recentf-exclude . '("\\.elc$"
@@ -255,57 +378,8 @@
   :setq
   (savehist-mode . t))
 
-(leaf *ivy-counsel-swiper
-  :config
-  (leaf ivy
-    :ensure t
-    :custom
-    (ivy-truncate-lines . nil)
-    (ivy-wrap . t) ;; リスト先頭で `C-p' するとき，リストの最後に移動する
-    (ivy-height . 30)
-    (ivy-count-format . "(%d/%d) ")
-    :config
-    ;; ミニバッファでコマンド発行を認める
-    (when (setq enable-recursive-minibuffers t)
-      (minibuffer-depth-indicate-mode 1)) ;; 何回層入ったかプロンプトに表示．
-    (ivy-mode 1)
-    (add-to-list 'ivy-more-chars-alist '(counsel-rg . 2))) ;; 検索開始する最小文字数
-  (leaf counsel
-    :ensure t
-    :custom
-    (counsel-rg-base-command
-     . `("rg"
-         "--max-columns" "240"
-         "--with-filename"
-         "--no-heading"
-         "--line-number"
-         "--color" "never"
-         "--smart-case"                 ;added
-         "--sort" "path"                ;added
-         "%s"))
-    ;; '|| true' => partial rg error workaround https://github.com/hlissner/doom-emacs/issues/3038#issuecomment-624165004
-    ;; . "rg -M 240 --with-filename --no-heading --line-number --smart-case --sort path --color never %s || true")
-    :config
-    (delete '(counsel-M-x . "^") ivy-initial-inputs-alist)
-    (counsel-mode 1))
-  (leaf swiper :ensure t)
-  (leaf ivy-migemo :ensure t)
-  (leaf ivy-prescient
-    :after counsel swiper
-    :ensure t
-    :custom
-    (ivy-prescient-enable-filtering . t)
-    (ivy-prescient-enable-sorting . t)
-    :config
-    (ivy-prescient-mode t)
-    (prescient-persist-mode t)
-    ;; Workaround regex build error: https://github.com/radian-software/prescient.el/issues/43
-    (setf (alist-get 'counsel-rg ivy-re-builders-alist) #'ivy--regex-plus)
-    ;; add counsel-rg to ignore list to make '--sort path' option works
-    (add-to-list 'ivy-prescient-sort-commands 'counsel-rg t)))
-
 (leaf projectile
-  :ensure t counsel-projectile
+  :ensure t
   :require t
   :config
   (projectile-mode +1)
@@ -318,12 +392,14 @@
                             (add-to-list 'newlist "vterm-mode"))))
 
 (leaf copilot
-  :url "https://github.com/zerolfx/copilot.el"
-  :req "dash" "s" "editorconfig"
-  :config
-  (add-to-list 'load-path "~/.emacs.d/manual-lisp/copilot.el")
-  (require 'copilot)
-  (add-hook 'prog-mode-hook 'copilot-mode)
+  :vc (:url "https://github.com/copilot-emacs/copilot.el")
+  :req "dash" "s" "editorconfig" "jsonrpc >= 1.0.24"
+  :require t
+  :hook
+  (python-ts-mode-hook . copilot-mode)
+  (go-ts-mode-hook . copilot-mode)
+  :custom
+  (copilot-idle-delay . 0.1)
 )
 
 (leaf which-key
@@ -332,6 +408,9 @@
   (after-init-hook . which-key-mode)
   :config
   (which-key-setup-side-window-right-bottom))
+
+(leaf transpose-frame
+  :ensure t)
 
 (leaf flycheck
   :ensure t
@@ -344,16 +423,12 @@
   :ensure t
   :bind (("s-i" . imenu-list-smart-toggle))
   :custom
-  (imenu-list-focus-after-activation . t)
-  :config
-  (leaf leaf-tree
-    :diminish leaf-tree
-    :ensure t))
+  (imenu-list-focus-after-activation . t))
 
 (leaf dumb-jump
   :ensure t
-  :custom
-  (dumb-jump-selector . 'ivy)
+  ;; :custom
+  ;; (dumb-jump-selector . 'ivy)
   :config
   (dumb-jump-mode)) ; enable default keybindings
 
@@ -376,13 +451,23 @@
   :config
   (smart-jump-setup-default-registers))
 
-(leaf git-gutter
+;; (leaf git-gutter
+;;   :ensure t
+;;   :config
+;;   (global-git-gutter-mode t))
+
+(leaf diff-hl
   :ensure t
   :config
-  (global-git-gutter-mode t))
+  (global-diff-hl-mode))
 
 (leaf wgrep
   :ensure t)
+
+(leaf repeat
+  :doc "built-in mode"
+  :config
+  (repeat-mode +1))
 
 (leaf origami
   :ensure t lsp-origami
@@ -428,15 +513,9 @@
 
 (leaf symbol-overlay :ensure t)
 
-(leaf package
-  :custom
-  (package-native-compile . t))
-
 (leaf comp
   :custom
   (native-comp-async-report-warnings-errors . nil))
-
-(leaf wdired :ensure t)
 
 (leaf restclient :ensure t)
 
@@ -444,8 +523,16 @@
   :ensure t
   :custom
   (gptel-api-key . #'my/retrieve-openapi-token)
+  (gptel-model . 'gpt-4o)
   (gptel-default-mode . 'org-mode)
-  (gptel-model . "gpt-4")
+  (gptel-prompt-prefix-alist . '((markdown-mode . "## Reqest\n")
+                                 (org-mode . "** Reqest\n")
+                                 (text-mode . "## Reqest\n")))
+  (gptel-response-prefix-alist . '((markdown-mode . "## Response\n")
+                                 ;; (org-mode . "<< Response >>\n")
+                                 (org-mode . "** Response\n")
+                                 (text-mode . "<< Response >>\n")))
+  (gptel-display-buffer-action . '(pop-to-buffer-same-window))
   :config
   (defun my/retrieve-password-from-keychain (service account)
     "Retrieve password from macOS Keychain."
@@ -455,7 +542,30 @@
       (setq password (string-trim-right (shell-command-to-string command)))
       password))
   (defun my/retrieve-openapi-token ()
-    (my/retrieve-password-from-keychain "OpenAI API Key" "local")))
+    (my/retrieve-password-from-keychain "OpenAI API Key" "local"))
+  (defun my/retrieve-claude-token ()
+    (my/retrieve-password-from-keychain "Claude API Key" "work"))
+  (defvar my/save-gptel--directory "~/Documents/gptel-history/")
+  (defun my/save-gptel ()
+    "Save current gptel-mode buffer into a directory, `my/save-gptel--directory', with a timestamped
+filename if not saved, otherwise save to the current file."
+    (interactive)
+    (if (buffer-file-name)
+        (save-buffer)
+      (let* ((mode-to-ext
+              '((org-mode . "org")
+                (markdown-mode . "md")))
+             (file-ext (or (cdr (assoc major-mode mode-to-ext)) "text"))
+             (directory my/save-gptel--directory)
+             (filename (format "%s.%s" (format-time-string "%Y%m%d-%H%M%S") file-ext))
+             (file-path (concat directory filename)))
+        (unless (file-exists-p directory)
+          (make-directory directory t))
+        (write-file file-path)
+        (save-buffer))))
+  (gptel-make-anthropic "Claude"
+    :stream t
+    :key #'my/retrieve-claude-token))
 
 ;;;;----------------------------------------------------------------
 ;;;; Major modes/Language config
@@ -465,15 +575,16 @@
   (leaf dired
     :custom
     (dired-listing-switches . "-alh")
+    (dired-kill-when-opening-new-dired-buffer . t)
     :hook
     (dired-mode-hook . hl-line-mode)
     (dired-mode-hook . (lambda () (display-line-numbers-mode -1))))
-  (leaf all-the-icons-dired
+  (leaf dired-sidebar :ensure t)
+  (leaf nerd-icons-dired
     :ensure t
-    ;; Initial setup: M-x all-the-icons-install-fonts
-    :hook dired-mode-hook)
-  (leaf dired-sidebar
-    :ensure t))
+    :hook dired-mode-hook))
+
+
 
 (leaf org
   :ensure t
@@ -510,6 +621,14 @@
   }
 </style>"))
 
+(leaf org-modern
+  :ensure t
+  :hook org-mode-hook)
+
+(leaf org-modern-indent
+  :vc (:url "https://github.com/jdtsmith/org-modern-indent")
+  :hook org-mode-hook)
+
 (leaf vue-mode
   :ensure t
   :hook
@@ -519,18 +638,12 @@
 
 (leaf *javascript
   :config
-  (leaf js-mode
-    :custom
-    (js-indent-level . 2))
-  ;; (leaf js2-mode
-  ;;   :ensure t
-  ;;   :mode "\\.js\\'"
-  ;;   :custom
-  ;;   (js-indent-level . 2))
   (leaf prettier
     :ensure t
     :hook
-    (js-mode-hook . prettier-mode)))
+    (js-mode-hook . prettier-mode)
+    :custom
+    (prettier-prettify-on-save-flag . nil)))
 
 (leaf yaml-mode
   :ensure t
@@ -549,6 +662,9 @@
   :ensure t
   :setq
   (markdown-fontify-code-blocks-natively . t))
+
+(leaf makefile-gmake-mode
+  :mode "[Mm]akefile\\'")
 
 (leaf *install-language-modes-without-config
   :ensure (go-mode
@@ -579,42 +695,36 @@
   (scroll-bar-mode 0))
 
 (leaf *font-confnig
-  :setq
-  ;; Set fontsize here. rescale doesn't work if size is specified in fontspec
-  ;; (face-font-rescale-alist . '((".*Cica.*" . 1.6)))
   :config
-  (create-fontset-from-ascii-font "Cica-16" nil "mydefault")
-  (set-fontset-font "fontset-mydefault" 'unicode "Hiragino Sans" nil 'append)
-  (set-fontset-font "fontset-mydefault" 'symbol "Apple Color Emoji" nil 'append)
-  (set-fontset-font "fontset-mydefault" 'emoji "Apple Color Emoji" nil 'append)
-  (add-to-list 'default-frame-alist '(font . "fontset-mydefault")))
+  (set-language-environment "Japanese")
+  (create-fontset-from-ascii-font "Cica-16" nil "mydefault") ; Create a fontset for ASCII
+  (set-fontset-font "fontset-mydefault" nil "Cica") ; Extend coverage for other charset
+  (set-fontset-font "fontset-mydefault" 'emoji "Apple Color Emoji") ; Override for emojis
+  (set-fontset-font "fontset-mydefault" 'nil "Iosevka Term" nil 'append) ; Fallback
+  (add-to-list 'default-frame-alist '(font . "fontset-mydefault"))
+  (set-face-attribute 'default nil :font "fontset-mydefault")
+  (set-face-attribute 'fixed-pitch nil :font (face-attribute 'default :font)))
 
 (leaf *theme-config
-  :config
-  (leaf color-theme-sanityinc-tomorrow
-    :if (window-system)
+  (leaf modus-themes
     :ensure t
-    :require t
+    :custom
+    (modus-themes-to-toggle . '(modus-operandi-deuteranopia modus-vivendi-deuteranopia))
+    (modus-themes-italic-constructs . t)
+    (modus-themes-bold-constructs . t)
+    (modus-themes-mixed-fonts . t)
+    (modus-themes-headings . '((1 . (1.5))
+                               (2 . (1.3))
+                               (t . (1.1)))))
     :setq
-    ;; for emacs 27 (https://emacs.stackexchange.com/questions/48365/#answer-52804)
-    (custom--inhibit-theme-enable . nil)
     :config
-    (load-theme 'sanityinc-tomorrow-bright t)
-    (color-theme-sanityinc-tomorrow--with-colors
-     'bright
-     (custom-theme-set-faces
-      'sanityinc-tomorrow-bright
-      `(cursor ((t . (:background ,yellow))))
-      `(line-number-current-line ((t . (:background ,comment :foreground ,foreground :weight bold))))
-      `(mode-line ((t . (:foreground ,foreground :background ,contrast-bg :weight normal
-                                     :box (:line-width 1 :color ,comment)))))
-      `(mode-line-inactive ((t . (:inherit mode-line
-                                    :foreground ,comment
-                                    :background ,highlight
-                                    :weight normal
-                                    :box (:line-width 1 :color ,contrast-bg)))))
-      `(mode-line-buffer-id ((t . (:foreground ,foreground :weight bold)))))))
-  (leaf *mmm-mode
+    (load-theme 'modus-operandi-deuteranopia :no-confirm)
+    (modus-themes-with-colors
+      ;; override theme faces not defined in modus-theme
+      (custom-set-faces
+       `(lsp-ui-doc-background ((,c :background ,bg-dim))))
+      (customize-set-variable 'lsp-ui-doc-border border)))
+  (leaf mmm-mode
     :custom
     (mmm-submode-decoration-level . 0)))
 
@@ -623,9 +733,16 @@
   (indent-tabs-mode . nil)   ; use spaces
   (tab-width . 4)            ; default is 8
   (fill-column . 100)
+  :hook
+  ((org-mode-hook markdown-mode-hook) . variable-pitch-mode)
   :config
   (show-paren-mode t)
   (global-display-line-numbers-mode)
+  (leaf perfect-margin
+    :ensure t
+    :config
+    (perfect-margin-mode t)
+    (add-to-list 'perfect-margin-ignore-modes 'vterm-mode))
   (leaf auto-highlight-symbol
     :ensure t
     :require t
@@ -639,10 +756,14 @@
     :ensure t
     ;; Initial setup: M-x nerd-icons-install-fonts
     :custom
-    (doom-modeline-major-mode-color-icon . nil)
+    (doom-modeline-major-mode-color-icon . t)
     (doom-modeline-vcs-max-length . 24)
     (doom-modeline-enable-word-count . t)
-    (doom-modeline-buffer-encoding, nondefault)
+    (doom-modeline-buffer-encoding . 'nondefault)
+    (doom-modeline-buffer-file-name-style . 'relative-from-project)
+    (doom-modeline-height . 28)
+    (doom-modeline-env-version . nil)
+    (doom-modeline-check-simple-format . t)
     :config
     (doom-modeline-mode 1)
     (line-number-mode 0)
@@ -654,11 +775,6 @@
     (nyan-bar-length . 16)
     :config
     (nyan-mode)))
-
-;; (leaf stripe-buffer
-;;   :ensure t
-;;   :hook
-;;   (dired-mode-hook . turn-on-stripe-buffer-mode))
 
 ;;;;----------------------------------------------------------------
 ;;;; Keys
@@ -672,7 +788,9 @@
      ("C-h" . isearch-delete-char)))
   (leaf *misc
     :bind
-    ("M-h" . backward-kill-word))
+    ("M-h" . backward-kill-word)
+    ("C-x C-k" . kill-current-buffer)
+    ("C-x C-b" . ibuffer))
   (leaf *key-other-window
     ;; https://rubikitch.hatenadiary.org/entry/20101126/keymap
     :config
@@ -693,6 +811,11 @@
     :bind
     ("C->" . tab-next)
     ("C-<" . tab-previous))
+  (leaf undo-fu
+    :bind
+    ("C-z" . nil)
+    ("C-z" . undo-fu-only-undo)
+    ("M-z" . undo-fu-only-redo))
   (leaf origami
     :bind
     (origami-mode-map
@@ -717,47 +840,25 @@
      ("t" . View-scroll-line-backward)
      ("H" . View-scroll-half-page-forward)
      ("T" . View-scroll-half-page-backward)))
-  (leaf ivy
+  (leaf consult
     :bind
-    (ivy-minibuffer-map
-     ("<escape>" . minibuffer-keyboard-quit)))
-  (leaf counsel
-    :bind
-    ("M-x" . counsel-M-x)
-    ("M-y" . counsel-yank-pop)
-    ("C-M-z" . counsel-fzf)
-    ("C-x C-b" . counsel-ibuffer)
-    ("C-M-f" . counsel-rg))
-  (leaf ivy-migemo
-    :bind
-    (:ivy-minibuffer-map
-     :package ivy
-     ("M-m" . ivy-migemo-toggle-migemo)))
-  (leaf swiper
-    :bind
-    ("M-s" . swiper))
+    ("M-s" . consult-line)
+    ("M-S" . my/consult-line-symbol-at-point)
+    ("C-M-f" . consult-ripgrep)
+    ("C-x b" . consult-buffer)
+    ("C-x C-r" . consult-recent-file)
+    ("M-g i" . consult-imenu)
+    ("M-y" . consult-yank-from-kill-ring)
+    ([remap projectile-switch-to-buffer] . consult-project-buffer) ; M-p b
+    )
+  (leaf marginalia
+    :bind (minibuffer-local-map
+           ("M-A" . marginalia-cycle)))
   (leaf lsp-ui
     :bind
     (:lsp-ui-mode-map
      ("M-." . lsp-ui-peek-find-definitions)
      ("M-'" . lsp-ui-peek-find-references)))
-  (leaf lsp-ivy
-    :bind
-    (:lsp-mode-map
-     ("M-S" . lsp-ivy-workspace-symbol)))
-  (leaf company
-    :bind
-    (company-active-map
-     ("C-h" . nil)
-     ("<tab>" . company-complete-selection)
-     ("C-n" . company-select-next)
-     ("C-p" . company-select-previous)
-     ("C-s" . company-filter-candidates))
-    (company-search-map
-     ("C-n" . company-select-next)
-     ("C-p" . company-select-previous))
-    (emacs-lisp-mode-map
-     ("C-M-i" . company-complete)))
   (leaf projectile
     :bind
     (projectile-mode-map
@@ -781,32 +882,24 @@
     :bind
     (copilot-completion-map
      ("<tab>" . 'copilot-accept-completion)))
+  (leaf transpose-frame
+    :bind
+    ("C-x C-t" . 'transpose-frame))
+  (leaf gptel
+    :bind
+    (gptel-mode-map
+     ("C-c C-<return>" . 'gptel-send)
+     ("C-x C-s" . 'my/save-gptel)))
   (leaf open-junk-file
     :bind
     ("C-x j" . open-junk-file))
   (leaf macrostep
     :bind
-    ("C-c e" . macrostep-expand))
+    (emacs-lisp-mode-map
+     ("C-c e" . macrostep-expand)))
   (leaf dired-sidebar
     :bind
     ("C-x C-n" . dired-sidebar-toggle-sidebar)))
-
-(leaf key-chord
-  :ensure t
-  :require t
-  :setq
-  (key-chord-two-keys-delay . 0.20)
-  :config
-  (key-chord-mode 1)
-  (key-chord-define-global "jk" 'kill-this-buffer)
-  (key-chord-define-global "bm" 'counsel-ibuffer)
-  (key-chord-define-global "fg" 'counsel-recentf)
-  ;; (key-chord-define-global "fl" 'ns-toggle-fullscreen)
-  (key-chord-define-global "gs" 'magit-status)
-  (key-chord-define-global "vw" 'view-mode)
-  (key-chord-define-global ".p" 'projectile-find-file-dwim)
-  (key-chord-define-global "tm" 'transpose-frame)
-  (key-chord-define-global "tb" 'rotate-frame-clockwise))
 
 (leaf sequential-command
   ;; Ex. C-a multiple times; cycle beginning-of-line > beginning-of-buffer > return

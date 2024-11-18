@@ -1,5 +1,3 @@
-export LANG=en_US.UTF-8
-
 # path
 add_path(){
     ADD_PATH=$1
@@ -7,6 +5,8 @@ add_path(){
         PATH=$ADD_PATH:$PATH
     fi
 }
+
+# latter item has precedence over formers
 ADDITIONAL_PATH=(
     /usr/local/bin
     /usr/local/sbin
@@ -19,12 +19,19 @@ ADDITIONAL_PATH=(
     /usr/local/opt/python@3.8/bin
     /usr/local/opt/python@3.9/bin
     /usr/local/opt/python@3.11/libexec/bin
+    /usr/local/opt/python@3.12/libexec/bin
+    /opt/homebrew/opt/coreutils/libexec/gnubin
+    /opt/homebrew/opt/gnu-sed/libexec/gnubin
+    /opt/homebrew/opt/gawk/libexec/gnubin
+    /opt/homebrew/opt/make/libexec/gnubin
     $HOME/Library/Python/3.8/bin
     $HOME/Library/Python/3.9/bin
     $HOME/Library/Python/3.11/bin
+    $HOME/Library/Python/3.12/bin
     $HOME/.poetry/bin
     $HOME/.local/bin
 )
+
 for P in $ADDITIONAL_PATH; do
     add_path $P
 done
@@ -32,24 +39,22 @@ export PATH
 
 # aliases
 alias vi="vim"
-
-case ${OSTYPE} in
-  darwin*)
-    alias ls="ls -G"
-    alias ll="ls -Gl"
-    alias la="ls -Gla"
-    ;;
-  linux*)
-    alias ls="ls --color=auto"
-    alias ll="ls --color=auto -l"
-    alias la="ls --color=auto -la"
-    ;;
-esac
+alias ls="ls --color=auto"
+alias ll="ls --color=auto -l"
+alias la="ls --color=auto -la"
 
 # completion
 [ -d ~/.zsh/completion ] && fpath=(~/.zsh/completion $fpath)
-autoload -U compinit && compinit -i
+if type brew &>/dev/null
+then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+autoload bashcompinit && bashcompinit
+autoload -Uz compinit && compinit -i
 #command -v pipenv 1>/dev/null 2>&1 && eval "$(pipenv --completion)"
+[ -f $HOME/.local/bin/aws_completer ] && complete -C "$HOME/.local/bin/aws_completer" aws
+
+zstyle ':completion:*' menu select
 
 # history
 HISTFILE=~/.zhistory
@@ -93,23 +98,42 @@ if [[ "$INSIDE_EMACS" = 'vterm' ]] \
     print -Pn "\e]2;%m:%2~\a"
 fi
 
-# fzf history
-fh(){
-    print -z $(
-        fc -nl 1 |
-            awk '!a[$0]++' |
-            fzf --tac --cycle --no-sort --layout=reverse --height=40%
-    )
+# fzf
+source <(fzf --zsh)
+export FZF_DEFAULT_OPTS='--height 40% --tmux bottom,60% --layout reverse'
+
+dev(){
+    local dir=~/Documents/Proj/repos
+    local proj
+    proj=$(ls $dir |
+            fzf --cycle
+        )
+    [[ -n $proj ]] && cd "$dir/$proj"
 }
 
 fcd(){
-    print -z "cd "$(
-        fc -nl 1 |
-            awk '/^cd ./&&!a[$0]++' |
+    local dir
+    dir=$(fc -nl 1 |
+            awk '/^cd /&&!a[$0]++' |
             cut -d' ' -f2- |
             egrep -v '^([./]*|-)$' |
-            fzf --tac --cycle --no-sort --layout=reverse --height=40%
-    )
+            fzf --tac --cycle --no-sort
+        )
+    [[ -n $dir ]] && cd "$dir"
+}
+
+makee(){
+    if [[ ! -f Makefile ]]; then
+        >&2 echo "No Makefile found" >2
+        return 1
+    fi
+
+    local target
+    target=$(grep -E '^[a-zA-Z0-9_-]+:([^=]|$)' Makefile |
+                 awk -F: '{print $1}' |
+                 fzf
+          )
+    [[ -n $target ]] && make "$target"
 }
 
 # Environment specific import
@@ -117,4 +141,19 @@ if [[ -f ${HOME}/.zshrc.local ]]; then
     source ${HOME}/.zshrc.local
 fi
 
-source ${HOME}/.docker/init-zsh.sh || true # Added by Docker Desktop
+# Created by `pipx` on 2024-07-22 04:24:58
+export PATH="$PATH:$HOME/.local/bin"
+
+# uv
+if command -v uv 2>/dev/null; then
+    eval "$(uv generate-shell-completion zsh)"
+    eval "$(uvx --generate-shell-completion zsh)"
+fi
+
+# nvm node version manager
+export NVM_DIR="$HOME/.nvm"
+#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use  # This loads nvm when you use nvm first
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+[ -f "$HOME/.ghcup/env" ] && . "$HOME/.ghcup/env" # ghcup-env
