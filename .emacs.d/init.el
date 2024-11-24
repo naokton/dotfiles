@@ -297,7 +297,7 @@ uv run env -0 2>/dev/null"))
   :custom
   (lsp-enable-folding . t)
   (lsp-enable-snippet . nil)
-  (lsp-enable-symbol-highlighting . nil)
+  (lsp-enable-symbol-highlighting . t)
   (lsp-enable-links . nil)
   (lsp-pylsp-plugins-pydocstyle-enabled . nil)
   (lsp-clients-typescript-log-verbosity . "off")
@@ -328,6 +328,14 @@ uv run env -0 2>/dev/null"))
                 (file-exists-p (expand-file-name "deno.jsonc" project-root)))
         (setq-local lsp-enabled-clients '(deno-ls))))
     (lsp))
+  (defun my/cleanup-lsp-workspaces ()
+    "Remove LSP workspace folders that no longer exist on the filesystem."
+    (interactive)
+    (let ((folders (lsp-session-folders (lsp-session))))
+      (dolist (folder folders)
+        (unless (file-directory-p folder)
+          (lsp-workspace-folders-remove folder)))))
+  (my/cleanup-lsp-workspaces)
   ;; https://github.com/emacs-lsp/lsp-mode/issues/4313
   (with-eval-after-load 'lsp-volar
     (lsp-dependency 'typescript '(:system "/opt/homebrew/bin/tsserver")))
@@ -336,12 +344,22 @@ uv run env -0 2>/dev/null"))
   (yaml-ts-mode-hook . lsp)             ; npm install -g yaml-language-server
   (sh-ts-mode-hook . lsp)               ; npm i -g bash-language-server
   (bash-ts-mode-hook . lsp)             ; npm i -g bash-language-server
-  (python-ts-mode-hook . lsp-deferred)  ; uv tool install 'python-lsp-server'
+  ;; (python-ts-mode-hook . lsp-deferred)  ; uv tool install 'python-lsp-server'
   ; npm i -g typescript-language-server; npm i -g typescript; brew install deno
   ((js-ts-mode-hook typescript-ts-mode-hook) . my/deno-or-js-lsp)
   (vue-mode-hook . lsp)                 ; npm i -g @vue/language-server; npm i -g typescript
   (go-ts-mode-hook . lsp-deferred)      ; go get golang.org/x/tools/gopls@latest
   )
+
+(leaf lsp-pyright
+  :ensure t   ; and uv tool install basedpyright
+  :custom
+  (lsp-pyright-langserver-command . "basedpyright")
+  (lsp-pyright-type-checking-mode . "standard") ; default recommended is too noizy
+  :hook
+  (python-ts-mode-hook . (lambda ()
+                           (require 'lsp-pyright)
+                           (lsp-deferred))))
 
 (leaf lsp-ui
   :ensure t
@@ -521,19 +539,8 @@ uv run env -0 2>/dev/null"))
 
 (leaf gptel
   :ensure t
-  :custom
-  (gptel-api-key . #'my/retrieve-openapi-token)
-  (gptel-model . 'gpt-4o)
-  (gptel-default-mode . 'org-mode)
-  (gptel-prompt-prefix-alist . '((markdown-mode . "## Reqest\n")
-                                 (org-mode . "** Reqest\n")
-                                 (text-mode . "## Reqest\n")))
-  (gptel-response-prefix-alist . '((markdown-mode . "## Response\n")
-                                 ;; (org-mode . "<< Response >>\n")
-                                 (org-mode . "** Response\n")
-                                 (text-mode . "<< Response >>\n")))
-  (gptel-display-buffer-action . '(pop-to-buffer-same-window))
-  :config
+  :init
+  ;; TODO: use keychain via auth-source
   (defun my/retrieve-password-from-keychain (service account)
     "Retrieve password from macOS Keychain."
     (interactive "sService: \nsAccount: ")
@@ -563,9 +570,21 @@ filename if not saved, otherwise save to the current file."
           (make-directory directory t))
         (write-file file-path)
         (save-buffer))))
-  (gptel-make-anthropic "Claude"
-    :stream t
-    :key #'my/retrieve-claude-token))
+  :custom
+  (gptel-api-key . #'my/retrieve-openapi-token)
+  (gptel-model . 'claude-3-5-sonnet-20241022)
+  (gptel-backend . `,(gptel-make-anthropic "Claude"
+                      :stream t
+                      :key #'my/retrieve-claude-token))
+  (gptel-default-mode . 'org-mode)
+  (gptel-prompt-prefix-alist . '((markdown-mode . "## Reqest\n")
+                                 (org-mode . "** Reqest\n")
+                                 (text-mode . "## Reqest\n")))
+  (gptel-response-prefix-alist . '((markdown-mode . "## Response\n")
+                                 ;; (org-mode . "<< Response >>\n")
+                                 (org-mode . "** Response\n")
+                                 (text-mode . "<< Response >>\n")))
+  (gptel-display-buffer-action . '(pop-to-buffer-same-window)))
 
 ;;;;----------------------------------------------------------------
 ;;;; Major modes/Language config
@@ -706,6 +725,7 @@ filename if not saved, otherwise save to the current file."
   (set-face-attribute 'fixed-pitch nil :font (face-attribute 'default :font)))
 
 (leaf *theme-config
+  :config
   (leaf modus-themes
     :ensure t
     :custom
@@ -713,17 +733,16 @@ filename if not saved, otherwise save to the current file."
     (modus-themes-italic-constructs . t)
     (modus-themes-bold-constructs . t)
     (modus-themes-mixed-fonts . t)
-    (modus-themes-headings . '((1 . (1.5))
-                               (2 . (1.3))
+    (modus-themes-headings . '((1 . (1.2))
+                               (2 . (1.2))
                                (t . (1.1)))))
-    :setq
     :config
     (load-theme 'modus-operandi-deuteranopia :no-confirm)
     (modus-themes-with-colors
       ;; override theme faces not defined in modus-theme
       (custom-set-faces
        `(lsp-ui-doc-background ((,c :background ,bg-dim))))
-      (customize-set-variable 'lsp-ui-doc-border border)))
+      (customize-set-variable 'lsp-ui-doc-border border))
   (leaf mmm-mode
     :custom
     (mmm-submode-decoration-level . 0)))
@@ -733,11 +752,11 @@ filename if not saved, otherwise save to the current file."
   (indent-tabs-mode . nil)   ; use spaces
   (tab-width . 4)            ; default is 8
   (fill-column . 100)
-  :hook
-  ((org-mode-hook markdown-mode-hook) . variable-pitch-mode)
   :config
   (show-paren-mode t)
-  (global-display-line-numbers-mode)
+  (global-display-line-numbers-mode t)
+  (leaf variable-pitch
+    :hook (markdown-mode-hook org-mode-hook))
   (leaf perfect-margin
     :ensure t
     :config
@@ -880,8 +899,15 @@ filename if not saved, otherwise save to the current file."
      ([remap projectile-next-project-buffer] . vterm-toggle-backward)))
   (leaf copilot
     :bind
+    ("C-c M-f" . 'copilot-complete)
     (copilot-completion-map
-     ("<tab>" . 'copilot-accept-completion)))
+     ("C-c M-f" . 'copilot-complete)
+     ("C-g" . 'copilot-clear-overlay)
+     ("M-n" . 'copilot-next-completion)
+     ("M-p" . 'copilot-previous-completion)
+     ("C-<return>" . 'copilot-accept-completion)
+     ("M-f" . 'copilot-accept-completion-by-word)
+     ("M-<return>" . 'copilot-accept-completion-by-line)))
   (leaf transpose-frame
     :bind
     ("C-x C-t" . 'transpose-frame))
