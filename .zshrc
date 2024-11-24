@@ -145,7 +145,7 @@ fi
 export PATH="$PATH:$HOME/.local/bin"
 
 # uv
-if command -v uv 2>/dev/null; then
+if command -v uv >/dev/null 2>&1; then
     eval "$(uv generate-shell-completion zsh)"
     eval "$(uvx --generate-shell-completion zsh)"
 fi
