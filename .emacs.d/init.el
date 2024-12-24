@@ -813,14 +813,6 @@ filename if not saved, otherwise save to the current file."
     ("M-h" . backward-kill-word)
     ("C-x C-k" . kill-current-buffer)
     ("C-x C-b" . ibuffer))
-  (leaf *key-other-window
-    ;; https://rubikitch.hatenadiary.org/entry/20101126/keymap
-    :config
-    (define-minor-mode overriding-minor-mode
-      "強制的にC-tを割り当てる"             ;説明文字列
-      t                                     ;デフォルトで有効にする
-      ""                                    ;モードラインに表示しない
-      `((,(kbd "C-t") . other-window))))
   (leaf *key-buffer
     :bind
     ("C-," . bs-cycle-previous)
