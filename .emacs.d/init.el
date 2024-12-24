@@ -658,6 +658,10 @@ filename if not saved, otherwise save to the current file."
   (vue-mode-hook . (lambda () (setq syntax-ppss-table nil)))
   (vue-mode-hook . prettier-mode))
 
+(leaf js-ts-mode
+  :custom
+  (js-indent-level . 2))
+
 (leaf *javascript
   :config
   (leaf prettier
@@ -666,6 +670,10 @@ filename if not saved, otherwise save to the current file."
     (js-mode-hook . prettier-mode)
     :custom
     (prettier-prettify-on-save-flag . nil)))
+
+(leaf go-ts-mode
+  :custom
+  (go-ts-mode-indent-offset . 4)) ; align with tab-width of 4
 
 (leaf yaml-mode
   :ensure t
