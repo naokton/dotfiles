@@ -603,7 +603,10 @@ filename if not saved, otherwise save to the current file."
     :ensure t
     :hook dired-mode-hook))
 
-
+(leaf help
+  :custom
+  (help-window-select . t)
+  (help-window-keep-selected . t))
 
 (leaf org
   :ensure t
