@@ -111,6 +111,11 @@
   :custom
   (consult-line-start-from-top . t)
   :config
+  (leaf xref
+    :custom
+    (xref-prompt-for-identifier . nil)
+    (xref-show-xrefs-function . #'consult-xref)
+    (xref-show-definitions-function . #'consult-xref))
   (defun my/consult-line-symbol-at-point ()
     (interactive)
     (consult-line (thing-at-point 'symbol))))
@@ -363,9 +368,6 @@ uv run env -0 2>/dev/null"))
 
 (leaf lsp-ui
   :ensure t
-  :custom
-  (lsp-ui-sideline-show-code-actions . nil)
-  (lsp-ui-peek-peek-height . 50)
   :hook
   ;; Prevent rings when hovering mouse over the tab bar. https://github.com/emacs-lsp/lsp-ui/issues/681
   (lsp-after-initialize-hook . (lambda () (local-set-key (kbd "<tab-bar> <mouse-movement>") #'ignore))))
@@ -865,17 +867,15 @@ filename if not saved, otherwise save to the current file."
     ("M-y" . consult-yank-from-kill-ring)
     ([remap projectile-switch-to-buffer] . consult-project-buffer) ; M-p b
     )
+  (leaf xref
+    :bind
+    ("M-'" . xref-find-references))
   (leaf embark
     :bind
     ("s-e" . embark-act))
   (leaf marginalia
     :bind (minibuffer-local-map
            ("M-A" . marginalia-cycle)))
-  (leaf lsp-ui
-    :bind
-    (:lsp-ui-mode-map
-     ("M-." . lsp-ui-peek-find-definitions)
-     ("M-'" . lsp-ui-peek-find-references)))
   (leaf projectile
     :bind
     (projectile-mode-map
