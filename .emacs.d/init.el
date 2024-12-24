@@ -870,6 +870,9 @@ filename if not saved, otherwise save to the current file."
     ("M-y" . consult-yank-from-kill-ring)
     ([remap projectile-switch-to-buffer] . consult-project-buffer) ; M-p b
     )
+  (leaf embark
+    :bind
+    ("s-e" . embark-act))
   (leaf marginalia
     :bind (minibuffer-local-map
            ("M-A" . marginalia-cycle)))
