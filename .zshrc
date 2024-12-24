@@ -103,12 +103,12 @@ source <(fzf --zsh)
 export FZF_DEFAULT_OPTS='--height 40% --tmux bottom,60% --layout reverse'
 
 dev(){
-    local dir=~/Documents/Proj/repos
-    local proj
-    proj=$(ls $dir |
+    # Select from all git repositories under ~/Documents
+    local repo
+    repo=$(fd -td -H '^.git$' ~/Documents -d10 --exclude node_modules --exclude '.venv' --exec dirname |
             fzf --cycle
         )
-    [[ -n $proj ]] && cd "$dir/$proj"
+    [[ -n "$repo" ]] && cd "$repo"
 }
 
 fcd(){
@@ -136,7 +136,7 @@ makee(){
     [[ -n $target ]] && make "$target"
 }
 
-# Environment specific import
+
 if [[ -f ${HOME}/.zshrc.local ]]; then
     source ${HOME}/.zshrc.local
 fi
