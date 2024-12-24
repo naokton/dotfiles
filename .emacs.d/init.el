@@ -108,8 +108,6 @@
 
 (leaf consult
   :ensure t
-  :custom
-  (consult-line-start-from-top . t)
   :config
   (leaf xref
     :custom
