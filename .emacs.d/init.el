@@ -719,6 +719,7 @@ filename if not saved, otherwise save to the current file."
                            (width . 160)
                            (height . 80)))
   :config
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   ;; don't show default something
   (tool-bar-mode 0)
   (menu-bar-mode 0)
