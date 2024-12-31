@@ -867,7 +867,7 @@ filename if not saved, otherwise save to the current file."
     :bind
     ("M-s" . consult-line)
     ("M-S" . my/consult-line-symbol-at-point)
-    ("C-M-f" . consult-ripgrep)
+    ("s-s" . consult-ripgrep)
     ("C-x b" . consult-buffer)
     ("C-x C-r" . consult-recent-file)
     ("M-g i" . consult-imenu)
