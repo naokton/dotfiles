@@ -358,7 +358,7 @@ uv run env -0 2>/dev/null"))
   :ensure t   ; and uv tool install basedpyright
   :custom
   (lsp-pyright-langserver-command . "basedpyright")
-  (lsp-pyright-type-checking-mode . "standard") ; default recommended is too noizy
+  (lsp-pyright-type-checking-mode . "off")
   :hook
   (python-ts-mode-hook . (lambda ()
                            (require 'lsp-pyright)
