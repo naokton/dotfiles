@@ -741,7 +741,7 @@ filename if not saved, otherwise save to the current file."
   (leaf modus-themes
     :ensure t
     :custom
-    (modus-themes-to-toggle . '(modus-operandi-deuteranopia modus-vivendi-deuteranopia))
+    (modus-themes-to-toggle . '(modus-operandi-tinted modus-vivendi-tinted))
     (modus-themes-italic-constructs . t)
     (modus-themes-bold-constructs . t)
     (modus-themes-mixed-fonts . t)
@@ -749,7 +749,7 @@ filename if not saved, otherwise save to the current file."
                                (2 . (1.2))
                                (t . (1.1)))))
     :config
-    (load-theme 'modus-operandi-deuteranopia :no-confirm)
+    (load-theme 'modus-operandi-tinted :no-confirm)
     (modus-themes-with-colors
       ;; override theme faces not defined in modus-theme
       (custom-set-faces
