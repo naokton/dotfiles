@@ -50,6 +50,16 @@
 ;;;;----------------------------------------------------------------
 ;;;; Utilities
 ;;;;----------------------------------------------------------------
+(leaf autorevert
+  :global-minor-mode global-auto-revert-mode)
+
+(leaf delsel
+  :global-minor-mode delete-selection-mode)
+
+(leaf simple
+  :custom
+  (kill-whole-line . t))
+
 (leaf tab-bar
   :custom
   (tab-bar-new-tab-choice . "*scratch*")
@@ -488,7 +498,10 @@ uv run env -0 2>/dev/null"))
 ;;   (global-git-gutter-mode t))
 
 (leaf diff-hl
+  :doc "Git-gutter"
   :ensure t
+  :hook
+  (magit-post-refresh-hook . diff-hl-magit-post-refresh)
   :config
   (global-diff-hl-mode))
 
@@ -842,7 +855,8 @@ filename if not saved, otherwise save to the current file."
     :bind
     ("M-h" . backward-kill-word)
     ("C-x C-k" . kill-current-buffer)
-    ("C-x C-b" . ibuffer))
+    ("C-x C-b" . ibuffer)
+    ("M-i" . completion-at-point))
   (leaf *key-buffer
     :bind
     ("C-," . bs-cycle-previous)
