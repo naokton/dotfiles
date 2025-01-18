@@ -257,6 +257,15 @@
             (vterm)))
   )
 
+(leaf ultra-scroll
+  :ensure t
+  :vc (:url "https://github.com/jdtsmith/ultra-scroll")
+  :setq
+  (scroll-conservatively . 101)
+  (scroll-margin . 0)
+  :config
+  (ultra-scroll-mode 1))
+
 (leaf buffer-env
   :ensure t
   :hook
@@ -418,7 +427,10 @@ uv run env -0 2>/dev/null"))
   (go-ts-mode-hook . copilot-mode)
   :custom
   (copilot-idle-delay . 0.1)
-)
+  )
+
+(leaf copilot-chat
+  :ensure t)
 
 (leaf which-key
   :ensure t
@@ -650,6 +662,14 @@ filename if not saved, otherwise save to the current file."
 (leaf org-modern-indent
   :vc (:url "https://github.com/jdtsmith/org-modern-indent")
   :hook org-mode-hook)
+
+(leaf org-journal
+  :ensure t
+  :custom
+  (journal-dir . "~/Documents/journal")
+  (journal-date-format . "%Y-%m-%d")
+  (org-journal-find-file . 'find-file)
+  )
 
 (leaf vue-mode
   :ensure t
