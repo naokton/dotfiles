@@ -312,6 +312,7 @@ uv run env -0 2>/dev/null"))
   (lsp-enable-symbol-highlighting . t)
   (lsp-enable-links . nil)
   (lsp-pylsp-plugins-pydocstyle-enabled . nil)
+  (lsp-go-build-flags . ["-tags=integration"])
   (lsp-clients-typescript-log-verbosity . "off")
   (lsp-keep-workspace-alive . nil)
   ;; Disable completion by company-mode and use corfu
