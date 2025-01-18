@@ -1,0 +1,10 @@
+.bashrc
+.ripgreprc
+.screenrc
+.tmux.conf
+.vimrc
+.zshrc
+
+.emacs.d/init.el
+
+.config/pycodestyle
