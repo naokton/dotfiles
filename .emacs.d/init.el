@@ -803,11 +803,7 @@ filename if not saved, otherwise save to the current file."
   (global-display-line-numbers-mode t)
   (leaf variable-pitch
     :hook (markdown-mode-hook org-mode-hook))
-  (leaf perfect-margin
-    :ensure t
-    :config
-    (perfect-margin-mode t)
-    (add-to-list 'perfect-margin-ignore-modes 'vterm-mode))
+  (leaf perfect-margin :ensure t)
   (leaf auto-highlight-symbol
     :ensure t
     :require t
