@@ -119,6 +119,7 @@
 (leaf consult
   :ensure t
   :config
+  (leaf consult-flycheck :ensure t)
   (leaf xref
     :custom
     (xref-prompt-for-identifier . nil)
