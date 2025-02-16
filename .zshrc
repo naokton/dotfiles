@@ -42,6 +42,7 @@ alias vi="vim"
 alias ls="ls --color=auto"
 alias ll="ls --color=auto -l"
 alias la="ls --color=auto -la"
+[ -f "/Applications/Dev/Emacs.app/Contents/MacOS/Emacs" ] && alias emacs="/Applications/Dev/Emacs.app/Contents/MacOS/Emacs"
 
 # completion
 [ -d ~/.zsh/completion ] && fpath=(~/.zsh/completion $fpath)
