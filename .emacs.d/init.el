@@ -450,6 +450,8 @@ uv run env -0 2>/dev/null"))
 
 (leaf copilot-chat
   :ensure t
+  :hook
+  (git-commit-setup-hook . copilot-chat-insert-commit-message)
   :custom
   (copilot-chat-model . "claude-3.5-sonnet"))
 
