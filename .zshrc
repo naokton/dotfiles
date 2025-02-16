@@ -52,7 +52,6 @@ then
 fi
 autoload bashcompinit && bashcompinit
 autoload -Uz compinit && compinit -i
-#command -v pipenv 1>/dev/null 2>&1 && eval "$(pipenv --completion)"
 [ -f $HOME/.local/bin/aws_completer ] && complete -C "$HOME/.local/bin/aws_completer" aws
 
 zstyle ':completion:*' menu select
@@ -72,6 +71,7 @@ setopt HIST_IGNORE_SPACE
 autoload -Uz colors && colors
 
 # PS1
+# [11:49:31 user@host] pdir/dir %
 PROMPT="%B[%F{green}%D{%H:%M:%S}%f %F{cyan}%n%f@%m] %F{green}%2~%f %#%b "
 
 # Misc.
@@ -90,10 +90,6 @@ case ${OSTYPE} in
 esac
 
 export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
-
-#if command -v pyenv 1>/dev/null 2>&1; then
-#  eval "$(pyenv init -)"
-#fi
 
 # Emacs vterm settings
 if [[ "$INSIDE_EMACS" = 'vterm' ]] \
