@@ -648,6 +648,7 @@ filename if not saved, otherwise save to the current file."
   (org-indent-mode-turns-on-hiding-stars . nil)
   (org-startup-with-inline-images . t)
   (org-src-preserve-indentation . t)
+  (org-todo-keywords . '((sequence "TODO" "DOING" "DONE")))
   (org-image-actual-width . nil)
   (org-html-validation-link . nil)
   (org-html-head
@@ -689,6 +690,8 @@ filename if not saved, otherwise save to the current file."
   (journal-dir . "~/Documents/journal")
   (journal-date-format . "%Y-%m-%d")
   (org-journal-find-file . 'find-file)
+  (org-journal-carryover-items . "TODO=\"TODO\"|TODO=\"DOING\"")
+  (org-journal-handle-old-carryover . '(lambda (_) nil)) ; leave carryover items as is in the prev day journal
   )
 
 (leaf vue-mode
