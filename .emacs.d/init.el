@@ -447,7 +447,9 @@ uv run env -0 2>/dev/null"))
   )
 
 (leaf copilot-chat
-  :ensure t)
+  :ensure t
+  :custom
+  (copilot-chat-model . "claude-3.5-sonnet"))
 
 (leaf which-key
   :ensure t
@@ -602,6 +604,12 @@ filename if not saved, otherwise save to the current file."
           (make-directory directory t))
         (write-file file-path)
         (save-buffer))))
+  (add-to-list 'gptel-directives '(email . "You are an expert email editor specializing in natural English communication. Your task is to revise email drafts into clear, slightly casual English while maintaining the original message. When provided with an email draft and context, simply return the corrected version without explanations. Focus on:
+- Converting unnatural expressions into common native English phrases
+- Keeping language simple and concise
+- Using a casual yet professional tone
+- Maintaining the original message's intent
+Provide only the revised email text without comments or explanations."))
   :custom
   (gptel-api-key . #'my/retrieve-openapi-token)
   (gptel-model . 'claude-3-5-sonnet-20241022)
