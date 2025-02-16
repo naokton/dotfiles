@@ -425,6 +425,8 @@ uv run env -0 2>/dev/null"))
 (leaf projectile
   :ensure t
   :require t
+  :custom
+  (consult-project-function . (lambda (_) (projectile-project-root)))
   :config
   (projectile-mode +1)
   :defer-config
