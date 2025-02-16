@@ -153,7 +153,12 @@
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (leaf embark
-  :ensure t)
+  :ensure t
+  :custom
+  (embark-help-key . "?")
+  (embark-indicators . '(embark-minimal-indicator ; do not pop up key bindisgs buffer
+                         embark-highlight-indicator
+                         embark-isearch-highlight-indicator)))
 
 (leaf embark-consult
   :ensure t)
