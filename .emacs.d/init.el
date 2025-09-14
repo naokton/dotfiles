@@ -123,6 +123,46 @@
 
 (leaf consult
   :ensure t
+  :custom
+  (consult-ripgrep-args . "rg --null --line-buffered --color=never --max-columns=1000 --path-separator /\
+                           --smart-case --no-heading --with-filename --line-number --search-zip --sort=path") ; add --sort=path
+  (consult-buffer-filter . '("\\` "
+                             "\\`:~"
+                             "\\`\\*Messages\\*"
+                             "\\`\\*Help\\*"
+                             "\\`\\*Ibuffer\\*"
+                             "\\`\\*Buffer List\\*"
+                             "\\`\\*Calendar\\*"
+                             "\\`\\*Backtrace\\*"
+                             "\\`\\*Disabled Command\\*"
+                             "\\`\\*lsp"
+                             "\\`\\*pyright"
+                             "\\`\\*ruff"
+                             "\\`\\*yamlls"
+                             "\\`\\*gopls"
+                             "\\`\\*bash-ls"
+                             "\\`\\*vue-semantic-server"
+                             "\\`\\*ts-ls"
+                             "\\`\\*magit"
+                             "\\`\\*prettier"
+                             "\\`\\*Embark"
+                             "\\`\\*Org-journal"
+                             "\\`\\*diff-hl"
+                             "\\`\\*Ediff"
+                             "\\`\\*Diff"
+                             "\\`\\*Ilist\\*"
+                             "\\`\\*gptel-diff"
+                             "\\`\\*copilot events"
+                             "\\`\\*copilot-language-server-log\\*"
+                             "\\`\\*[Cc]opilot-chat-"
+                             "\\`\\*Async-native-compile-log\\*"
+                             "\\`\\*Completions\\*"
+                             "\\`\\*Multiple Choice Help\\*"
+                             "\\`\\*Flymake log\\*"
+                             "\\`\\*Semantic SymRef\\*"
+                             "\\`\\*vc\\*"
+                             "\\`newsrc-dribble" ;; Gnus
+                             "\\`\\*tramp/.*\\*"))
   :config
   (leaf consult-flycheck :ensure t)
   (leaf xref
