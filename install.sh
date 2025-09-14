@@ -40,6 +40,7 @@ main() {
     local files=(
         ".bashrc"
         ".config/pycodestyle"
+        ".config/bat/config"
         ".emacs.d/init.el"
         ".ripgreprc"
         ".screenrc"
