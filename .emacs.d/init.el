@@ -1001,7 +1001,9 @@ Provide only the revised email text without comments or explanations."))
       (org-insert-time-stamp (current-time) nil t)))
   (leaf python-pytest
     :bind
-    ("C-c t" . python-pytest-dispatch))
+    (python-ts-mode-map
+     :package python
+     ("C-c t" . python-pytest-dispatch)))
   (leaf view
     :bind
     (view-mode-map
