@@ -403,10 +403,14 @@ uv run env -0 2>/dev/null"))
   ;; Prevent rings when hovering mouse over the tab bar. https://github.com/emacs-lsp/lsp-ui/issues/681
   (lsp-after-initialize-hook . (lambda () (local-set-key (kbd "<tab-bar> <mouse-movement>") #'ignore))))
 
-(leaf *ediff
-  :setq
+(leaf ediff-wind
+  :custom
   (ediff-window-setup-function . 'ediff-setup-windows-plain)
   (ediff-split-window-function . 'split-window-horizontally))
+
+(leaf ediff-diff
+  :custom
+  (ediff-custom-diff-options . "-u"))
 
 (leaf magit
   :ensure t
