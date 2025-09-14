@@ -892,23 +892,13 @@ Provide only the revised email text without comments or explanations."))
 
 (leaf *theme-config
   :config
-  (leaf modus-themes
+  (leaf catppuccin-theme
     :ensure t
     :custom
-    (modus-themes-to-toggle . '(modus-operandi-tinted modus-vivendi-tinted))
-    (modus-themes-italic-constructs . t)
-    (modus-themes-bold-constructs . t)
-    (modus-themes-mixed-fonts . t)
-    (modus-themes-headings . '((1 . (1.2))
-                               (2 . (1.2))
-                               (t . (1.1)))))
+    (catppuccin-flavor . 'latte)
+    (catppuccin-highlight-matches . t)
     :config
-    (load-theme 'modus-operandi-tinted :no-confirm)
-    (modus-themes-with-colors
-      ;; override theme faces not defined in modus-theme
-      (custom-set-faces
-       `(lsp-ui-doc-background ((,c :background ,bg-dim))))
-      (customize-set-variable 'lsp-ui-doc-border border))
+    (load-theme 'catppuccin :no-confirm))
   (leaf mmm-mode
     :custom
     (mmm-submode-decoration-level . 0)))
