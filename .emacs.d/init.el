@@ -763,12 +763,11 @@ Provide only the revised email text without comments or explanations."))
 (leaf org-journal
   :ensure t
   :custom
-  (journal-dir . "~/Documents/journal")
-  (journal-date-format . "%Y-%m-%d")
+  (org-journal-dir . "~/Documents/org/journal")
+  (org-journal-date-format . "%Y-%m-%d")
+  (org-journal-mode-hook . nil)         ; disable visual-line-mode
   (org-journal-find-file . 'find-file)
-  (org-journal-carryover-items . "TODO=\"TODO\"|TODO=\"DOING\"")
-  (org-journal-handle-old-carryover . '(lambda (_) nil)) ; leave carryover items as is in the prev day journal
-  )
+  (org-journal-carryover-items . "TODO=\"TODO\"|TODO=\"DOING\""))
 
 (leaf python-pytest
   :ensure t
