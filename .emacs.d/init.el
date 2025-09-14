@@ -866,6 +866,13 @@ Provide only the revised email text without comments or explanations."))
                  (reusable-frames . visible)
                  (window-height . 0.4))))
 
+(leaf window
+  :custom
+  ; split to side if window width is at least this value
+  (split-width-threshold . 80)
+  ; split to bottom if window height is at least this value
+  (split-height-threshold . 999))
+
 (leaf *only-ns
   :when (eq window-system 'ns)
   :config
