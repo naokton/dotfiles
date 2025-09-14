@@ -870,6 +870,9 @@ Provide only the revised email text without comments or explanations."))
 ;;;;----------------------------------------------------------------
 (leaf *keybindings
   :config
+  (leaf *mouse
+    :config
+    (global-unset-key [mouse-2]))       ; Disable middle click
   (leaf *key-delete-with-c-h
     :bind
     ("C-h" . delete-backward-char)
