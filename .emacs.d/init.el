@@ -867,8 +867,6 @@ Provide only the revised email text without comments or explanations."))
 
 (leaf window
   :custom
-  ; split to side if window width is at least this value
-  (split-width-threshold . 80)
   ; split to bottom if window height is at least this value
   (split-height-threshold . 999))
 
