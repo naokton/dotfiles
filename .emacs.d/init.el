@@ -127,7 +127,11 @@
     (xref-show-definitions-function . #'consult-xref))
   (defun my/consult-line-symbol-at-point ()
     (interactive)
-    (consult-line (thing-at-point 'symbol))))
+    (consult-line (thing-at-point 'symbol)))
+  :defer-config
+  (consult-customize
+   consult-recent-file
+   :preview-key '(:debounce 0.2 any)))
 
 (leaf marginalia
   :ensure t
