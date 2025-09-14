@@ -475,6 +475,8 @@ uv run env -0 2>/dev/null"))
   :ensure t
   :hook
   (after-init-hook . global-flycheck-mode)
+  :custom-face
+  (flycheck-info . '((t (:underline nil :inherit success))))
   :setq
   (flycheck-global-modes . '(shell-script-mode yaml-mode)))
 
