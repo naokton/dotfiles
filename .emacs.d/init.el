@@ -524,6 +524,13 @@ uv run env -0 2>/dev/null"))
   :config
   (global-diff-hl-mode))
 
+(leaf hl-todo
+  :ensure t
+  :custom
+  (hl-todo-color-background . t)
+  :config
+  (global-hl-todo-mode 1))
+
 (leaf wgrep
   :ensure t)
 
