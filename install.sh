@@ -41,6 +41,7 @@ main() {
         ".bashrc"
         ".config/pycodestyle"
         ".config/bat/config"
+        ".config/ghostty/config"
         ".emacs.d/init.el"
         ".ripgreprc"
         ".screenrc"
