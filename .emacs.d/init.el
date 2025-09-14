@@ -745,6 +745,13 @@ Provide only the revised email text without comments or explanations."))
   }
 </style>"))
 
+(leaf org-refile
+  :init
+  (defun my/org-refile-target ()
+    (directory-files "~/Documents/org" t ".*\\.org$"))
+  :custom
+  (org-refile-target . '(my/org-refile-target :maxlevel . 3)))
+
 (leaf org-modern
   :ensure t
   :hook org-mode-hook)
