@@ -267,14 +267,7 @@
   :custom
   (vterm-toggle-scope . 'project)
   :config
-  ;; Show vterm buffer in the window located at bottom
-  (add-to-list 'display-buffer-alist
-               '((lambda(bufname _) (with-current-buffer bufname (equal major-mode 'vterm-mode)))
-                 (display-buffer-reuse-window display-buffer-in-direction)
-                 (direction . bottom)
-                 (reusable-frames . visible)
-                 (window-height . 0.4)))
-  ;; Above display config affects all vterm command, not only vterm-toggle
+  ;; Explicitly show vterm buffer in current window
   (defun my/vterm-new-buffer-in-current-window()
     (interactive)
     (let ((display-buffer-alist nil))
@@ -724,6 +717,21 @@ Provide only the revised email text without comments or explanations."))
   (org-journal-handle-old-carryover . '(lambda (_) nil)) ; leave carryover items as is in the prev day journal
   )
 
+(leaf python-pytest
+  :ensure t
+  :config
+  (defun my/python-pytest--extra-process-sentinel (proc event)
+    "Beeps and displays the process buffer in another window if the exit code is non-zero."
+    (when (memq (process-status proc) '(exit signal))
+      (let ((exit-code (process-exit-status proc)))
+        (when (/= exit-code 0)
+          (beep)
+          (switch-to-buffer-other-window (process-buffer proc))))))
+  (advice-add 'python-pytest--process-sentinel :after #'my/python-pytest--extra-process-sentinel)
+  :custom
+  (python-pytest-executable . "uv run pytest -vv")
+  (python-pytest-unsaved-buffers-behavior . 'save-all))
+
 (leaf vue-mode
   :ensure t
   :hook
@@ -796,7 +804,15 @@ Provide only the revised email text without comments or explanations."))
   ;; don't show default something
   (tool-bar-mode 0)
   (menu-bar-mode 0)
-  (scroll-bar-mode 0))
+  (scroll-bar-mode 0)
+  (add-to-list 'display-buffer-alist
+               '((lambda(bufname _)
+                   (or (with-current-buffer bufname (equal major-mode 'vterm-mode))
+                       (string-match-p "\\*pytest\\*" bufname)))
+                 (display-buffer-reuse-window display-buffer-in-direction)
+                 (direction . bottom)
+                 (reusable-frames . visible)
+                 (window-height . 0.4))))
 
 (leaf *font-confnig
   :config
@@ -928,6 +944,9 @@ Provide only the revised email text without comments or explanations."))
       "Insert inactive timestamp of today"
       (interactive)
       (org-insert-time-stamp (current-time) nil t)))
+  (leaf python-pytest
+    :bind
+    ("C-c t" . python-pytest-dispatch))
   (leaf view
     :bind
     (view-mode-map
