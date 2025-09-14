@@ -283,7 +283,6 @@
 
 (leaf ultra-scroll
   :ensure t
-  :vc (:url "https://github.com/jdtsmith/ultra-scroll")
   :setq
   (scroll-conservatively . 101)
   (scroll-margin . 0)
@@ -446,7 +445,7 @@ uv run env -0 2>/dev/null"))
                             (add-to-list 'newlist "vterm-mode"))))
 
 (leaf copilot
-  :vc (:url "https://github.com/copilot-emacs/copilot.el")
+  :ensure t
   :req "dash" "s" "editorconfig" "jsonrpc >= 1.0.24"
   :require t
   :hook
