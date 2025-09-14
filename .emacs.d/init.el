@@ -394,7 +394,9 @@ uv run env -0 2>/dev/null"))
   :ensure t
   :hook
   ;; Prevent rings when hovering mouse over the tab bar. https://github.com/emacs-lsp/lsp-ui/issues/681
-  (lsp-after-initialize-hook . (lambda () (local-set-key (kbd "<tab-bar> <mouse-movement>") #'ignore))))
+  (lsp-after-initialize-hook . (lambda () (local-set-key (kbd "<tab-bar> <mouse-movement>") #'ignore)))
+  :custom
+  (lsp-ui-doc-position . 'at-point))
 
 (leaf ediff-wind
   :custom
@@ -985,6 +987,9 @@ Provide only the revised email text without comments or explanations."))
     (dired-mode-map
      ("r" . wdired-change-to-wdired-mode)
      ("C-o" . nil)))
+  (leaf lsp
+    :bind
+    ("M-I" . lsp-ui-doc-show))
   (leaf vterm
     :bind
     ("<f2>" . vterm-toggle)
