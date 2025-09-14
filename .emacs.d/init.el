@@ -1079,6 +1079,7 @@ Provide only the revised email text without comments or explanations."))
   (leaf macrostep
     :bind
     (emacs-lisp-mode-map
+     :package elisp-mode
      ("C-c e" . macrostep-expand)))
   (leaf dired-sidebar
     :bind
