@@ -863,7 +863,6 @@ Provide only the revised email text without comments or explanations."))
     (doom-modeline-buffer-file-name-style . 'relative-from-project)
     (doom-modeline-height . 28)
     (doom-modeline-env-version . nil)
-    (doom-modeline-check-simple-format . t)
     :config
     (doom-modeline-mode 1)
     (line-number-mode 0)
