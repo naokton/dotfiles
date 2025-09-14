@@ -1057,6 +1057,7 @@ Provide only the revised email text without comments or explanations."))
   (leaf vterm
     :bind
     ("<f2>" . vterm-toggle)
+    ("s-j" . vterm-toggle)
     (vterm-mode-map
      ("C-<f2>" . my/vterm-new-buffer-in-current-window)
      ("C-<return>" . vterm-toggle-insert-cd)
