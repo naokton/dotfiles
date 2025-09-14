@@ -457,7 +457,7 @@ uv run env -0 2>/dev/null"))
   :hook
   (git-commit-setup-hook . copilot-chat-insert-commit-message)
   :custom
-  (copilot-chat-model . "claude-3.5-sonnet"))
+  (copilot-chat-model . "claude-sonnet-4"))
 
 (leaf which-key
   :ensure t
@@ -620,7 +620,7 @@ filename if not saved, otherwise save to the current file."
 Provide only the revised email text without comments or explanations."))
   :custom
   (gptel-api-key . #'my/retrieve-openapi-token)
-  (gptel-model . 'claude-3-5-sonnet-20241022)
+  (gptel-model . 'claude-sonnet-4-20250514)
   (gptel-backend . `,(gptel-make-anthropic "Claude"
                       :stream t
                       :key #'my/retrieve-claude-token))
