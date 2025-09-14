@@ -846,7 +846,6 @@ Provide only the revised email text without comments or explanations."))
                            (width . 160)
                            (height . 80)))
   :config
-  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   ;; don't show default something
   (tool-bar-mode 0)
   (menu-bar-mode 0)
@@ -859,6 +858,13 @@ Provide only the revised email text without comments or explanations."))
                  (direction . bottom)
                  (reusable-frames . visible)
                  (window-height . 0.4))))
+
+(leaf *only-ns
+  :when (eq window-system 'ns)
+  :config
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  ;; (add-to-list 'default-frame-alist '(ns-appearance . dark))  ;; Make fontface white for dark titelbar
+  )
 
 (leaf *font-confnig
   :config
