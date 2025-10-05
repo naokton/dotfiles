@@ -779,12 +779,11 @@ Provide only the revised email text without comments or explanations."))
   :ensure t
   :config
   (defun my/python-pytest--extra-process-sentinel (proc event)
-    "Beeps and displays the process buffer in another window if the exit code is non-zero."
+    "Beeps when error, and always switch to the window"
     (when (memq (process-status proc) '(exit signal))
       (let ((exit-code (process-exit-status proc)))
-        (when (/= exit-code 0)
-          (beep)
-          (switch-to-buffer-other-window (process-buffer proc))))))
+        (when (/= exit-code 0) (beep))
+        (switch-to-buffer-other-window (process-buffer proc)))))
   (advice-add 'python-pytest--process-sentinel :after #'my/python-pytest--extra-process-sentinel)
   :custom
   (python-pytest-executable . "uv run pytest -vv")
