@@ -895,13 +895,23 @@ Provide only the revised email text without comments or explanations."))
 
 (leaf *theme-config
   :config
-  (leaf catppuccin-theme
+  ;; (leaf catppuccin-theme
+  ;;   :ensure t
+  ;;   :custom
+  ;;   (catppuccin-flavor . 'latte)
+  ;;   (catppuccin-highlight-matches . t)
+  ;;   :config
+  ;;   (load-theme 'catppuccin :no-confirm))
+  (leaf ef-themes
     :ensure t
     :custom
-    (catppuccin-flavor . 'latte)
-    (catppuccin-highlight-matches . t)
+    (modus-themes-mixed-fonts . t)
+    (modus-themes-italic-constructs . t)
+    :init
+    (modus-themes-include-derivatives-mode 1)
     :config
-    (load-theme 'catppuccin :no-confirm))
+    (modus-themes-load-theme 'ef-deuteranopia-light))
+
   (leaf mmm-mode
     :custom
     (mmm-submode-decoration-level . 0)))
