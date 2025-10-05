@@ -89,6 +89,10 @@
         (projectile-project-name))))
   )
 
+(leaf package
+  :hook
+  (package-menu-mode-hook . hl-line-mode))
+
 (leaf vertico
   ;; Minibuffer Completion UI
   :ensure t
