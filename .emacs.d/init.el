@@ -293,31 +293,28 @@
   ;; delete "C-h", "C-u", add <f1> and <f2>
   (vterm-keymap-exceptions
    . '("<f1>" "<f2>" "C-x" "C-c" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y"))
-  ;; :config
-  ;; ;; Workaround of not working counsel-yank-pop
-  ;; ;; https://github.com/akermu/emacs-libvterm#counsel-yank-pop-doesnt-work
-  ;; (defun my/vterm-counsel-yank-pop-action (orig-fun &rest args)
-  ;;   (if (equal major-mode 'vterm-mode)
-  ;;       (let ((inhibit-read-only t)
-  ;;             (yank-undo-function (lambda (_start _end) (vterm-undo))))
-  ;;         (cl-letf (((symbol-function 'insert-for-yank)
-  ;;                    (lambda (str) (vterm-send-string str t))))
-  ;;           (apply orig-fun args)))
-  ;;     (apply orig-fun args)))
-  ;; (advice-add 'counsel-yank-pop-action :around #'my/vterm-counsel-yank-pop-action)
-  )
+  :config
+  (defun my/vterm-new-buffer-in-current-window()
+    (interactive)
+    (let ((display-buffer-alist nil))
+      (vterm)))
+  (add-to-list 'display-buffer-alist
+               '((lambda (buffer-or-name _)
+                   (let ((buffer (get-buffer buffer-or-name)))
+                     (with-current-buffer buffer
+                       (or (equal major-mode 'vterm-mode)
+                           (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                (display-buffer-reuse-window display-buffer-in-direction)
+                (direction . bottom)
+                (dedicated . t)
+                (reusable-frames . visible)
+                (window-height . 0.4))))
 
 (leaf vterm-toggle
   :ensure t
   :custom
-  (vterm-toggle-scope . 'project)
-  :config
-  ;; Explicitly show vterm buffer in current window
-  (defun my/vterm-new-buffer-in-current-window()
-    (interactive)
-    (let ((display-buffer-alist nil))
-            (vterm)))
-  )
+  (vterm-toggle-reset-window-configration-after-exit . nil)
+  (vterm-toggle-scope . 'project))
 
 (leaf ultra-scroll
   :ensure t
@@ -862,8 +859,7 @@ Provide only the revised email text without comments or explanations."))
   (scroll-bar-mode 0)
   (add-to-list 'display-buffer-alist
                '((lambda(bufname _)
-                   (or (with-current-buffer bufname (equal major-mode 'vterm-mode))
-                       (string-match-p "\\*pytest\\*" bufname)))
+                   (string-match-p "\\*pytest\\*" bufname))
                  (display-buffer-reuse-window display-buffer-in-direction)
                  (direction . bottom)
                  (dedicated . t)
