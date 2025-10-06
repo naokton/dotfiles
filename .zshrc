@@ -113,6 +113,16 @@ dev(){
     [[ -n "$repo" ]] && cd "$repo"
 }
 
+sf(){
+    # Select ssh host from known hosts
+    local host
+    host=$(awk '{print $1}' ~/.ssh/known_hosts | \
+           sed 's/,.*//' | uniq | fzf --cycle --prompt="SSH Host> ")
+    if [[ -n $host ]]; then
+        print -z "ssh $host"
+    fi
+}
+
 fcd(){
     local dir
     dir=$(fc -nl 1 |

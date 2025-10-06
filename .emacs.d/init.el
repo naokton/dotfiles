@@ -304,9 +304,8 @@
                      (with-current-buffer buffer
                        (or (equal major-mode 'vterm-mode)
                            (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-                (display-buffer-reuse-window display-buffer-in-direction)
-                (direction . bottom)
-                (dedicated . t)
+                (display-buffer-reuse-window display-buffer-in-side-window)
+                (side . bottom)
                 (reusable-frames . visible)
                 (window-height . 0.4))))
 
@@ -781,6 +780,13 @@ Provide only the revised email text without comments or explanations."))
         (when (/= exit-code 0) (beep))
         (switch-to-buffer-other-window (process-buffer proc)))))
   (advice-add 'python-pytest--process-sentinel :after #'my/python-pytest--extra-process-sentinel)
+  (add-to-list 'display-buffer-alist
+               '((lambda(bufname _)
+                   (string-match-p "\\*pytest\\*" bufname))
+                 (display-buffer-reuse-window display-buffer-in-side-window)
+                 (side . bottom)
+                 (reusable-frames . visible)
+                 (window-height . 0.4)))
   :custom
   (python-pytest-executable . "uv run pytest -vv")
   (python-pytest-unsaved-buffers-behavior . 'save-all))
@@ -856,15 +862,7 @@ Provide only the revised email text without comments or explanations."))
   ;; don't show default something
   (tool-bar-mode 0)
   (menu-bar-mode 0)
-  (scroll-bar-mode 0)
-  (add-to-list 'display-buffer-alist
-               '((lambda(bufname _)
-                   (string-match-p "\\*pytest\\*" bufname))
-                 (display-buffer-reuse-window display-buffer-in-direction)
-                 (direction . bottom)
-                 (dedicated . t)
-                 (reusable-frames . visible)
-                 (window-height . 0.4))))
+  (scroll-bar-mode 0))
 
 (leaf window
   :custom
@@ -1062,8 +1060,9 @@ Provide only the revised email text without comments or explanations."))
     (vterm-mode-map
      ("C-<f2>" . my/vterm-new-buffer-in-current-window)
      ("C-<return>" . vterm-toggle-insert-cd)
-     ([remap projectile-previous-project-buffer] . vterm-toggle-forward)
-     ([remap projectile-next-project-buffer] . vterm-toggle-backward)))
+     ;; ([remap projectile-previous-project-buffer] . vterm-toggle-forward)
+     ;; ([remap projectile-next-project-buffer] . vterm-toggle-backward)
+     ))
   (leaf copilot
     :bind
     ("C-c M-f" . 'copilot-complete)
