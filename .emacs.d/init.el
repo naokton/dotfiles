@@ -866,6 +866,7 @@ Provide only the revised email text without comments or explanations."))
                        (string-match-p "\\*pytest\\*" bufname)))
                  (display-buffer-reuse-window display-buffer-in-direction)
                  (direction . bottom)
+                 (dedicated . t)
                  (reusable-frames . visible)
                  (window-height . 0.4))))
 
