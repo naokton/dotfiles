@@ -917,9 +917,10 @@ Provide only the revised email text without comments or explanations."))
   (indent-tabs-mode . nil)   ; use spaces
   (tab-width . 4)            ; default is 8
   (fill-column . 100)
+  :hook
+  (prog-mode-hook . display-line-numbers-mode)
   :config
   (show-paren-mode t)
-  (global-display-line-numbers-mode t)
   (leaf variable-pitch
     :hook (markdown-mode-hook org-mode-hook))
   (leaf perfect-margin :ensure t)
