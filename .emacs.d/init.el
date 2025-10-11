@@ -177,6 +177,17 @@
   (defun my/consult-line-symbol-at-point ()
     (interactive)
     (consult-line (thing-at-point 'symbol)))
+  (defun my/consult-ripgrep-symbol-at-point (&optional dir)
+    (interactive)
+    (consult-ripgrep dir (thing-at-point 'symbol)))
+  ;; This will match the exact symbol, not symbol-in-a-word.  But if the symbol is at the end of the
+  ;; line, it does not match with this regexp.
+  ;; We need to match word boundary (`\_>')OR line end (`$'), but we need a tweak to orderless config
+  ;; TODO: https://github.com/minad/consult/wiki#orderless-style-dispatchers-ensure-that-the--regexp-works-with-consult-buffer
+  ;; (defun my/consult-line-symbol-at-point-new ()
+  ;;   (interactive)
+  ;;   (let ((sym (thing-at-point 'symbol t)))
+  ;;     (consult-line (when sym (concat "\\_<" sym "\\_>")))))
   :defer-config
   (consult-customize
    consult-recent-file
@@ -1025,6 +1036,7 @@ Provide only the revised email text without comments or explanations."))
     ("M-s" . consult-line)
     ("M-S" . my/consult-line-symbol-at-point)
     ("s-s" . consult-ripgrep)
+    ("s-S" . my/consult-ripgrep-symbol-at-point)
     ("C-x b" . consult-buffer)
     ("C-x C-r" . consult-recent-file)
     ("M-g i" . consult-imenu)
