@@ -153,9 +153,6 @@ if [[ -f ${HOME}/.zshrc.local ]]; then
     source ${HOME}/.zshrc.local
 fi
 
-# Created by `pipx` on 2024-07-22 04:24:58
-export PATH="$PATH:$HOME/.local/bin"
-
 # uv
 if command -v uv >/dev/null 2>&1; then
     eval "$(uv generate-shell-completion zsh)"
