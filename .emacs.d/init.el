@@ -74,11 +74,6 @@
   (tab-bar-auto-width-max . nil)
   ;; Add menu button and remove separater.
   (tab-bar-format . '(tab-bar-format-menu-bar tab-bar-format-tabs))
-  ;; :custom-face
-  ;; (tab-bar . '((t (:height 1.0 :box (:line-width 1)))))
-  ;; (tab-bar-tab . '((t (:weight bold :box (:line-width 1)))))
-  ;; (tab-bar-tab-inactive . '((t (:box (:line-width 1 :color "black") :background "#dfdfdf")))) ;; for modus
-  ;; (tab-bar-tab-inactive . '((t (:box (:line-width 1 :color "#black") :background "#dce0e8")))) ;; for catppuccin latte flav
   :config
   (tab-bar-mode)
   (defun my/project-name-or-default ()
