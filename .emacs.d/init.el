@@ -917,6 +917,7 @@ Provide only the revised email text without comments or explanations."))
   (fill-column . 100)
   :hook
   (prog-mode-hook . display-line-numbers-mode)
+  (sgml-mode-hook . display-line-numbers-mode)
   :config
   (show-paren-mode t)
   (leaf variable-pitch
