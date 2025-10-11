@@ -20,6 +20,7 @@ ADDITIONAL_PATH=(
     /usr/local/opt/python@3.9/bin
     /usr/local/opt/python@3.11/libexec/bin
     /usr/local/opt/python@3.12/libexec/bin
+    /opt/homebrew/opt/openjdk/bin
     /opt/homebrew/opt/coreutils/libexec/gnubin
     /opt/homebrew/opt/gnu-sed/libexec/gnubin
     /opt/homebrew/opt/gawk/libexec/gnubin
