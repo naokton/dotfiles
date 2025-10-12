@@ -891,8 +891,9 @@ Provide only the revised email text without comments or explanations."))
   (set-fontset-font "fontset-mydefault" 'nil "Iosevka Term" nil 'append) ; Fallback
   (add-to-list 'default-frame-alist '(font . "fontset-mydefault"))
   (set-face-attribute 'default nil :font "fontset-mydefault")
-  (set-face-attribute 'fixed-pitch nil :font (face-attribute 'default :font)))
-
+  ;; We need to set font family of fixed-pitch face directly, not using fontset, to support
+  ;; variable-pitch-mode
+  (set-face-attribute 'fixed-pitch nil :family "Cica"))
 (leaf *theme-config
   :config
   ;; (leaf catppuccin-theme
