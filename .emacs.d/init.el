@@ -924,7 +924,9 @@ Provide only the revised email text without comments or explanations."))
   :hook
   (prog-mode-hook . display-line-numbers-mode)
   (sgml-mode-hook . display-line-numbers-mode)
-  :config
+  ;; Use :init instead of :config when using with :hook
+  ;; :config with :hook adds eval-after-load and makes unintended behavior
+  :init
   (show-paren-mode t)
   (leaf variable-pitch
     :hook (markdown-mode-hook org-mode-hook))
