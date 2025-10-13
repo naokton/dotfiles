@@ -904,17 +904,10 @@ Provide only the revised email text without comments or explanations."))
   (set-face-attribute 'fixed-pitch nil :family "Cica"))
 (leaf *theme-config
   :config
-  ;; (leaf catppuccin-theme
-  ;;   :ensure t
-  ;;   :custom
-  ;;   (catppuccin-flavor . 'latte)
-  ;;   (catppuccin-highlight-matches . t)
-  ;;   :config
-  ;;   (load-theme 'catppuccin :no-confirm))
   (leaf ef-themes
     :ensure t
     :custom
-    (modus-themes-mixed-fonts . t)
+    (ef-themes-mixed-fonts . t)
     (modus-themes-italic-constructs . t)
     :init
     (modus-themes-include-derivatives-mode 1)
