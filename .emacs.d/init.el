@@ -112,13 +112,28 @@
   :init (savehist-mode))
 
 (leaf orderless
-  ;; Completion style
   :ensure t
+  :init
+  (defun my/orderless-consult-dispatch (word _index _total)
+    "Dispatch orderless components that use end anchors, compatible with Consult's tofu.
+
+Recognizes trailing \"$\" (end-of-string) and trailing \"\\_>\" (symbol-end).
+Returns a pair (orderless-regexp . REGEXP) that appends `consult--tofu-regexp' so
+the anchor still matches when Consult adds invisible disambiguation characters.
+
+ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
+    (cond
+     ((string-suffix-p "$" word)
+      `(orderless-regexp . ,(concat (substring word 0 -1) consult--tofu-regexp "*\\'")))
+     ((string-suffix-p "\_>" word)
+      `(orderless-regexp . ,(concat (substring word 0 -3) consult--tofu-regexp "*\\_>")))))
   :custom
   (completion-styles . '(orderless basic))
   (completion-category-defaults . nil)
   (completion-category-overrides . '((file (styles partial-completion))))
-  (orderless-matching-styles . '(orderless-literal orderless-regexp)))
+  (orderless-matching-styles . '(orderless-literal orderless-regexp))
+  (orderless-style-dispatchers . '(my/orderless-consult-dispatch
+                                   orderless-affix-dispatch)))
 
 (leaf consult
   :ensure t
@@ -171,18 +186,11 @@
     (xref-show-definitions-function . #'consult-xref))
   (defun my/consult-line-symbol-at-point ()
     (interactive)
-    (consult-line (thing-at-point 'symbol)))
+    (let ((sym (thing-at-point 'symbol t)))
+      (consult-line (when sym (concat "\\_<" sym "\\_>")))))
   (defun my/consult-ripgrep-symbol-at-point (&optional dir)
     (interactive)
     (consult-ripgrep dir (thing-at-point 'symbol)))
-  ;; This will match the exact symbol, not symbol-in-a-word.  But if the symbol is at the end of the
-  ;; line, it does not match with this regexp.
-  ;; We need to match word boundary (`\_>')OR line end (`$'), but we need a tweak to orderless config
-  ;; TODO: https://github.com/minad/consult/wiki#orderless-style-dispatchers-ensure-that-the--regexp-works-with-consult-buffer
-  ;; (defun my/consult-line-symbol-at-point-new ()
-  ;;   (interactive)
-  ;;   (let ((sym (thing-at-point 'symbol t)))
-  ;;     (consult-line (when sym (concat "\\_<" sym "\\_>")))))
   :defer-config
   (consult-customize
    consult-recent-file
