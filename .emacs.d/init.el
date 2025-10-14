@@ -601,8 +601,9 @@ uv run env -0 2>/dev/null"))
   :ensure t
   :custom
   (hl-todo-color-background . t)
-  :config
-  (global-hl-todo-mode 1))
+  :hook
+  (prog-mode-hook . hl-todo-mode)
+  (sgml-mode-hook . hl-todo-mode))
 
 (leaf wgrep
   :ensure t)
