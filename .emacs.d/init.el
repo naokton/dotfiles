@@ -742,7 +742,7 @@ Provide only the revised email text without comments or explanations."))
   :custom
   (org-startup-truncated . nil)
   (org-startup-indented . t)
-  (org-indent-mode-turns-on-hiding-stars . nil)
+  (org-indent-mode-turns-on-hiding-stars . t)
   (org-startup-with-inline-images . t)
   (org-src-preserve-indentation . t)
   (org-todo-keywords . '((sequence "TODO" "DOING" "DONE")))
