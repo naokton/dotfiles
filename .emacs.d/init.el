@@ -1003,6 +1003,9 @@ Provide only the revised email text without comments or explanations."))
     ("C-x C-k" . kill-current-buffer)
     ("C-x C-b" . ibuffer)
     ("M-i" . completion-at-point))
+  (leaf isearch
+    :bind
+    ("C-S-s" . isearch-forward-symbol-at-point))
   (leaf *key-buffer
     :bind
     ("C-," . bs-cycle-previous)
