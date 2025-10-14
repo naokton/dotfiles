@@ -648,7 +648,11 @@ uv run env -0 2>/dev/null"))
   :custom
   (open-junk-file-format . "~/junk/%Y/%Y%m%d-%H%M%S.org"))
 
-(leaf rainbow-mode :ensure t)
+(leaf rainbow-mode
+  :ensure t
+  :custom
+  ;; prevent color name strings, e.g. red, blue, etc., from rainbowed
+  (rainbow-x-colors . nil))
 
 (leaf electric-pair-mode
   :config
