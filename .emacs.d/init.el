@@ -47,6 +47,19 @@
     (load custom-file))
   )
 
+(leaf *read-only-lisp-dir
+  :doc "Open builtin and installed packages in read-only mode."
+  :init
+  (defun my/read-only-lisp-dir ()
+    (let ((file (or buffer-file-name "")))
+      (when (or
+             (string-prefix-p (expand-file-name "~/.emacs.d/elpa/") (expand-file-name file))
+             (string-match-p
+              "/Emacs.app/Contents/Resources/" (expand-file-name file)))
+        (read-only-mode 1))))
+  :hook
+  (find-file-hook . my/read-only-lisp-dir))
+
 ;;;;----------------------------------------------------------------
 ;;;; Utilities
 ;;;;----------------------------------------------------------------
