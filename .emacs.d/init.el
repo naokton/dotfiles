@@ -55,12 +55,12 @@
       (when (or
              (string-prefix-p (expand-file-name "~/.emacs.d/elpa/") (expand-file-name file))
              (string-match-p
-              "/Emacs.app/Contents/Resources/" (expand-file-name file)))
+              "/Emacs.app/Contents/Resources/" (expand-file-name file))
              (string-match-p
               "/.venv/lib/python" (expand-file-name file)))
         (read-only-mode 1)))
   :hook
-  (find-file-hook . my/enable-read-only-for-vendor-files))
+  (find-file-hook . my/enable-read-only-for-vendor-files)))
 
 ;;;;----------------------------------------------------------------
 ;;;; Utilities
