@@ -903,7 +903,7 @@ Provide only the revised email text without comments or explanations."))
   ;; (add-to-list 'default-frame-alist '(ns-appearance . dark))  ;; Make fontface white for dark titelbar
   )
 
-(leaf *font-confnig
+(leaf *font-config
   :config
   (set-language-environment "Japanese")
   (create-fontset-from-ascii-font "Cica-16" nil "mydefault") ; Create a fontset for ASCII
