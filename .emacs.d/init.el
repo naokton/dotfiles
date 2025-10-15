@@ -791,10 +791,6 @@ Provide only the revised email text without comments or explanations."))
   :ensure t
   :hook org-mode-hook)
 
-(leaf org-modern-indent
-  :vc (:url "https://github.com/jdtsmith/org-modern-indent")
-  :hook org-mode-hook)
-
 (leaf org-journal
   :ensure t
   :custom
