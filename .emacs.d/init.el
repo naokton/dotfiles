@@ -789,7 +789,11 @@ Provide only the revised email text without comments or explanations."))
 
 (leaf org-modern
   :ensure t
-  :hook org-mode-hook)
+  :hook org-mode-hook
+  :custom
+  (org-modern-star . 'replace)
+  :config
+  (set-face-attribute 'org-modern-symbol nil :family "Iosevka"))
 
 (leaf org-journal
   :ensure t
