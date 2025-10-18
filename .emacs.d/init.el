@@ -924,15 +924,108 @@ Provide only the revised email text without comments or explanations."))
   (set-face-attribute 'fixed-pitch nil :family "Cica"))
 (leaf *theme-config
   :config
-  (leaf ef-themes
+  (leaf modus-themes
     :ensure t
+    :when (window-system)
     :custom
-    (ef-themes-mixed-fonts . t)
+    (modus-themes-mixed-fonts . t)
+    (modus-themes-bold-constructs . t)
     (modus-themes-italic-constructs . t)
-    :init
-    (modus-themes-include-derivatives-mode 1)
+    (modus-themes-headings
+     . '((1 . (1.5))
+         (2 . (1.4))
+         (3 . (1.3))
+         (4 . (1.2))
+         (5 . (1.1))))
+    (modus-operandi-palette-overrides
+     . '(
+         ;; Anthropic
+         (bg-main            "#faf9f5")
+         (bg-dim             "#f5f4ed")
+         (bg-inactive        "#e8e6dc")
+         (bg-active          "#e3dacc")
+         ;; basic
+         (fg-main          "#141414")
+         (fg-dim           "#888888")
+         ;; Common accents from standard-light-theme
+         (red             "#b3303a")
+         (red-warmer      "#e00033")
+         (red-cooler      "#ce2b50")
+         (red-faint       "#b22222")
+         (green           "#228b22")
+         (green-warmer    "#4f7400")
+         (green-cooler    "#008858")
+         (green-faint     "#61756c")
+         ;; (yellow          "#a45f22")
+         ;; (yellow-warmer   "#b6532f")
+         ;; (yellow-cooler   "#a0522d")
+         ;; (yellow-faint    "#76502a")
+         (yellow          "#8b8b00") ; updated
+         (yellow-warmer   "#eaa000") ; updated
+         (yellow-cooler   "#b5b522") ; updated
+         (yellow-faint    "#8b8b45") ; updated
+         (blue            "#001faf")
+         (blue-warmer     "#3a5fcd")
+         (blue-cooler     "#0000ff")
+         (blue-faint      "#483d8b")
+         ;; (magenta         "#721045")
+         ;; (magenta-warmer  "#8b2252")
+         ;; (magenta-cooler  "#800080")
+         ;; (magenta-faint   "#8f4499")
+         (magenta         "#e91c7a") ; updated
+         (magenta-warmer  "#ff1a9e") ; updated
+         (magenta-cooler  "#d946b8") ; updated
+         (magenta-faint   "#b8276e") ; updated
+         (cyan            "#1f6fbf")
+         (cyan-warmer     "#2f8fab")
+         (cyan-cooler     "#008b8b")
+         (cyan-faint      "#3f7a80")
+         ;; colors from modus-themes-operandi-deuteranopia-palette
+         (bg-added           "#d5d7ff")
+         (bg-added-faint     "#e6e6ff")
+         (bg-added-refine    "#babcef")
+         (bg-added-fringe    "#275acc")
+         (fg-added           "#303099")
+         (fg-added-intense   "#0303cc")
+         (bg-changed         "#eecfdf")
+         (bg-changed-faint   "#f0dde5")
+         (bg-changed-refine  "#e0b0d0")
+         (bg-changed-fringe  "#9f6ab0")
+         (fg-changed         "#6f1343")
+         (fg-changed-intense "#7f0f9f")
+         (bg-removed         "#f4f099")
+         (bg-removed-faint   "#f6f6b7")
+         (bg-removed-refine  "#ede06f")
+         (bg-removed-fringe  "#c0b200")
+         (fg-removed         "#553d00")
+         (fg-removed-intense "#7f6f00")
+         ;; adjust tone
+         (fringe                  unspecified)
+         (border                  bg-inactive)
+         (bg-tab-current          bg-main)
+         (bg-line-number-active   bg-inactive)
+         (bg-line-number-inactive unspecified)
+         (bg-mode-line-active     bg-inactive)
+         (bg-mode-line-inactive   bg-dim)
+         (modeline-err            yellow-faint)
+         (bg-region               bg-cyan-nuanced)
+         (bg-diff-context         bg-inactive)
+         (docstring   fg-alt)
+         (fnname      blue)
+         (string      blue-warmer)
+         (type        yellow)
+         (variable    yellow)
+         (fg-heading-1  fg-alt)
+         (fg-heading-2  fg-alt)
+         (fg-heading-3  fg-alt)
+         (fg-heading-4  fg-alt)
+         (fg-heading-5  fg-alt)
+         (fg-heading-6  fg-alt)
+         (fg-heading-7  fg-alt)
+         (fg-heading-8  fg-alt)
+         ))
     :config
-    (modus-themes-load-theme 'ef-deuteranopia-light))
+    (load-theme 'modus-operandi :no-confirm))
 
   (leaf mmm-mode
     :custom
