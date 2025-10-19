@@ -899,7 +899,7 @@ Provide only the revised email text without comments or explanations."))
   (initial-frame-alist . '((top . 100)
                            (left . 600)
                            (width . 160)
-                           (height . 80)))
+                           (fullscreen . fullheight)))
   :config
   ;; don't show default something
   (tool-bar-mode 0)
