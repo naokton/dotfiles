@@ -62,6 +62,10 @@
   :hook
   (find-file-hook . my/enable-read-only-for-vendor-files))
 
+(leaf *lsp-use-plists
+  :config
+  (setenv "LSP_USE_PLISTS" "true"))
+
 ;;;;----------------------------------------------------------------
 ;;;; Utilities
 ;;;;----------------------------------------------------------------
