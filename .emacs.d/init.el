@@ -408,10 +408,12 @@ uv run env -0 2>/dev/null"))
   (lsp-keep-workspace-alive . nil)
   ;; Disable completion by company-mode and use corfu
   (lsp-completion-provider . :none)
+
   :setq
   ;; performance https://emacs-lsp.github.io/lsp-mode/page/performance/
   `(read-process-output-max . ,(* 3 1024 1024))
   `(gc-cons-threshold . ,(* 100 1024 1024))
+
   :config
   (add-to-list 'lsp-language-id-configuration '(docker-compose-mode . "yaml"))
   (add-to-list 'lsp-disabled-clients '(typescript-mode . vue-semantic-server))
@@ -420,11 +422,13 @@ uv run env -0 2>/dev/null"))
   (add-to-list 'lsp-disabled-clients '(typescript-ts-mode . ts-ls))
   (add-to-list 'lsp-disabled-clients '(js-mode . vue-semantic-server))
   (add-to-list 'lsp-disabled-clients '(css-mode . vue-semantic-server))
+
   ;; Use orderless for completion style
   ;; ref: https://github.com/minad/corfu/wiki#basic-example-configuration-with-orderless
   (defun my/lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
           '(orderless)))
+
   (defun my/deno-or-js-lsp ()
     "Configure LSP mode for Deno if deno.json or deno.jsonc exists in project root."
     (when-let ((project-root (project-root (project-current))))
@@ -432,6 +436,7 @@ uv run env -0 2>/dev/null"))
                 (file-exists-p (expand-file-name "deno.jsonc" project-root)))
         (setq-local lsp-enabled-clients '(deno-ls))))
     (lsp))
+
   (defun my/cleanup-lsp-workspaces ()
     "Remove LSP workspace folders that no longer exist on the filesystem."
     (interactive)
@@ -440,10 +445,12 @@ uv run env -0 2>/dev/null"))
         (unless (file-directory-p folder)
           (lsp-workspace-folders-remove folder)))))
   (my/cleanup-lsp-workspaces)
+
   ;; Enable flycheck support for vue-mode
   ;; https://emacs-lsp.github.io/lsp-mode/page/faq/#the-flycheck-does-not-work-in-typescript-html-and-javascript-blocks-in-vue-mode-how-to-fix-that
   (with-eval-after-load 'lsp-mode
     (mapc #'lsp-flycheck-add-mode '(typescript-mode js-mode css-mode vue-html-mode)))
+
   :hook
   (lsp-completion-mode . my/lsp-mode-setup-completion)
   (yaml-ts-mode-hook . lsp)             ; npm install -g yaml-language-server
