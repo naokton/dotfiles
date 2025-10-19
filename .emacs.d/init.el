@@ -439,9 +439,6 @@ uv run env -0 2>/dev/null"))
         (unless (file-directory-p folder)
           (lsp-workspace-folders-remove folder)))))
   (my/cleanup-lsp-workspaces)
-  ;; https://github.com/emacs-lsp/lsp-mode/issues/4313
-  (with-eval-after-load 'lsp-volar
-    (lsp-dependency 'typescript '(:system "/opt/homebrew/bin/tsserver")))
   ;; Enable flycheck support for vue-mode
   ;; https://emacs-lsp.github.io/lsp-mode/page/faq/#the-flycheck-does-not-work-in-typescript-html-and-javascript-blocks-in-vue-mode-how-to-fix-that
   (with-eval-after-load 'lsp-mode
