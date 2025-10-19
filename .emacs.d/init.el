@@ -442,6 +442,10 @@ uv run env -0 2>/dev/null"))
   ;; https://github.com/emacs-lsp/lsp-mode/issues/4313
   (with-eval-after-load 'lsp-volar
     (lsp-dependency 'typescript '(:system "/opt/homebrew/bin/tsserver")))
+  ;; Enable flycheck support for vue-mode
+  ;; https://emacs-lsp.github.io/lsp-mode/page/faq/#the-flycheck-does-not-work-in-typescript-html-and-javascript-blocks-in-vue-mode-how-to-fix-that
+  (with-eval-after-load 'lsp-mode
+    (mapc #'lsp-flycheck-add-mode '(typescript-mode js-mode css-mode vue-html-mode)))
   :hook
   (lsp-completion-mode . my/lsp-mode-setup-completion)
   (yaml-ts-mode-hook . lsp)             ; npm install -g yaml-language-server
