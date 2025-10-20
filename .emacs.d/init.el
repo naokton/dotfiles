@@ -468,6 +468,8 @@ uv run env -0 2>/dev/null"))
   :custom
   (lsp-pyright-langserver-command . "basedpyright")
   (lsp-pyright-type-checking-mode . "off")
+  ;; workaround for mixed workspaces https://github.com/emacs-lsp/lsp-pyright/issues/66
+  (lsp-pyright-multi-root . nil)
   :hook
   (python-ts-mode-hook . (lambda ()
                            (require 'lsp-pyright)
