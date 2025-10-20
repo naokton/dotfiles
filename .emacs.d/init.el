@@ -198,6 +198,7 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
                              "\\`\\*tramp/.*\\*"))
   :config
   (leaf consult-flycheck :ensure t)
+  (leaf consult-lsp :ensure t)
   (leaf xref
     :custom
     (xref-prompt-for-identifier . nil)
