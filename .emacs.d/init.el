@@ -799,7 +799,7 @@ Provide only the revised email text without comments or explanations."))
   (defun my/org-refile-target ()
     (directory-files "~/Documents/org" t ".*\\.org$"))
   :custom
-  (org-refile-target . '(my/org-refile-target :maxlevel . 3)))
+  (org-refile-targets . '((my/org-refile-target :maxlevel . 3))))
 
 (leaf org-modern
   :ensure t
