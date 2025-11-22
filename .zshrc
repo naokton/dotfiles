@@ -103,6 +103,7 @@ fi
 
 # fzf
 source <(fzf --zsh)
+bindkey -r "^T"  # disable fzf-file-widget
 export FZF_DEFAULT_OPTS='--height 40% --tmux bottom,60% --layout reverse'
 
 dev(){
