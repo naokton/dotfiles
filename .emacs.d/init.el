@@ -79,6 +79,10 @@
   :custom
   (kill-whole-line . t))
 
+(leaf ibuffer
+  :hook
+  (ibuffer-mode-hook . hl-line-mode))
+
 (leaf tab-bar
   :custom
   (tab-bar-new-tab-choice . "*scratch*")
