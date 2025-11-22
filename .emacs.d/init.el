@@ -946,10 +946,10 @@ Provide only the revised email text without comments or explanations."))
     (modus-themes-bold-constructs . t)
     (modus-themes-italic-constructs . t)
     (modus-themes-headings
-     . '((1 . (1.5))
-         (2 . (1.4))
-         (3 . (1.3))
-         (4 . (1.2))
+     . '((1 . (1.35))
+         (2 . (1.3))
+         (3 . (1.2))
+         (4 . (1.1))
          (5 . (1.1))))
     (modus-operandi-palette-overrides
      . '(
