@@ -213,8 +213,8 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
     (consult-ripgrep dir (thing-at-point 'symbol)))
   :defer-config
   (consult-customize
-   consult-recent-file
-   :preview-key '(:debounce 0.2 any)))
+   consult-recent-file consult-ripgrep consult-xref
+   :preview-key '(:debounce 0.5 any)))
 
 (leaf marginalia
   :ensure t
