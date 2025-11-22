@@ -615,8 +615,6 @@ uv run env -0 2>/dev/null"))
 
 (leaf hl-todo
   :ensure t
-  :custom
-  (hl-todo-color-background . t)
   :hook
   (prog-mode-hook . hl-todo-mode)
   (sgml-mode-hook . hl-todo-mode))
