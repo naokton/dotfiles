@@ -461,7 +461,7 @@ uv run env -0 2>/dev/null"))
   ; npm i -g typescript-language-server; npm i -g typescript; brew install deno
   ((js-ts-mode-hook typescript-ts-mode-hook) . my/deno-or-js-lsp)
   (vue-mode-hook . lsp)                 ; npm i -g @vue/language-server; npm i -g typescript
-  (go-ts-mode-hook . lsp-deferred)      ; go get golang.org/x/tools/gopls@latest
+  (go-ts-mode-hook . lsp-deferred)      ; go install golang.org/x/tools/gopls@latest
   )
 
 (leaf lsp-pyright
