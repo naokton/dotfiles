@@ -1148,6 +1148,9 @@ Provide only the revised email text without comments or explanations."))
       "Insert inactive timestamp of today"
       (interactive)
       (org-insert-time-stamp (current-time) nil t)))
+  (leaf org-journal
+    :bind
+    ("C-c j" . org-journal-new-entry))
   (leaf python-pytest
     :bind
     (python-ts-mode-map
