@@ -79,10 +79,6 @@
   :custom
   (kill-whole-line . t))
 
-(leaf isearch
-  :hook
-  (isearch-update-post-hook . (lambda () (recenter))))
-
 (leaf tab-bar
   :custom
   (tab-bar-new-tab-choice . "*scratch*")
