@@ -109,7 +109,7 @@ export FZF_DEFAULT_OPTS='--height 40% --tmux bottom,60% --layout reverse'
 dev(){
     # Select from all git repositories under ~/Documents
     local repo
-    repo=$(fd -td -H -E 'node_modules' -E '.venv' -E '.git/**' '^.git$' ~/git ~/Documents -d10 --prune --exec dirname |
+    repo=$(fd -H -E 'node_modules' -E '.venv' -E '.git/**' '^.git$' ~/git ~/Documents -d10 --prune --exec dirname |
             fzf --cycle
         )
     [[ -n "$repo" ]] && cd "$repo"
