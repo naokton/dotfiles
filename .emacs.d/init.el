@@ -1196,9 +1196,11 @@ Provide only the revised email text without comments or explanations."))
     (dired-mode-map
      ("r" . wdired-change-to-wdired-mode)
      ("C-o" . nil)))
-  (leaf lsp
+  (leaf lsp-mode
     :bind
-    ("M-I" . lsp-ui-doc-show))
+    ("M-I" . lsp-ui-doc-show)
+    (lsp-mode-map
+     ([remap xref-find-apropos] . consult-lsp-symbols)))
   (leaf vterm
     :bind
     ("<f2>" . vterm-toggle)
