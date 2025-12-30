@@ -507,6 +507,7 @@ uv run env -0 2>/dev/null"))
   (recentf-exclude . '("\\.elc$"
                        "\\.pyc$"
                        "\\.cache$"
+                       "~/Documents/org/journal/.+$"
                        ))
   :config
   (recentf-mode 1))
