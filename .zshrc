@@ -161,16 +161,6 @@ if command -v uv >/dev/null 2>&1; then
     eval "$(uvx --generate-shell-completion zsh)"
 fi
 
-# Fix completions for uv run.
-_uv_run_mod() {
-    if [[ "$words[2]" == "run" && "$words[CURRENT]" != -* ]]; then
-        _arguments '*:filename:_files'
-    else
-        _uv "$@"
-    fi
-}
-compdef _uv_run_mod uv
-
 # nvm node version manager
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
