@@ -170,6 +170,7 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
                              "\\`\\*Disabled Command\\*"
                              "\\`\\*lsp"
                              "\\`\\*pyright"
+                             "\\`\\*ty-ls"
                              "\\`\\*ruff"
                              "\\`\\*yamlls"
                              "\\`\\*gopls"
@@ -458,23 +459,24 @@ uv run env -0 2>/dev/null"))
   (sh-ts-mode-hook . lsp)               ; npm i -g bash-language-server
   (bash-ts-mode-hook . lsp)             ; npm i -g bash-language-server
   ;; (python-ts-mode-hook . lsp-deferred)  ; uv tool install 'python-lsp-server'
+  (python-ts-mode-hook . lsp)           ; uv tool install ty
   ; npm i -g typescript-language-server; npm i -g typescript; brew install deno
   ((js-ts-mode-hook typescript-ts-mode-hook) . my/deno-or-js-lsp)
   (vue-mode-hook . lsp)                 ; npm i -g @vue/language-server; npm i -g typescript
   (go-ts-mode-hook . lsp-deferred)      ; go install golang.org/x/tools/gopls@latest
   )
 
-(leaf lsp-pyright
-  :ensure t   ; and uv tool install basedpyright
-  :custom
-  (lsp-pyright-langserver-command . "basedpyright")
-  (lsp-pyright-type-checking-mode . "off")
-  ;; workaround for mixed workspaces https://github.com/emacs-lsp/lsp-pyright/issues/66
-  (lsp-pyright-multi-root . nil)
-  :hook
-  (python-ts-mode-hook . (lambda ()
-                           (require 'lsp-pyright)
-                           (lsp-deferred))))
+;; (leaf lsp-pyright
+;;   :ensure t   ; and uv tool install basedpyright
+;;   :custom
+;;   (lsp-pyright-langserver-command . "basedpyright")
+;;   (lsp-pyright-type-checking-mode . "off")
+;;   ;; workaround for mixed workspaces https://github.com/emacs-lsp/lsp-pyright/issues/66
+;;   (lsp-pyright-multi-root . nil)
+;;   :hook
+;;   (python-ts-mode-hook . (lambda ()
+;;                            (require 'lsp-pyright)
+;;                            (lsp-deferred))))
 
 (leaf lsp-ui
   :ensure t
