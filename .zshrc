@@ -168,3 +168,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 [ -f "$HOME/.ghcup/env" ] && . "$HOME/.ghcup/env" # ghcup-env
+
+# WSL specifics
+if [ -n "$WSL_DISTRO_NAME" ]; then
+    export GDK_DPI_SCALE=1.2
+fi
