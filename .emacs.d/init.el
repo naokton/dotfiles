@@ -939,7 +939,7 @@ Provide only the revised email text without comments or explanations."))
 (leaf *font-config
   :config
   (set-language-environment "Japanese")
-  (create-fontset-from-ascii-font "Cica-16" nil "mydefault") ; Create a fontset for ASCII
+  (create-fontset-from-ascii-font "Cica-16:weight=normal:slant=normal" nil "mydefault") ; Create a fontset for ASCII
   (set-fontset-font "fontset-mydefault" nil "Cica") ; Extend coverage for other charset
   (set-fontset-font "fontset-mydefault" 'emoji "Apple Color Emoji") ; Override for emojis
   (set-fontset-font "fontset-mydefault" 'nil "Iosevka Term" nil 'append) ; Fallback
