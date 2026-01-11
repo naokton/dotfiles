@@ -66,6 +66,13 @@
   :config
   (setenv "LSP_USE_PLISTS" "true"))
 
+(leaf *wslg-clipboard
+  :when (eq window-system 'pgtk)
+  :setq
+  ;; enable yanked value on WSLg to Windows
+  ;; https://www.lukas-barth.net/blog/emacs-wsl-copy-clipboard
+  (select-active-regions . nil))
+
 ;;;;----------------------------------------------------------------
 ;;;; Utilities
 ;;;;----------------------------------------------------------------
