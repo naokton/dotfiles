@@ -471,7 +471,9 @@ uv run env -0 2>/dev/null"))
   ((js-ts-mode-hook typescript-ts-mode-hook) . my/deno-or-js-lsp)
   (vue-mode-hook . lsp)                 ; npm i -g @vue/language-server; npm i -g typescript
   (go-ts-mode-hook . lsp-deferred)      ; go install golang.org/x/tools/gopls@latest
+  (rust-ts-mode-hook . lsp-deferred)    ; download and install rust-analyzer manually
   )
+
 
 ;; (leaf lsp-pyright
 ;;   :ensure t   ; and uv tool install basedpyright
