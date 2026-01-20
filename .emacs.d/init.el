@@ -1097,13 +1097,6 @@ Provide only the revised email text without comments or explanations."))
     (line-number-mode 0)
     (column-number-mode 0))
 
-  (leaf nyan-mode
-    :ensure t
-    :custom
-    (nyan-bar-length . 16)
-    :config
-    (nyan-mode)))
-
 ;;;;----------------------------------------------------------------
 ;;;; Keys
 ;;;;----------------------------------------------------------------
