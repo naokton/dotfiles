@@ -208,6 +208,8 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   (leaf consult-flycheck :ensure t)
   (leaf consult-lsp :ensure t)
   (leaf xref
+    :hook
+    (xref-after-return-hook . recenter)
     :custom
     (xref-prompt-for-identifier . nil)
     (xref-show-xrefs-function . #'consult-xref)
