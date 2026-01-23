@@ -1097,7 +1097,7 @@ Provide only the revised email text without comments or explanations."))
     :config
     (doom-modeline-mode 1)
     (line-number-mode 0)
-    (column-number-mode 0))
+    (column-number-mode 0)))
 
 ;;;;----------------------------------------------------------------
 ;;;; Keys
