@@ -10,26 +10,12 @@ add_path(){
 ADDITIONAL_PATH=(
     /usr/local/bin
     /usr/local/sbin
-    $HOME/go/bin
-    /usr/local/opt/gnu-sed/libexec/gnubin
-    /usr/local/opt/texinfo/bin
-    /usr/local/opt/qt/bin
-    /usr/local/opt/libressl/bin
-    /usr/local/opt/python/libexec/bin
-    /usr/local/opt/python@3.8/bin
-    /usr/local/opt/python@3.9/bin
-    /usr/local/opt/python@3.11/libexec/bin
-    /usr/local/opt/python@3.12/libexec/bin
     /opt/homebrew/opt/openjdk/bin
     /opt/homebrew/opt/coreutils/libexec/gnubin
     /opt/homebrew/opt/gnu-sed/libexec/gnubin
     /opt/homebrew/opt/gawk/libexec/gnubin
     /opt/homebrew/opt/make/libexec/gnubin
-    $HOME/Library/Python/3.8/bin
-    $HOME/Library/Python/3.9/bin
-    $HOME/Library/Python/3.11/bin
-    $HOME/Library/Python/3.12/bin
-    $HOME/.poetry/bin
+    $HOME/go/bin
     $HOME/.local/bin
 )
 
