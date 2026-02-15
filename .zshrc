@@ -136,7 +136,7 @@ makee(){
     [[ -n $target ]] && make "$target"
 }
 
-
+# local configurations
 if [[ -f ${HOME}/.zshrc.local ]]; then
     source ${HOME}/.zshrc.local
 fi
@@ -147,11 +147,10 @@ if command -v uv >/dev/null 2>&1; then
     eval "$(uvx --generate-shell-completion zsh)"
 fi
 
-# nvm node version manager
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use  # This loads nvm when you use nvm first
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# fnm
+if command -v fnm >/dev/null 2>&1; then
+    eval "$(fnm env --use-on-cd --shell zsh)"
+fi
 
 [ -f "$HOME/.ghcup/env" ] && . "$HOME/.ghcup/env" # ghcup-env
 
