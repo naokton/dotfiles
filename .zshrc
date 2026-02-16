@@ -147,9 +147,9 @@ if command -v uv >/dev/null 2>&1; then
     eval "$(uvx --generate-shell-completion zsh)"
 fi
 
-# fnm
-if command -v fnm >/dev/null 2>&1; then
-    eval "$(fnm env --use-on-cd --shell zsh)"
+# mise
+if command -v mise >/dev/null 2>&1; then
+    eval "$(mise activate zsh)"
 fi
 
 [ -f "$HOME/.ghcup/env" ] && . "$HOME/.ghcup/env" # ghcup-env
