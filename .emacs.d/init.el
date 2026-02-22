@@ -687,7 +687,7 @@ uv run env -0 2>/dev/null"))
   ;; prevent color name strings, e.g. red, blue, etc., from rainbowed
   (rainbow-x-colors . nil))
 
-(leaf electric-pair-mode
+(leaf elec-pair
   :config
   (electric-pair-mode 1))
 
