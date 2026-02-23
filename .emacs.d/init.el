@@ -550,8 +550,6 @@ uv run env -0 2>/dev/null"))
 
 (leaf copilot
   :ensure t
-  :req "dash" "s" "editorconfig" "jsonrpc >= 1.0.24"
-  :require t
   :hook
   (python-ts-mode-hook . copilot-mode)
   (go-ts-mode-hook . copilot-mode)
