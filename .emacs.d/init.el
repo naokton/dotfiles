@@ -1069,15 +1069,19 @@ Provide only the revised email text without comments or explanations."))
   (tab-width . 4)            ; default is 8
   (fill-column . 100)
   :hook
-  (prog-mode-hook . display-line-numbers-mode)
-  (sgml-mode-hook . display-line-numbers-mode)
+  ;; (prog-mode-hook . display-line-numbers-mode)
+  ;; (sgml-mode-hook . display-line-numbers-mode)
   ;; Use :init instead of :config when using with :hook
   ;; :config with :hook adds eval-after-load and makes unintended behavior
   :init
   (show-paren-mode t)
   (leaf variable-pitch
     :hook (markdown-mode-hook org-mode-hook))
-  (leaf perfect-margin :ensure t)
+  (leaf perfect-margin
+    :ensure t
+    :require t
+    :config
+    (perfect-margin-mode t))
   (leaf auto-highlight-symbol
     :ensure t
     :require t
