@@ -31,6 +31,8 @@ alias ll="ls --color=auto -l"
 alias la="ls --color=auto -la"
 if [ -e "/Applications/Dev/Emacs.app" ]; then
     alias emacsclient="/Applications/Dev/Emacs.app/Contents/MacOS/bin/emacsclient"
+    alias em-t="/Applications/Dev/Emacs.app/Contents/MacOS/bin/emacsclient -t"
+    alias em-w="/Applications/Dev/Emacs.app/Contents/MacOS/bin/emacsclient -r"
 fi
 
 # completion
