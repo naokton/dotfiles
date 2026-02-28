@@ -515,7 +515,8 @@ uv run env -0 2>/dev/null"))
   :custom
   (magit-diff-refine-hunk . 'all)
   (magit-buffer-name-format . "*%x%M%v: %t%x") ; prefix with "*" for buffer filtering by consult
-  (magit-display-buffer-function . 'magit-display-buffer-same-window-except-diff-v1))
+  (magit-display-buffer-function . 'magit-display-buffer-same-window-except-diff-v1)
+  (magit-format-file-function . 'magit-format-file-nerd-icons))
 
 (leaf recentf
   :custom
