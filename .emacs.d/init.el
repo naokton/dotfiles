@@ -928,8 +928,7 @@ Provide only the revised email text without comments or explanations."))
 
 (leaf window
   :custom
-  ; split to bottom if window height is at least this value
-  (split-height-threshold . 999))
+  (split-window-preferred-direction . 'horizontal))
 
 (leaf *only-ns
   :when (eq window-system 'ns)
