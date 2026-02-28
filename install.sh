@@ -43,6 +43,7 @@ main() {
         ".config/bat/config"
         ".config/ghostty/config"
         ".emacs.d/init.el"
+        ".hammerspoon"
         ".ripgreprc"
         ".screenrc"
         ".tmux.conf"
