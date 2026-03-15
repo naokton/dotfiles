@@ -171,6 +171,11 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   :custom
   (consult-ripgrep-args . "rg --null --line-buffered --color=never --max-columns=1000 --path-separator /\
                            --smart-case --no-heading --with-filename --line-number --search-zip --sort=path") ; add --sort=path
+  (consult-buffer-sources . '(consult-source-buffer
+                              consult-source-hidden-buffer
+                              consult-source-modified-buffer
+                              consult-source-other-buffer))
+  (consult-project-buffer-sources . '(consult-source-project-buffer consult-source-project-buffer-hidden))
   (consult-buffer-filter . '("\\` "
                              "\\`:~"
                              "\\`\\*Messages\\*"
