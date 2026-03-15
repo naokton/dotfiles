@@ -570,6 +570,9 @@ uv run env -0 2>/dev/null"))
   (copilot-chat-default-model . "claude-sonnet-4.6")
   (copilot-chat-commit-model . "gpt-4.1"))
 
+(leaf agent-shell
+  :ensure t)
+
 (leaf which-key
   :ensure t
   :hook
