@@ -270,6 +270,12 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
 (leaf embark-consult
   :ensure t)
 
+(leaf avy
+  :ensure t
+  :custom
+  (avy-keys . '(?a ?o ?e ?u ?i ?d ?h ?t ?n)) ; dvorak adjustment
+  (avy-timeout-seconds . 0.2))
+
 (leaf undo-fu
   :ensure t
   ;; undo-limit/undo-strong-limit should be set when startup. If undo-limit is
@@ -1202,6 +1208,9 @@ Provide only the revised email text without comments or explanations."))
   (leaf embark
     :bind
     ("s-e" . embark-act))
+  (leaf avy
+    :bind
+    ("C-;" . avy-goto-char-timer))
   (leaf marginalia
     :bind (minibuffer-local-map
            ("M-A" . marginalia-cycle)))
