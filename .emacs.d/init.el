@@ -37,6 +37,12 @@
 (leaf *path
   :config
   (add-to-list 'load-path "~/.emacs.d/manual-lisp")
+  (defun my/copy-file-path ()
+    "Copy the current buffer file path to the clipboard."
+    (interactive)
+    (when buffer-file-name
+      (kill-new (file-truename buffer-file-name))
+      (message "Copied file path: %s" (file-truename buffer-file-name))))
   (leaf exec-path-from-shell
     :ensure t
     :config
