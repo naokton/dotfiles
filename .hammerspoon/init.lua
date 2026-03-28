@@ -1,5 +1,4 @@
 require("my.shared")
-require("my.paperwm_config")
 require("my.communication_app")
 require("my.misc")
 require("my.sandbox")

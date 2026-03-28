@@ -1,3 +1,13 @@
+-- =================================================
+-- Swim
+hs.loadSpoon("Swim")
+spoon.Swim:start()
+
+-- =================================================
+-- WarpMouse
+WarpMouse = hs.loadSpoon("WarpMouse")
+WarpMouse:start()
+
 -- ==================================================
 -- reload
 hs.hotkey.bind({"cmd", "alt", "ctrl"}, "r", function()
@@ -28,7 +38,7 @@ fxWatcher = hs.application.watcher.new(function(appName, eventType, appObject)
     end
 end)
 
-fxWatcher:start()
+-- fxWatcher:start()
 
 -- ==================================================
 -- debug window info
