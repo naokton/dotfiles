@@ -1,3 +1,11 @@
+-- ==================================================
+-- reload
+hs.hotkey.bind({"cmd", "alt", "ctrl"}, "r", function()
+    hs.notify.show("Hammerspoon", "Reloading config", "")
+    hs.reload()
+end)
+hs.notify.show("Hammerspoon", "Config loaded", "")
+
 -- ================================================================
 -- Translate Ctrl+Shift+, and . to prev/next tab in Firefox and Zen
 local apps = {Firefox = true, Zen = true}
@@ -26,8 +34,8 @@ fxWatcher:start()
 -- debug window info
 local function debug_window(win)
  print("=== Window Info ===")
-    print("Title: " .. (win:title() or "N/A"))
     print("Application: " .. (win:application():name() or "N/A"))
+    print("Title: " .. (win:title() or "N/A"))
     print("ID: " .. (win:id() or "N/A"))
     print("Screen: " .. hs.inspect(win:screen():name()))
     print("Is Maximizable: " .. tostring(win:isMaximizable()))
