@@ -1140,6 +1140,8 @@ Provide only the revised email text without comments or explanations."))
      ("C-h" . isearch-delete-char)))
   (leaf *misc
     :bind
+    ("C-S-p" . (lambda () (interactive) (previous-line 3)))
+    ("C-S-n" . (lambda () (interactive) (next-line 3)))
     ("M-h" . backward-kill-word)
     ("C-x C-k" . kill-current-buffer)
     ("C-x C-b" . ibuffer)
