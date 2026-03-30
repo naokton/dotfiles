@@ -40,6 +40,7 @@ main() {
     local files=(
         ".bashrc"
         ".config/pycodestyle"
+        ".config/uv"
         ".config/bat/config"
         ".config/ghostty/config"
         ".emacs.d/init.el"
