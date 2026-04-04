@@ -784,7 +784,10 @@ Provide only the revised email text without comments or explanations."))
     :hook
     (dired-mode-hook . hl-line-mode)
     (dired-mode-hook . (lambda () (display-line-numbers-mode -1))))
-  (leaf dired-sidebar :ensure t)
+  (leaf dired-sidebar
+    :ensure t
+    :custom
+    (dired-sidebar-theme . 'nerd-icons))
   (leaf nerd-icons-dired
     :ensure t
     :hook dired-mode-hook))
