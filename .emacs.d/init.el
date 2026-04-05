@@ -1101,6 +1101,8 @@ Provide only the revised email text without comments or explanations."))
   (leaf perfect-margin
     :ensure t
     :require t
+    :custom
+    (perfect-margin-ignore-regexps . '("^minibuf"))
     :config
     (perfect-margin-mode t))
   (leaf auto-highlight-symbol
