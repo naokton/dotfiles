@@ -69,6 +69,7 @@ PROMPT="%B[%F{green}%D{%H:%M:%S}%f %F{cyan}%n%f@%m] %F{green}%2~%f %#%b "
 
 # Misc.
 export MANWIDTH=100
+setopt INTERACTIVE_COMMENTS  # Allow using # comment in interactive shell
 
 if command -v bat 1>/dev/null 2>&1; then
     export MANPAGER="sh -c 'sed -u -e \"s/\\x1B\[[0-9;]*m//g; s/.\\x08//g\" | bat -p -lman'"
