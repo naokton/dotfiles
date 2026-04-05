@@ -16,6 +16,8 @@ ADDITIONAL_PATH=(
     /opt/homebrew/opt/gawk/libexec/gnubin
     /opt/homebrew/opt/make/libexec/gnubin
     $HOME/go/bin
+    $HOME/.opencode/bin
+    $HOME/.local/share/fnm
     $HOME/.local/bin
 )
 
