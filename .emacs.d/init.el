@@ -1125,7 +1125,7 @@ Provide only the revised email text without comments or explanations."))
     (doom-modeline-env-version . nil)
     :config
     (doom-modeline-mode 1)
-    (line-number-mode 0)
+    (line-number-mode 1)
     (column-number-mode 0)))
 
 ;;;;----------------------------------------------------------------
