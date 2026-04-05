@@ -127,9 +127,16 @@ bindkey -r "^T"  # disable fzf-file-widget
 export FZF_DEFAULT_OPTS='--height 40% --tmux bottom,60% --layout reverse'
 
 dev(){
-    # Select from all git repositories under ~/Documents
+    # Select from all git repositories under search dirs
     local repo
-    repo=$(fd -H -E 'node_modules' -E '.venv' -E '.git/**' '^.git$' ~/src ~/Documents -d10 --prune --exec dirname |
+    local -a candidates=(~/src ~/Documents)
+    local -a search_dirs=()
+    for d in $candidates; do
+        [[ -d "$d" ]] && search_dirs+=("$d")
+    done
+    [[ ${#search_dirs[@]} -eq 0 ]] && return 1
+
+    repo=$(fd -H -E 'node_modules' -E '.venv' -E '.git/**' '^.git$' $search_dirs -d10 --prune --exec dirname |
             fzf --cycle
         )
     [[ -n "$repo" ]] && cd "$repo"
