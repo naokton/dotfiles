@@ -46,7 +46,7 @@
   (leaf exec-path-from-shell
     :ensure t
     :config
-    (when (memq window-system '(mac ns x))
+    (when (display-graphic-p)
       (exec-path-from-shell-initialize))))
 
 (leaf *custom-export
