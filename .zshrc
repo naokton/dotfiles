@@ -157,7 +157,7 @@ fcd(){
 
 makee(){
     if [[ ! -f Makefile ]]; then
-        >&2 echo "No Makefile found" >2
+        >&2 echo "No Makefile found" >&2
         return 1
     fi
 
