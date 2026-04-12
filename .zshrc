@@ -122,60 +122,62 @@ if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
 fi
 
 # fzf
-source <(fzf --zsh)
-bindkey -r "^T"  # disable fzf-file-widget
-export FZF_DEFAULT_OPTS='--height 40% --tmux bottom,60% --layout reverse'
+if command -v fzf >/dev/null 2>&1; then
+    source <(fzf --zsh)
+    bindkey -r "^t"  # disable fzf-file-widget
+    export fzf_default_opts='--height 40% --tmux bottom,60% --layout reverse'
 
-dev(){
-    # Select from all git repositories under search dirs
-    local repo
-    local -a candidates=(~/src ~/Documents)
-    local -a search_dirs=()
-    for d in $candidates; do
-        [[ -d "$d" ]] && search_dirs+=("$d")
-    done
-    [[ ${#search_dirs[@]} -eq 0 ]] && return 1
+    dev(){
+        # Select from all git repositories under search dirs
+        local repo
+        local -a candidates=(~/src ~/Documents)
+        local -a search_dirs=()
+        for d in $candidates; do
+            [[ -d "$d" ]] && search_dirs+=("$d")
+        done
+        [[ ${#search_dirs[@]} -eq 0 ]] && return 1
 
-    repo=$(fd -H -E 'node_modules' -E '.venv' -E '.git/**' '^.git$' $search_dirs -d10 --prune --exec dirname |
-            fzf --cycle
-        )
-    [[ -n "$repo" ]] && cd "$repo"
-}
+        repo=$(fd -H -E 'node_modules' -E '.venv' -E '.git/**' '^.git$' $search_dirs -d10 --prune --exec dirname |
+                fzf --cycle
+            )
+        [[ -n "$repo" ]] && cd "$repo"
+    }
 
-sf(){
-    # Select ssh host from known hosts
-    local host
-    host=$(awk '{print $1}' ~/.ssh/known_hosts | \
-           sed 's/,.*//' | uniq | fzf --cycle --prompt="SSH Host> ")
-    if [[ -n $host ]]; then
-        print -z "ssh $host"
-    fi
-}
+    sf(){
+        # Select ssh host from known hosts
+        local host
+        host=$(awk '{print $1}' ~/.ssh/known_hosts | \
+               sed 's/,.*//' | uniq | fzf --cycle --prompt="SSH Host> ")
+        if [[ -n $host ]]; then
+            print -z "ssh $host"
+        fi
+    }
 
-fcd(){
-    local dir
-    dir=$(fc -nl 1 |
-            awk '/^cd /&&!a[$0]++' |
-            cut -d' ' -f2- |
-            egrep -v '^([./]*|-)$' |
-            fzf --tac --cycle --no-sort
-        )
-    [[ -n $dir ]] && cd "$dir"
-}
+    fcd(){
+        local dir
+        dir=$(fc -nl 1 |
+                awk '/^cd /&&!a[$0]++' |
+                cut -d' ' -f2- |
+                egrep -v '^([./]*|-)$' |
+                fzf --tac --cycle --no-sort
+            )
+        [[ -n $dir ]] && cd "$dir"
+    }
 
-makee(){
-    if [[ ! -f Makefile ]]; then
-        >&2 echo "No Makefile found" >&2
-        return 1
-    fi
+    makee(){
+        if [[ ! -f Makefile ]]; then
+            >&2 echo "No Makefile found" >&2
+            return 1
+        fi
 
-    local target
-    target=$(grep -E '^[a-zA-Z0-9_-]+:([^=]|$)' Makefile |
-                 awk -F: '{print $1}' |
-                 fzf
-          )
-    [[ -n $target ]] && make "$target"
-}
+        local target
+        target=$(grep -E '^[a-zA-Z0-9_-]+:([^=]|$)' Makefile |
+                     awk -F: '{print $1}' |
+                     fzf
+              )
+        [[ -n $target ]] && make "$target"
+    }
+fi
 
 # local configurations
 if [[ -f ${HOME}/.zshrc.local ]]; then
