@@ -64,8 +64,15 @@ setopt HIST_IGNORE_SPACE
 autoload -Uz colors && colors
 
 # PS1
+# Set display host: use WSL distro name if available, otherwise real hostname
+if [ -n "$WSL_DISTRO_NAME" ]; then
+    PROMPT_HOST="wsl($WSL_DISTRO_NAME)"
+else
+    PROMPT_HOST="%m"
+fi
+
 # [11:49:31 user@host] pdir/dir %
-PROMPT="%B[%F{green}%D{%H:%M:%S}%f %F{cyan}%n%f@%m] %F{green}%2~%f %#%b "
+PROMPT="%B[%F{green}%D{%H:%M:%S}%f %F{cyan}%n%f@${PROMPT_HOST}] %F{green}%2~%f %#%b "
 
 # Misc.
 export MANWIDTH=100
