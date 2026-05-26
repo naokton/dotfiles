@@ -209,9 +209,9 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
                              "\\`\\*Diff"
                              "\\`\\*Ilist\\*"
                              "\\`\\*gptel-diff"
-                             "\\`\\*copilot events"
-                             "\\`\\*copilot-language-server-log\\*"
-                             "\\`\\*[Cc]opilot-chat-"
+                             ;; "\\`\\*copilot events"
+                             ;; "\\`\\*copilot-language-server-log\\*"
+                             ;; "\\`\\*[Cc]opilot-chat-"
                              "\\`\\*Async-native-compile-log\\*"
                              "\\`\\*Completions\\*"
                              "\\`\\*Multiple Choice Help\\*"
@@ -567,20 +567,20 @@ uv run env -0 2>/dev/null"))
                             ;; (add-to-list 'newlist "dired-sidebar-mode")
                             (add-to-list 'newlist "vterm-mode"))))
 
-(leaf copilot
-  :ensure t
-  :hook
-  (python-ts-mode-hook . copilot-mode)
-  (go-ts-mode-hook . copilot-mode)
-  :custom
-  (copilot-idle-delay . 0.1)
-  )
+;; (leaf copilot
+;;   :ensure t
+;;   :hook
+;;   (python-ts-mode-hook . copilot-mode)
+;;   (go-ts-mode-hook . copilot-mode)
+;;   :custom
+;;   (copilot-idle-delay . 0.1)
+;;   )
 
-(leaf copilot-chat
-  :ensure t
-  :custom
-  (copilot-chat-default-model . "claude-sonnet-4.6")
-  (copilot-chat-commit-model . "gpt-4.1"))
+;; (leaf copilot-chat
+;;   :ensure t
+;;   :custom
+;;   (copilot-chat-default-model . "claude-sonnet-4.6")
+;;   (copilot-chat-commit-model . "gpt-4.1"))
 
 (leaf agent-shell
   :ensure t)
@@ -1249,17 +1249,17 @@ Provide only the revised email text without comments or explanations."))
      ;; ([remap projectile-previous-project-buffer] . vterm-toggle-forward)
      ;; ([remap projectile-next-project-buffer] . vterm-toggle-backward)
      ))
-  (leaf copilot
-    :bind
-    ("C-c M-f" . 'copilot-complete)
-    (copilot-completion-map
-     ("C-c M-f" . 'copilot-complete)
-     ("C-g" . 'copilot-clear-overlay)
-     ("M-n" . 'copilot-next-completion)
-     ("M-p" . 'copilot-previous-completion)
-     ("C-<return>" . 'copilot-accept-completion)
-     ("M-f" . 'copilot-accept-completion-by-word)
-     ("M-<return>" . 'copilot-accept-completion-by-line)))
+  ;; (leaf copilot
+  ;;   :bind
+  ;;   ("C-c M-f" . 'copilot-complete)
+  ;;   (copilot-completion-map
+  ;;    ("C-c M-f" . 'copilot-complete)
+  ;;    ("C-g" . 'copilot-clear-overlay)
+  ;;    ("M-n" . 'copilot-next-completion)
+  ;;    ("M-p" . 'copilot-previous-completion)
+  ;;    ("C-<return>" . 'copilot-accept-completion)
+  ;;    ("M-f" . 'copilot-accept-completion-by-word)
+  ;;    ("M-<return>" . 'copilot-accept-completion-by-line)))
   (leaf transpose-frame
     :bind
     ("C-x C-t" . 'transpose-frame))
