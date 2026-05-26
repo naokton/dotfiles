@@ -493,7 +493,7 @@ uv run env -0 2>/dev/null"))
   (python-ts-mode-hook . lsp)           ; uv tool install ty
   ; npm i -g typescript-language-server; npm i -g typescript; brew install deno
   ((js-ts-mode-hook typescript-ts-mode-hook) . my/deno-or-js-lsp)
-  (vue-mode-hook . lsp)                 ; npm i -g @vue/language-server; npm i -g typescript
+  (vue-mode-hook . lsp)                 ; npm i -g @vue/language-server typescript typescript-language-server
   (go-ts-mode-hook . lsp-deferred)      ; go install golang.org/x/tools/gopls@latest
   (rust-ts-mode-hook . lsp-deferred)    ; download and install rust-analyzer manually
   )
