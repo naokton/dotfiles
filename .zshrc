@@ -132,7 +132,7 @@ fi
 if command -v fzf >/dev/null 2>&1; then
     source <(fzf --zsh)
     bindkey -r "^t"  # disable fzf-file-widget
-    export fzf_default_opts='--height 40% --tmux bottom,60% --layout reverse'
+    export FZF_DEFAULT_OPTS='--height 40% --tmux bottom,60% --layout reverse'
 
     dev(){
         # Select from all git repositories under search dirs
