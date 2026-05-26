@@ -1162,10 +1162,6 @@ Provide only the revised email text without comments or explanations."))
     :bind
     ("C-<f3>" . symbol-overlay-put)
     ("C-S-<f3>" . symbol-overlay-remove-all))
-  (leaf tab-bar
-    :bind
-    ("C->" . tab-next)
-    ("C-<" . tab-previous))
   (leaf undo-fu
     :bind
     ("C-z" . nil)
