@@ -9,6 +9,7 @@ green='\033[38;2;80;200;120m'
 orange='\033[38;2;255;176;85m'
 yellow='\033[38;2;230;200;0m'
 red='\033[38;2;235;87;87m'
+dim='\033[2m'
 reset='\033[0m'
 sep="${reset} │ ${cyan}"
 
@@ -17,11 +18,27 @@ fmt_time() {
     [ -z "$1" ] && return
     [ "$1" -le 99 ] && { echo "${1}m"; return; }
     h=$(($1 / 60))
-    [ "$h" -ge 24 ] && echo "$((h / 24))d $((h % 24))h" || echo "${h}h"
+    [ "$h" -ge 24 ] && echo "$((h / 24))d$((h % 24))h" || echo "${h}h"
 }
 
 # percentage -> color (cyan / yellow / red)
 pct_color() { [ "$1" -ge 80 ] && printf '%b' "$red" || { [ "$1" -ge 50 ] && printf '%b' "$yellow" || printf '%b' "$cyan"; }; }
+
+# percentage -> single block character ▁▂▃▄▅▆▇█
+pct_block() {
+    local blocks=(▁ ▂ ▃ ▄ ▅ ▆ ▇ █) idx=$(( $1 / 13 ))
+    [ "$idx" -gt 7 ] && idx=7
+    printf '%s' "${blocks[$idx]}"
+}
+
+# bar graph: make_bar <pct> <color>  →  filled █ (colored) + empty ░ (dim)
+make_bar() {
+    local pct=$1 color=$2 filled empty fill pad
+    filled=$(( pct / 5 )); [ "$pct" -gt 0 ] && [ "$filled" -eq 0 ] && filled=1; [ "$filled" -gt 20 ] && filled=20
+    empty=$(( 20 - filled ))
+    printf -v fill "%${filled}s"; printf -v pad "%${empty}s"
+    printf '%b' "${color}${fill// /█}${reset}${dim}${pad// /░}${reset}"
+}
 
 add() { [ -z "$out" ] && out+="$1" || out+="${sep}$1"; }
 
@@ -78,7 +95,7 @@ if [ -n "$used" ]; then
     if   [ "$ctx_pct" -ge 80 ]; then ctx_color="$red"
     elif [ "$ctx_pct" -ge 50 ]; then ctx_color="$orange"
     else ctx_color="$cyan"; fi
-    mblock+="${mblock:+ }${ctx_color}[${ctx_pct}%]${cyan}"
+    mblock+="${mblock:+ }$(make_bar "$ctx_pct" "$ctx_color") ${ctx_color}${ctx_pct}%${cyan}"
 fi
 [ -n "$mblock" ] && add "$mblock"
 
@@ -87,7 +104,7 @@ if [ -n "$rl5" ]; then
     f=$(printf "%.0f" "$rl5")
     t5=""
     [ -n "$rl5_reset" ] && [ "$rl5_reset" -gt "$now" ] 2>/dev/null && t5=$(fmt_time $(( (rl5_reset - now) / 60 )))
-    add "5h $(pct_color "$f")[${f}%]${cyan}${t5:+ ↻${t5}}"
+    add "$(pct_color "$f")$(pct_block "$f") ${f}%${cyan}${t5:+ ↻${t5}/5h}"
 fi
 
 # Rate limits — 7d
@@ -95,7 +112,7 @@ if [ -n "$rl7" ]; then
     s=$(printf "%.0f" "$rl7")
     t7=""
     [ -n "$rl7_reset" ] && [ "$rl7_reset" -gt "$now" ] 2>/dev/null && t7=$(fmt_time $(( (rl7_reset - now) / 60 )))
-    add "7d $(pct_color "$s")[${s}%]${cyan}${t7:+ ↻${t7}}"
+    add "$(pct_color "$s")$(pct_block "$s") ${s}%${cyan}${t7:+ ↻${t7}/7d}"
 fi
 
 # Cache hit rate
