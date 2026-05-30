@@ -98,6 +98,8 @@ branch=""
 if [ -n "$branch" ]; then
     proj=$(git -C "$cwd" --no-optional-locks rev-parse --show-toplevel 2>/dev/null)
     add "${proj##*/} ⎇ ${branch}"
+elif [ -n "$cwd" ]; then
+    add "${cwd##*/}"
 fi
 
 # Model block — model + effort + agent + context%, grouped as one unit
