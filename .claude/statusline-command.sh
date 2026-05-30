@@ -9,7 +9,6 @@ green='\033[38;2;80;200;120m'
 orange='\033[38;2;255;176;85m'
 yellow='\033[38;2;230;200;0m'
 red='\033[38;2;235;87;87m'
-dim='\033[2m'
 reset='\033[0m'
 sep="${reset} │ ${cyan}"
 
@@ -31,13 +30,28 @@ pct_block() {
     printf '%s' "${blocks[$idx]}"
 }
 
-# bar graph: make_bar <pct> <color>  →  filled █ (colored) + empty ░ (dim)
+# bar graph: make_bar <pct> <color>
+#   filled cells  → █ fg=color
+#   boundary cell → partial block fg=color bg=track
+#   empty cells   → █ fg=track
 make_bar() {
-    local pct=$1 color=$2 filled empty fill pad
-    filled=$(( pct / 5 )); [ "$pct" -gt 0 ] && [ "$filled" -eq 0 ] && filled=1; [ "$filled" -gt 20 ] && filled=20
-    empty=$(( 20 - filled ))
-    printf -v fill "%${filled}s"; printf -v pad "%${empty}s"
-    printf '%b' "${color}${fill// /█}${reset}${dim}${pad// /░}${reset}"
+    local pct=$1 color=$2 total=10
+    local sub=$(( pct * total * 8 / 100 ))
+    [ "$pct" -gt 0 ] && [ "$sub" -eq 0 ] && sub=1
+    local full=$(( sub / 8 ))
+    local part=$(( sub % 8 ))
+    local empty=$(( total - full - (part > 0) ))
+
+    local track='\033[38;2;40;42;54m'
+    local bg_track='\033[48;2;40;42;54m'
+    local partials=(' ' '▏' '▎' '▍' '▌' '▋' '▊' '▉')
+
+    local fill pad mid=""
+    printf -v fill "%${full}s";  fill="${fill// /█}"
+    printf -v pad  "%${empty}s"; pad="${pad// /█}"
+    [ "$part" -gt 0 ] && mid="${bg_track}${partials[$part]}"
+
+    printf '%b' "${color}${fill}${mid}${reset}${track}${pad}${reset}"
 }
 
 add() { [ -z "$out" ] && out+="$1" || out+="${sep}$1"; }
@@ -91,7 +105,7 @@ mblock="$model"
 [ -n "$effort" ] && mblock+="${mblock:+ }$effort"
 [ -n "$agent" ]  && mblock+="${mblock:+ }agent:${agent}"
 if [ -n "$used" ]; then
-    ctx_pct=$(printf "%.0f" "$used")
+    printf -v ctx_pct "%.0f" "$used"
     if   [ "$ctx_pct" -ge 80 ]; then ctx_color="$red"
     elif [ "$ctx_pct" -ge 50 ]; then ctx_color="$orange"
     else ctx_color="$cyan"; fi
@@ -101,7 +115,7 @@ fi
 
 # Rate limits — 5h
 if [ -n "$rl5" ]; then
-    f=$(printf "%.0f" "$rl5")
+    printf -v f "%.0f" "$rl5"
     t5=""
     [ -n "$rl5_reset" ] && [ "$rl5_reset" -gt "$now" ] 2>/dev/null && t5=$(fmt_time $(( (rl5_reset - now) / 60 )))
     add "$(pct_color "$f")$(pct_block "$f") ${f}%${cyan}${t5:+ ↻${t5}/5h}"
@@ -109,7 +123,7 @@ fi
 
 # Rate limits — 7d
 if [ -n "$rl7" ]; then
-    s=$(printf "%.0f" "$rl7")
+    printf -v s "%.0f" "$rl7"
     t7=""
     [ -n "$rl7_reset" ] && [ "$rl7_reset" -gt "$now" ] 2>/dev/null && t7=$(fmt_time $(( (rl7_reset - now) / 60 )))
     add "$(pct_color "$s")$(pct_block "$s") ${s}%${cyan}${t7:+ ↻${t7}/7d}"
