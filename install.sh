@@ -50,6 +50,7 @@ main() {
         ".tmux.conf"
         ".vimrc"
         ".zshrc"
+        ".claude/statusline-command.sh"
     )
 
     for file in "${files[@]}"; do
