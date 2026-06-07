@@ -12,17 +12,17 @@ red='\033[38;2;235;87;87m'
 reset='\033[0m'
 sep="${reset} │ ${cyan}"
 
-# minutes + minutes-per-unit -> decimal with one place ("4.5")
-#   fmt_decimal <minutes> 60   -> hours  (e.g. 270 -> 4.5)
-#   fmt_decimal <minutes> 1440 -> days   (e.g. 4608 -> 3.2)
+# seconds + seconds-per-unit -> decimal with one place ("4.5")
+#   fmt_decimal <seconds> 3600  -> hours  (e.g. 16200 -> 4.5)
+#   fmt_decimal <seconds> 86400 -> days   (e.g. 276480 -> 3.2)
 fmt_decimal() {
     [ -z "$1" ] && return
     local tenths=$(( $1 * 10 / $2 ))
     echo "$(( tenths / 10 )).$(( tenths % 10 ))"
 }
 
-# percentage -> color (cyan / yellow / red)
-pct_color() { [ "$1" -ge 80 ] && printf '%b' "$red" || { [ "$1" -ge 50 ] && printf '%b' "$yellow" || printf '%b' "$cyan"; }; }
+# percentage ramp: ramp <pct> <lo> <mid> <hi>  (hi at >=80, mid at >=50, lo below)
+ramp() { [ "$1" -ge 80 ] && printf '%b' "$4" || { [ "$1" -ge 50 ] && printf '%b' "$3" || printf '%b' "$2"; }; }
 
 # percentage -> single block character ▁▂▃▄▅▆▇█
 pct_block() {
@@ -58,6 +58,15 @@ make_bar() {
 
 add() { [ -z "$out" ] && out+="$1" || out+="${sep}$1"; }
 
+# rate-limit row: render_rl <pct> <reset_epoch> <seconds_per_unit> <label>
+render_rl() {
+    [ -z "$1" ] && return
+    local p t=""
+    printf -v p "%.0f" "$1"
+    [ -n "$2" ] && [ "$2" -gt "$now" ] 2>/dev/null && t=$(fmt_decimal $(( $2 - now )) "$3")
+    add "$(ramp "$p" "$cyan" "$yellow" "$red")$(pct_block "$p") ${p}%${cyan}${t:+ ↻${t}/$4}"
+}
+
 # ===== Extract all fields in one jq pass (one per line; empties preserved) =====
 {
     IFS= read -r model
@@ -73,7 +82,7 @@ add() { [ -z "$out" ] && out+="$1" || out+="${sep}$1"; }
     IFS= read -r cwd
     IFS= read -r cost_usd
 } < <(
-    printf '%s' "$input" | jq -r '
+    jq -r <<<"$input" '
         [ .model.display_name, .effort.level, .agent.name,
           .context_window.used_percentage,
           .rate_limits.five_hour.used_percentage,  .rate_limits.five_hour.resets_at,
@@ -110,36 +119,20 @@ mblock="$model"
 [ -n "$agent" ]  && mblock+="${mblock:+ }agent:${agent}"
 if [ -n "$used" ]; then
     printf -v ctx_pct "%.0f" "$used"
-    if   [ "$ctx_pct" -ge 80 ]; then ctx_color="$red"
-    elif [ "$ctx_pct" -ge 50 ]; then ctx_color="$orange"
-    else ctx_color="$cyan"; fi
+    ctx_color=$(ramp "$ctx_pct" "$cyan" "$orange" "$red")
     mblock+="${mblock:+ }$(make_bar "$ctx_pct" "$ctx_color") ${ctx_color}${ctx_pct}%${cyan}"
 fi
 [ -n "$mblock" ] && add "$mblock"
 
-# Rate limits — 5h
-if [ -n "$rl5" ]; then
-    printf -v f "%.0f" "$rl5"
-    t5=""
-    [ -n "$rl5_reset" ] && [ "$rl5_reset" -gt "$now" ] 2>/dev/null && t5=$(fmt_decimal $(( (rl5_reset - now) / 60 )) 60)
-    add "$(pct_color "$f")$(pct_block "$f") ${f}%${cyan}${t5:+ ↻${t5}/5h}"
-fi
-
-# Rate limits — 7d
-if [ -n "$rl7" ]; then
-    printf -v s "%.0f" "$rl7"
-    t7=""
-    [ -n "$rl7_reset" ] && [ "$rl7_reset" -gt "$now" ] 2>/dev/null && t7=$(fmt_decimal $(( (rl7_reset - now) / 60 )) 1440)
-    add "$(pct_color "$s")$(pct_block "$s") ${s}%${cyan}${t7:+ ↻${t7}/7d}"
-fi
+# Rate limits — 5h window, 7d window
+render_rl "$rl5" "$rl5_reset" 3600  5h
+render_rl "$rl7" "$rl7_reset" 86400 7d
 
 # Cache hit rate
 cache_total=$(( ${cache_read:-0} + ${cache_create:-0} ))
 if [ "$cache_total" -gt 0 ]; then
     hit_pct=$(( cache_read * 100 / cache_total ))
-    if   [ "$hit_pct" -ge 80 ]; then cache_color="$green"
-    elif [ "$hit_pct" -ge 50 ]; then cache_color="$cyan"
-    else cache_color="$orange"; fi
+    cache_color=$(ramp "$hit_pct" "$orange" "$cyan" "$green")
     add "cache ${cache_color}${hit_pct}%${cyan}"
 fi
 
