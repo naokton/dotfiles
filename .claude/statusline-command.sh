@@ -25,6 +25,7 @@ pct_color() { [ "$1" -ge 80 ] && printf '%b' "$red" || { [ "$1" -ge 50 ] && prin
 
 # percentage -> single block character ▁▂▃▄▅▆▇█
 pct_block() {
+    [ "$1" -eq 0 ] && printf ' ' && return
     local blocks=(▁ ▂ ▃ ▄ ▅ ▆ ▇ █) idx=$(( $1 / 13 ))
     [ "$idx" -gt 7 ] && idx=7
     printf '%s' "${blocks[$idx]}"
