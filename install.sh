@@ -44,6 +44,7 @@ main() {
         ".config/bat/config"
         ".config/ghostty/config"
         ".emacs.d/init.el"
+        ".emacs.d/init-lite.el"
         ".hammerspoon"
         ".ripgreprc"
         ".screenrc"

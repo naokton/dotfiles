@@ -35,6 +35,12 @@ if [ -e "/Applications/Dev/Emacs.app" ]; then
     alias emacsclient="/Applications/Dev/Emacs.app/Contents/MacOS/bin/emacsclient"
     alias em-t="/Applications/Dev/Emacs.app/Contents/MacOS/bin/emacsclient -t"
     alias em-w="/Applications/Dev/Emacs.app/Contents/MacOS/bin/emacsclient -r"
+    emacs_cmd="/Applications/Dev/Emacs.app/Contents/MacOS/Emacs"
+    alias emacs="$emacs_cmd"
+    # Lite emacs with minimum configuration
+    lemacs_cmd="$emacs_cmd -Q -nw -l ~/.emacs.d/init-lite.el"
+    alias lemacs="$lemacs_cmd"
+    export EDITOR="$lemacs_cmd"
 fi
 
 # completion
