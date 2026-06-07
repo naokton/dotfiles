@@ -12,12 +12,13 @@ red='\033[38;2;235;87;87m'
 reset='\033[0m'
 sep="${reset} │ ${cyan}"
 
-# minutes -> "Nm" / "Nh" / "Nd Nh"
-fmt_time() {
+# minutes + minutes-per-unit -> decimal with one place ("4.5")
+#   fmt_decimal <minutes> 60   -> hours  (e.g. 270 -> 4.5)
+#   fmt_decimal <minutes> 1440 -> days   (e.g. 4608 -> 3.2)
+fmt_decimal() {
     [ -z "$1" ] && return
-    [ "$1" -le 99 ] && { echo "${1}m"; return; }
-    h=$(($1 / 60))
-    [ "$h" -ge 24 ] && echo "$((h / 24))d$((h % 24))h" || echo "${h}h"
+    local tenths=$(( $1 * 10 / $2 ))
+    echo "$(( tenths / 10 )).$(( tenths % 10 ))"
 }
 
 # percentage -> color (cyan / yellow / red)
@@ -120,7 +121,7 @@ fi
 if [ -n "$rl5" ]; then
     printf -v f "%.0f" "$rl5"
     t5=""
-    [ -n "$rl5_reset" ] && [ "$rl5_reset" -gt "$now" ] 2>/dev/null && t5=$(fmt_time $(( (rl5_reset - now) / 60 )))
+    [ -n "$rl5_reset" ] && [ "$rl5_reset" -gt "$now" ] 2>/dev/null && t5=$(fmt_decimal $(( (rl5_reset - now) / 60 )) 60)
     add "$(pct_color "$f")$(pct_block "$f") ${f}%${cyan}${t5:+ ↻${t5}/5h}"
 fi
 
@@ -128,7 +129,7 @@ fi
 if [ -n "$rl7" ]; then
     printf -v s "%.0f" "$rl7"
     t7=""
-    [ -n "$rl7_reset" ] && [ "$rl7_reset" -gt "$now" ] 2>/dev/null && t7=$(fmt_time $(( (rl7_reset - now) / 60 )))
+    [ -n "$rl7_reset" ] && [ "$rl7_reset" -gt "$now" ] 2>/dev/null && t7=$(fmt_decimal $(( (rl7_reset - now) / 60 )) 1440)
     add "$(pct_color "$s")$(pct_block "$s") ${s}%${cyan}${t7:+ ↻${t7}/7d}"
 fi
 
