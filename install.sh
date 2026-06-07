@@ -51,6 +51,7 @@ main() {
         ".vimrc"
         ".zshrc"
         ".claude/statusline-command.sh"
+        ".npmrc"
     )
 
     for file in "${files[@]}"; do
