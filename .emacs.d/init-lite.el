@@ -3,36 +3,49 @@
 ;; Lite emacs config.
 ;; Usage: /path/to/emacs -Q -nw -l /path/to/this/file
 
-;; SKK (load only required packages' autoloads; skip full package-initialize for faster startup)
-;; cdb is ddskk's dependency (used for fast dictionary search)
-(dolist (pkg '("ddskk" "cdb"))
-  (let ((dir (car (file-expand-wildcards (format "~/.emacs.d/elpa/%s-*" pkg)))))
-    (when dir
-      (add-to-list 'load-path dir)
-      (load (expand-file-name (format "%s-autoloads" pkg) dir) t))))
-;; Use plain setq (not customize-set-variable) to avoid force-loading skk just to set variables
-(setq skk-use-act t)
-(setq skk-kakutei-when-unique-candidate t)
-(setq skk-extra-jisyo-file-list
-      '("~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS2"
-        ("~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS2004" . euc-jis-2004)
-        ("~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS3_4" . euc-jis-2004)
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.assoc"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.edict"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.fullname"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.geo"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.itaiji"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.jinmei"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.law"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.lisp"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.mazegaki"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.office.zipcode"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.okinawa"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.propernoun"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.pubdic+"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.station"
-        "~/.emacs.d/skk-get-jisyo/SKK-JISYO.zipcode"))
+;; SKK (lazy: nothing is loaded or configured until skk-mode is first invoked,
+;; so it has zero impact on startup for sessions that never use it)
+(defvar my/skk-initialized nil
+  "Non-nil once SKK's load-path, autoloads and variables have been set up.")
+
+(defun my/skk-init ()
+  "Set up SKK's load-path, autoloads and variables (runs once)."
+  (unless my/skk-initialized
+    ;; cdb is ddskk's dependency (used for fast dictionary search)
+    (dolist (pkg '("ddskk" "cdb"))
+      (let ((dir (car (file-expand-wildcards (format "~/.emacs.d/elpa/%s-*" pkg)))))
+        (when dir
+          (add-to-list 'load-path dir)
+          (load (expand-file-name (format "%s-autoloads" pkg) dir) t))))
+    (setq skk-use-act t)
+    (setq skk-kakutei-when-unique-candidate t)
+    (setq skk-extra-jisyo-file-list
+          '("~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS2"
+            ("~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS2004" . euc-jis-2004)
+            ("~/.emacs.d/skk-get-jisyo/SKK-JISYO.JIS3_4" . euc-jis-2004)
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.assoc"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.edict"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.fullname"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.geo"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.itaiji"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.jinmei"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.law"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.lisp"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.mazegaki"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.office.zipcode"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.okinawa"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.propernoun"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.pubdic+"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.station"
+            "~/.emacs.d/skk-get-jisyo/SKK-JISYO.zipcode"))
+    (setq my/skk-initialized t)))
+
+(defun my/skk-mode (&optional arg)
+  "Initialize SKK on first use, then toggle `skk-mode'."
+  (interactive "P")
+  (my/skk-init)
+  (skk-mode arg))
 
 ;; Adjust saveing behaviours
 (customize-set-variable 'auto-save-default nil)
@@ -70,6 +83,6 @@
 (keymap-global-set "C-h" 'delete-backward-char)
 (keymap-global-set "C-x C-k" 'kill-current-buffer)
 (keymap-global-set "C-x C-b" 'ibuffer)
-(keymap-global-set "C-\\" 'skk-mode)
+(keymap-global-set "C-\\" 'my/skk-mode)
 (keymap-global-set "C-," 'bs-cycle-previous)
 (keymap-global-set "C-." 'bs-cycle-next)
