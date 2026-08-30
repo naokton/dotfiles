@@ -516,12 +516,6 @@ uv run env -0 2>/dev/null"))
 
   :config
   (add-to-list 'lsp-language-id-configuration '(docker-compose-mode . "yaml"))
-  (add-to-list 'lsp-disabled-clients '(typescript-mode . vue-semantic-server))
-  (add-to-list 'lsp-disabled-clients '(js-ts-mode . vue-semantic-server))
-  (add-to-list 'lsp-disabled-clients '(typescript-ts-mode . vue-semantic-server))
-  (add-to-list 'lsp-disabled-clients '(typescript-ts-mode . ts-ls))
-  (add-to-list 'lsp-disabled-clients '(js-mode . vue-semantic-server))
-  (add-to-list 'lsp-disabled-clients '(css-mode . vue-semantic-server))
 
   ;; Use orderless for completion style
   ;; ref: https://github.com/minad/corfu/wiki#basic-example-configuration-with-orderless
