@@ -94,10 +94,50 @@
   :global-minor-mode delete-selection-mode)
 
 (leaf simple
+  :bind
+  ("C-h" . delete-backward-char)
+  ("M-h" . backward-kill-word)
+  ("C-x C-k" . kill-current-buffer)
+  ("C-S-p" . (lambda () (interactive) (previous-line 3)))
+  ("C-S-n" . (lambda () (interactive) (next-line 3)))
   :custom
   (kill-whole-line . t))
 
+(leaf minibuffer
+  :bind
+  ("M-i" . completion-at-point))
+
+(leaf mouse
+  :bind
+  ([mouse-2] . nil))                    ; Disable middle click
+
+(leaf isearch
+  :bind
+  ("C-S-s" . isearch-forward-symbol-at-point)
+  (isearch-mode-map
+   ("C-h" . isearch-delete-char)))
+
+(leaf bs
+  :bind
+  ("C-," . bs-cycle-previous)
+  ("C-." . bs-cycle-next))
+
+(leaf sequential-command
+  ;; Ex. C-a multiple times; cycle beginning-of-line > beginning-of-buffer > return
+  :ensure t
+  :require t
+  :bind
+  ("C-a" . seq-home)
+  ("C-e" . seq-end)
+  :config
+  (define-sequential-command seq-home
+    beginning-of-line beginning-of-buffer seq-return)
+  (define-sequential-command seq-end
+    end-of-line end-of-buffer seq-return))
+
 (leaf ibuffer
+  :bind
+  ("C-x C-b" . ibuffer)
   :hook
   (ibuffer-mode-hook . hl-line-mode))
 
@@ -173,7 +213,25 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
                                    orderless-affix-dispatch)))
 
 (leaf consult
-  :ensure t
+  :ensure t consult-flycheck consult-lsp
+  :bind
+  ("M-s" . consult-line)
+  ("M-S" . my/consult-line-symbol-at-point)
+  ("s-s" . consult-ripgrep)
+  ("s-S" . my/consult-ripgrep-symbol-at-point)
+  ("C-x b" . consult-buffer)
+  ("C-x C-r" . consult-recent-file)
+  ("M-g i" . consult-imenu)
+  ("M-y" . consult-yank-from-kill-ring)
+  ([remap projectile-switch-to-buffer] . consult-project-buffer) ; M-p b
+  :init
+  (defun my/consult-line-symbol-at-point ()
+    (interactive)
+    (let ((sym (thing-at-point 'symbol t)))
+      (consult-line (when sym (concat "\\_<" sym "\\_>")))))
+  (defun my/consult-ripgrep-symbol-at-point (&optional dir)
+    (interactive)
+    (consult-ripgrep dir (thing-at-point 'symbol)))
   :custom
   (consult-ripgrep-args . "rg --null --line-buffered --color=never --max-columns=1000 --path-separator /\
                            --smart-case --no-heading --with-filename --line-number --search-zip --sort=path") ; add --sort=path
@@ -221,29 +279,25 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
                              "\\`newsrc-dribble" ;; Gnus
                              "\\`\\*tramp/.*\\*"))
   :config
-  (leaf consult-flycheck :ensure t)
-  (leaf consult-lsp :ensure t)
-  (leaf xref
-    :hook
-    (xref-after-return-hook . recenter)
-    :custom
-    (xref-prompt-for-identifier . nil)
-    (xref-show-xrefs-function . #'consult-xref)
-    (xref-show-definitions-function . #'consult-xref))
-  (defun my/consult-line-symbol-at-point ()
-    (interactive)
-    (let ((sym (thing-at-point 'symbol t)))
-      (consult-line (when sym (concat "\\_<" sym "\\_>")))))
-  (defun my/consult-ripgrep-symbol-at-point (&optional dir)
-    (interactive)
-    (consult-ripgrep dir (thing-at-point 'symbol)))
-  :defer-config
   (consult-customize
    consult-recent-file consult-ripgrep consult-xref
    :preview-key '(:debounce 0.5 any)))
 
+(leaf xref
+  :bind
+  ("M-'" . xref-find-references)
+  :hook
+  (xref-after-return-hook . recenter)
+  :custom
+  (xref-prompt-for-identifier . nil)
+  (xref-show-xrefs-function . #'consult-xref)
+  (xref-show-definitions-function . #'consult-xref))
+
 (leaf marginalia
   :ensure t
+  :bind
+  (minibuffer-local-map
+   ("M-A" . marginalia-cycle))
   :init
   (marginalia-mode)
   )
@@ -267,6 +321,8 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
 
 (leaf embark
   :ensure t
+  :bind
+  ("C-x e" . embark-act)
   :custom
   (embark-help-key . "?")
   (embark-indicators . '(embark-minimal-indicator ; do not pop up key bindisgs buffer
@@ -278,6 +334,8 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
 
 (leaf avy
   :ensure t
+  :bind
+  ("C-;" . avy-goto-char-timer)
   :custom
   (avy-keys . '(?a ?o ?e ?u ?i ?d ?h ?t ?n)) ; dvorak adjustment
   (avy-timeout-seconds . 0.2))
@@ -350,6 +408,9 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
 (leaf ghostel
   :ensure t
   :commands (ghostel-buffer-list ghostel-project-buffer-list)
+  :bind
+  ("C-x m" . my/ghostel-toggle)
+  ("C-x M" . my/ghostel-new-here)
   :custom
   ;; remove C-u and C-h, add f1
   (ghostel-keymap-exceptions . '("C-c" "C-x" "M-x" "M-:" "C-\\" "<f1>"))
@@ -432,6 +493,9 @@ uv run env -0 2>/dev/null"))
 
 (leaf lsp-mode
   :ensure t
+  :bind
+  (lsp-mode-map
+   ([remap xref-find-apropos] . consult-lsp-symbols))
   :custom
   (lsp-enable-folding . t)
   (lsp-enable-snippet . nil)
@@ -516,6 +580,8 @@ uv run env -0 2>/dev/null"))
 
 (leaf lsp-ui
   :ensure t
+  :bind
+  ("M-I" . lsp-ui-doc-show)
   :hook
   ;; Prevent rings when hovering mouse over the tab bar. https://github.com/emacs-lsp/lsp-ui/issues/681
   (lsp-after-initialize-hook . (lambda () (local-set-key (kbd "<tab-bar> <mouse-movement>") #'ignore)))
@@ -558,6 +624,11 @@ uv run env -0 2>/dev/null"))
 (leaf projectile
   :ensure t
   :require t
+  :bind
+  (projectile-mode-map
+   ("M-p" . projectile-command-map)
+   ("C-." . projectile-next-project-buffer)
+   ("C-," . projectile-previous-project-buffer))
   :custom
   (consult-project-function . (lambda (_) (projectile-project-root)))
   :config
@@ -566,6 +637,16 @@ uv run env -0 2>/dev/null"))
 
 ;; (leaf copilot
 ;;   :ensure t
+;;   :bind
+;;   ("C-c M-f" . copilot-complete)
+;;   (copilot-completion-map
+;;    ("C-c M-f" . copilot-complete)
+;;    ("C-g" . copilot-clear-overlay)
+;;    ("M-n" . copilot-next-completion)
+;;    ("M-p" . copilot-previous-completion)
+;;    ("C-<return>" . copilot-accept-completion)
+;;    ("M-f" . copilot-accept-completion-by-word)
+;;    ("M-<return>" . copilot-accept-completion-by-line))
 ;;   :hook
 ;;   (python-ts-mode-hook . copilot-mode)
 ;;   (go-ts-mode-hook . copilot-mode)
@@ -590,7 +671,9 @@ uv run env -0 2>/dev/null"))
   (which-key-setup-side-window-right-bottom))
 
 (leaf transpose-frame
-  :ensure t)
+  :ensure t
+  :bind
+  ("C-x C-t" . transpose-frame))
 
 (leaf flycheck
   :ensure t
@@ -603,7 +686,8 @@ uv run env -0 2>/dev/null"))
 
 (leaf imenu-list
   :ensure t
-  :bind (("s-i" . imenu-list-smart-toggle))
+  :bind
+  ("s-i" . imenu-list-smart-toggle)
   :custom
   (imenu-list-focus-after-activation . t))
 
@@ -662,6 +746,10 @@ uv run env -0 2>/dev/null"))
 
 (leaf origami
   :ensure t lsp-origami
+  :bind
+  (origami-mode-map
+   ("C-c f a" . origami-toggle-all-nodes)
+   ("C-c f f" . origami-recursively-toggle-node))
   :hook
   (lsp-after-open-hook . lsp-origami-try-enable))
 
@@ -689,10 +777,17 @@ uv run env -0 2>/dev/null"))
   :custom
   (browse-at-remote-add-line-number-if-no-region-selected . nil))
 
-(leaf macrostep :ensure t)
+(leaf macrostep
+  :ensure t
+  :bind
+  (emacs-lisp-mode-map
+   :package elisp-mode
+   ("C-c e" . macrostep-expand)))
 
 (leaf open-junk-file
   :ensure t
+  :bind
+  ("C-x j" . open-junk-file)
   :custom
   (open-junk-file-format . "~/junk/%Y/%Y%m%d-%H%M%S.org"))
 
@@ -706,7 +801,11 @@ uv run env -0 2>/dev/null"))
   :config
   (electric-pair-mode 1))
 
-(leaf symbol-overlay :ensure t)
+(leaf symbol-overlay
+  :ensure t
+  :bind
+  ("C-<f3>" . symbol-overlay-put)
+  ("C-S-<f3>" . symbol-overlay-remove-all))
 
 (leaf comp
   :custom
@@ -716,6 +815,10 @@ uv run env -0 2>/dev/null"))
 
 (leaf gptel
   :ensure t
+  :bind
+  (gptel-mode-map
+   ("C-c C-<return>" . gptel-send)
+   ("C-x C-s" . my/save-gptel))
   :init
   ;; TODO: use keychain via auth-source
   (defun my/retrieve-password-from-keychain (service account)
@@ -775,6 +878,10 @@ Provide only the revised email text without comments or explanations."))
 (leaf *dired
   :config
   (leaf dired
+    :bind
+    (dired-mode-map
+     ("r" . wdired-change-to-wdired-mode)
+     ("C-o" . nil))
     :custom
     (dired-listing-switches . "-alh")
     (dired-kill-when-opening-new-dired-buffer . t)
@@ -783,6 +890,8 @@ Provide only the revised email text without comments or explanations."))
     (dired-mode-hook . (lambda () (display-line-numbers-mode -1))))
   (leaf dired-sidebar
     :ensure t
+    :bind
+    ("C-x C-n" . dired-sidebar-toggle-sidebar)
     :custom
     (dired-sidebar-theme . 'nerd-icons))
   (leaf nerd-icons-dired
@@ -794,8 +903,27 @@ Provide only the revised email text without comments or explanations."))
   (help-window-select . t)
   (help-window-keep-selected . t))
 
+(leaf view
+  :bind
+  (view-mode-map
+   ("h" . View-scroll-line-forward)
+   ("t" . View-scroll-line-backward)
+   ("H" . View-scroll-half-page-forward)
+   ("T" . View-scroll-half-page-backward)))
+
 (leaf org
   :ensure t
+  :bind
+  ("C-c a" . org-agenda)
+  (org-mode-map
+   ("C-c ," . org-insert-structure-template)
+   ("C-c ." . my/org-insert-timestamp-today-inactive)
+   ("C-," . bs-cycle-previous))
+  :init
+  (defun my/org-insert-timestamp-today-inactive ()
+    "Insert inactive timestamp of today"
+    (interactive)
+    (org-insert-time-stamp (current-time) nil t))
   :custom
   (org-startup-truncated . nil)
   (org-startup-indented . t)
@@ -848,6 +976,8 @@ Provide only the revised email text without comments or explanations."))
 
 (leaf org-journal
   :ensure t
+  :bind
+  ("C-c j" . org-journal-new-entry)
   :custom
   (org-journal-dir . "~/Documents/org/journal")
   (org-journal-date-format . "%Y-%m-%d")
@@ -857,6 +987,10 @@ Provide only the revised email text without comments or explanations."))
 
 (leaf python-pytest
   :ensure t
+  :bind
+  (python-ts-mode-map
+   :package python
+   ("C-c t" . python-pytest-dispatch))
   :config
   (defun my/python-pytest--extra-process-sentinel (proc event)
     "Beeps when error, and always switch to the window"
@@ -1126,159 +1260,3 @@ Provide only the revised email text without comments or explanations."))
     (doom-modeline-mode 1)
     (line-number-mode 1)
     (column-number-mode 0)))
-
-;;;;----------------------------------------------------------------
-;;;; Keys
-;;;;----------------------------------------------------------------
-(leaf *keybindings
-  :config
-  (leaf *mouse
-    :config
-    (global-unset-key [mouse-2]))       ; Disable middle click
-  (leaf *key-delete-with-c-h
-    :bind
-    ("C-h" . delete-backward-char)
-    (isearch-mode-map
-     ("C-h" . isearch-delete-char)))
-  (leaf *misc
-    :bind
-    ("C-S-p" . (lambda () (interactive) (previous-line 3)))
-    ("C-S-n" . (lambda () (interactive) (next-line 3)))
-    ("M-h" . backward-kill-word)
-    ("C-x C-k" . kill-current-buffer)
-    ("C-x C-b" . ibuffer)
-    ("M-i" . completion-at-point))
-  (leaf isearch
-    :bind
-    ("C-S-s" . isearch-forward-symbol-at-point))
-  (leaf *key-buffer
-    :bind
-    ("C-," . bs-cycle-previous)
-    ("C-." . bs-cycle-next))
-  (leaf symbol-overlay
-    :bind
-    ("C-<f3>" . symbol-overlay-put)
-    ("C-S-<f3>" . symbol-overlay-remove-all))
-  (leaf undo-fu
-    :bind
-    ("C-z" . nil)
-    ("C-z" . undo-fu-only-undo)
-    ("M-z" . undo-fu-only-redo))
-  (leaf origami
-    :bind
-    (origami-mode-map
-     ("C-c f a" . origami-toggle-all-nodes)
-     ("C-c f f" . origami-recursively-toggle-node)))
-  (leaf org
-    :bind
-    ("C-c a" . org-agenda)
-    (org-mode-map
-     ("C-c ," . org-insert-structure-template)
-     ("C-c ." . my/org-insert-timestamp-today-inactive)
-     ("C-," . bs-cycle-previous))
-    :config
-    (defun my/org-insert-timestamp-today-inactive ()
-      "Insert inactive timestamp of today"
-      (interactive)
-      (org-insert-time-stamp (current-time) nil t)))
-  (leaf org-journal
-    :bind
-    ("C-c j" . org-journal-new-entry))
-  (leaf python-pytest
-    :bind
-    (python-ts-mode-map
-     :package python
-     ("C-c t" . python-pytest-dispatch)))
-  (leaf view
-    :bind
-    (view-mode-map
-     ("h" . View-scroll-line-forward)
-     ("t" . View-scroll-line-backward)
-     ("H" . View-scroll-half-page-forward)
-     ("T" . View-scroll-half-page-backward)))
-  (leaf consult
-    :bind
-    ("M-s" . consult-line)
-    ("M-S" . my/consult-line-symbol-at-point)
-    ("s-s" . consult-ripgrep)
-    ("s-S" . my/consult-ripgrep-symbol-at-point)
-    ("C-x b" . consult-buffer)
-    ("C-x C-r" . consult-recent-file)
-    ("M-g i" . consult-imenu)
-    ("M-y" . consult-yank-from-kill-ring)
-    ([remap projectile-switch-to-buffer] . consult-project-buffer) ; M-p b
-    )
-  (leaf xref
-    :bind
-    ("M-'" . xref-find-references))
-  (leaf embark
-    :bind
-    ("C-x e" . embark-act))
-  (leaf avy
-    :bind
-    ("C-;" . avy-goto-char-timer))
-  (leaf marginalia
-    :bind (minibuffer-local-map
-           ("M-A" . marginalia-cycle)))
-  (leaf projectile
-    :bind
-    (projectile-mode-map
-     ("M-p" . projectile-command-map)
-     ("C-." . projectile-next-project-buffer)
-     ("C-," . projectile-previous-project-buffer)))
-  (leaf dired
-    :bind
-    (dired-mode-map
-     ("r" . wdired-change-to-wdired-mode)
-     ("C-o" . nil)))
-  (leaf lsp-mode
-    :bind
-    ("M-I" . lsp-ui-doc-show)
-    (lsp-mode-map
-     ([remap xref-find-apropos] . consult-lsp-symbols)))
-  (leaf ghostel
-    :bind
-    ("C-x m" . my/ghostel-toggle)
-    ("C-x M" . my/ghostel-new-here))
-  ;; (leaf copilot
-  ;;   :bind
-  ;;   ("C-c M-f" . 'copilot-complete)
-  ;;   (copilot-completion-map
-  ;;    ("C-c M-f" . 'copilot-complete)
-  ;;    ("C-g" . 'copilot-clear-overlay)
-  ;;    ("M-n" . 'copilot-next-completion)
-  ;;    ("M-p" . 'copilot-previous-completion)
-  ;;    ("C-<return>" . 'copilot-accept-completion)
-  ;;    ("M-f" . 'copilot-accept-completion-by-word)
-  ;;    ("M-<return>" . 'copilot-accept-completion-by-line)))
-  (leaf transpose-frame
-    :bind
-    ("C-x C-t" . 'transpose-frame))
-  (leaf gptel
-    :bind
-    (gptel-mode-map
-     ("C-c C-<return>" . 'gptel-send)
-     ("C-x C-s" . 'my/save-gptel)))
-  (leaf open-junk-file
-    :bind
-    ("C-x j" . open-junk-file))
-  (leaf macrostep
-    :bind
-    (emacs-lisp-mode-map
-     :package elisp-mode
-     ("C-c e" . macrostep-expand)))
-  (leaf dired-sidebar
-    :bind
-    ("C-x C-n" . dired-sidebar-toggle-sidebar)))
-
-(leaf sequential-command
-  ;; Ex. C-a multiple times; cycle beginning-of-line > beginning-of-buffer > return
-  :ensure t
-  :config
-  (require 'sequential-command)
-  (define-sequential-command seq-home
-    beginning-of-line beginning-of-buffer seq-return)
-  (define-sequential-command seq-end
-    end-of-line end-of-buffer seq-return)
-  (global-set-key "\C-a" 'seq-home)
-  (global-set-key "\C-e" 'seq-end))
