@@ -1213,7 +1213,7 @@ Provide only the revised email text without comments or explanations."))
     ("M-'" . xref-find-references))
   (leaf embark
     :bind
-    ("s-e" . embark-act))
+    ("C-x e" . embark-act))
   (leaf avy
     :bind
     ("C-;" . avy-goto-char-timer))
