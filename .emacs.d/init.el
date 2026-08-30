@@ -347,39 +347,42 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
 ;;     (migemo-dictionary . "/usr/share/cmigemo/utf-8/migemo-dict"))
 ;;   (migemo-init))
 
-(leaf vterm
-  ;; requirements: brew install cmake libvterm libtool
+(leaf ghostel
   :ensure t
-  :hook
-  (vterm-mode-hook . (lambda () (display-line-numbers-mode -1)))
+  :commands (ghostel-buffer-list ghostel-project-buffer-list)
   :custom
-  (vterm-max-scrollback . 100000)
-  (vterm-buffer-name-string . "vterm: %s")
-  (vterm-always-compile-module . t)
-  ;; delete "C-h", "C-u", add <f1> and <f2>
-  (vterm-keymap-exceptions
-   . '("<f1>" "<f2>" "C-x" "C-c" "C-g" "C-l" "M-x" "M-o" "C-v" "M-v" "C-y" "M-y"))
+  ;; remove C-u and C-h, add f1
+  (ghostel-keymap-exceptions . '("C-c" "C-x" "M-x" "M-:" "C-\\" "<f1>"))
+  (ghostel-max-scrollback . 10000000)
+  (ghostel-query-before-killing . t)
   :config
-  (defun my/vterm-new-buffer-in-current-window()
+  (defun my/ghostel-buffer-p (buf &optional _action)
+    (with-current-buffer buf (derived-mode-p 'ghostel-mode)))
+  (defun my/ghostel-new-here ()
     (interactive)
-    (let ((display-buffer-alist nil))
-      (vterm)))
+    (let ((display-buffer-overriding-action
+           '(display-buffer-same-window (inhibit-same-window . nil))))
+      (if (project-current) (ghostel-project t) (ghostel t))))
+  (defun my/ghostel-side-window ()
+    "Return the side window showing a ghostel buffer for the current project, if any."
+    (seq-some (lambda (buf)
+                (seq-find (lambda (win) (window-parameter win 'window-side))
+                          (get-buffer-window-list buf)))
+              (if (project-current)
+                  (ghostel-project-buffer-list)
+                (ghostel-buffer-list))))
+  (defun my/ghostel-toggle ()
+    "Toggle the project's ghostel side window, leaving normal windows alone."
+    (interactive)
+    (if-let* ((win (my/ghostel-side-window)))
+        (delete-window win)
+      (if (project-current) (ghostel-project) (ghostel))))
   (add-to-list 'display-buffer-alist
-               '((lambda (buffer-or-name _)
-                   (let ((buffer (get-buffer buffer-or-name)))
-                     (with-current-buffer buffer
-                       (or (equal major-mode 'vterm-mode)
-                           (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-                (display-buffer-reuse-window display-buffer-in-side-window)
+               '(my/ghostel-buffer-p
+                (display-buffer-in-side-window)
                 (side . bottom)
-                (reusable-frames . visible)
+                ;; (dedicated . t)
                 (window-height . 0.4))))
-
-(leaf vterm-toggle
-  :ensure t
-  :custom
-  (vterm-toggle-reset-window-configration-after-exit . nil)
-  (vterm-toggle-scope . 'project))
 
 (leaf ultra-scroll
   :ensure t
@@ -559,13 +562,7 @@ uv run env -0 2>/dev/null"))
   (consult-project-function . (lambda (_) (projectile-project-root)))
   :config
   (projectile-mode +1)
-  :defer-config
-  (customize-set-variable 'projectile-globally-ignored-modes
-                          (let ((newlist projectile-globally-ignored-modes))
-                            ;; (add-to-list 'newlist "fundamental-mode")
-                            ;; (add-to-list 'newlist "ibuffer-mode")
-                            ;; (add-to-list 'newlist "dired-sidebar-mode")
-                            (add-to-list 'newlist "vterm-mode"))))
+  (add-to-list 'projectile-globally-ignored-modes "ghostel-.*mode"))
 
 ;; (leaf copilot
 ;;   :ensure t
@@ -1239,16 +1236,10 @@ Provide only the revised email text without comments or explanations."))
     ("M-I" . lsp-ui-doc-show)
     (lsp-mode-map
      ([remap xref-find-apropos] . consult-lsp-symbols)))
-  (leaf vterm
+  (leaf ghostel
     :bind
-    ("<f2>" . vterm-toggle)
-    ("s-j" . vterm-toggle)
-    (vterm-mode-map
-     ("C-<f2>" . my/vterm-new-buffer-in-current-window)
-     ("C-<return>" . vterm-toggle-insert-cd)
-     ;; ([remap projectile-previous-project-buffer] . vterm-toggle-forward)
-     ;; ([remap projectile-next-project-buffer] . vterm-toggle-backward)
-     ))
+    ("C-x m" . my/ghostel-toggle)
+    ("C-x M" . my/ghostel-new-here))
   ;; (leaf copilot
   ;;   :bind
   ;;   ("C-c M-f" . 'copilot-complete)
