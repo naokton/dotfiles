@@ -202,7 +202,7 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
     (cond
      ((string-suffix-p "$" word)
       `(orderless-regexp . ,(concat (substring word 0 -1) consult--tofu-regexp "*\\'")))
-     ((string-suffix-p "\_>" word)
+     ((string-suffix-p "\\_>" word)
       `(orderless-regexp . ,(concat (substring word 0 -3) consult--tofu-regexp "*\\_>")))))
   :custom
   (completion-styles . '(orderless basic))
