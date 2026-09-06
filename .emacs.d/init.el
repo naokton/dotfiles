@@ -222,6 +222,7 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   ("s-S" . my/consult-ripgrep-symbol-at-point)
   ("C-x b" . consult-buffer)
   ("C-x C-r" . consult-recent-file)
+  ("M-g g" . consult-goto-line)
   ("M-g i" . consult-imenu)
   ("M-y" . consult-yank-from-kill-ring)
   ([remap projectile-switch-to-buffer] . consult-project-buffer) ; M-p b
