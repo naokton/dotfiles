@@ -118,11 +118,6 @@
   (isearch-mode-map
    ("C-h" . isearch-delete-char)))
 
-(leaf bs
-  :bind
-  ("C-," . bs-cycle-previous)
-  ("C-." . bs-cycle-next))
-
 (leaf sequential-command
   ;; Ex. C-a multiple times; cycle beginning-of-line > beginning-of-buffer > return
   :ensure t
@@ -871,8 +866,7 @@ Provide only the revised email text without comments or explanations."))
   ("C-c a" . org-agenda)
   (org-mode-map
    ("C-c ," . org-insert-structure-template)
-   ("C-c ." . my/org-insert-timestamp-today-inactive)
-   ("C-," . bs-cycle-previous))
+   ("C-c ." . my/org-insert-timestamp-today-inactive))
   :init
   (defun my/org-insert-timestamp-today-inactive ()
     "Insert inactive timestamp of today"
