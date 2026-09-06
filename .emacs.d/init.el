@@ -1039,7 +1039,7 @@ Provide only the revised email text without comments or explanations."))
     (highlight-indent-guides-auto-even-face-perc . 20)
     (highlight-indent-guides-method . 'fill)
     :hook
-    (yaml-mode-hook . highlight-indent-guides-mode)))
+    ((yaml-mode-hook yaml-ts-mode-hook) . highlight-indent-guides-mode)))
 
 (leaf markdown-mode
   :ensure t
