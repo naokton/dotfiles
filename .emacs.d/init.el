@@ -525,9 +525,9 @@ uv run env -0 2>/dev/null"))
 
   (defun my/deno-or-js-lsp ()
     "Configure LSP mode for Deno if deno.json or deno.jsonc exists in project root."
-    (when-let ((project-root (project-root (project-current))))
-      (when (or (file-exists-p (expand-file-name "deno.json" project-root))
-                (file-exists-p (expand-file-name "deno.jsonc" project-root)))
+    (when-let* ((proj (project-current)) (root (project-root proj)))
+      (when (or (file-exists-p (expand-file-name "deno.json" root))
+                (file-exists-p (expand-file-name "deno.jsonc" root)))
         (setq-local lsp-enabled-clients '(deno-ls))))
     (lsp))
 
