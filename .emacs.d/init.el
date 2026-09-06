@@ -676,7 +676,7 @@ uv run env -0 2>/dev/null"))
   :custom-face
   (flycheck-info . '((t (:underline nil :inherit success))))
   :setq
-  (flycheck-global-modes . '(shell-script-mode yaml-mode)))
+  (flycheck-global-modes . '(sh-mode bash-ts-mode yaml-mode yaml-ts-mode)))
 
 (leaf imenu-list
   :ensure t
