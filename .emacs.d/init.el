@@ -560,18 +560,6 @@ uv run env -0 2>/dev/null"))
   )
 
 
-;; (leaf lsp-pyright
-;;   :ensure t   ; and uv tool install basedpyright
-;;   :custom
-;;   (lsp-pyright-langserver-command . "basedpyright")
-;;   (lsp-pyright-type-checking-mode . "off")
-;;   ;; workaround for mixed workspaces https://github.com/emacs-lsp/lsp-pyright/issues/66
-;;   (lsp-pyright-multi-root . nil)
-;;   :hook
-;;   (python-ts-mode-hook . (lambda ()
-;;                            (require 'lsp-pyright)
-;;                            (lsp-deferred))))
-
 (leaf lsp-ui
   :ensure t
   :bind
@@ -629,31 +617,6 @@ uv run env -0 2>/dev/null"))
   (projectile-mode +1)
   (add-to-list 'projectile-globally-ignored-modes "ghostel-.*mode"))
 
-;; (leaf copilot
-;;   :ensure t
-;;   :bind
-;;   ("C-c M-f" . copilot-complete)
-;;   (copilot-completion-map
-;;    ("C-c M-f" . copilot-complete)
-;;    ("C-g" . copilot-clear-overlay)
-;;    ("M-n" . copilot-next-completion)
-;;    ("M-p" . copilot-previous-completion)
-;;    ("C-<return>" . copilot-accept-completion)
-;;    ("M-f" . copilot-accept-completion-by-word)
-;;    ("M-<return>" . copilot-accept-completion-by-line))
-;;   :hook
-;;   (python-ts-mode-hook . copilot-mode)
-;;   (go-ts-mode-hook . copilot-mode)
-;;   :custom
-;;   (copilot-idle-delay . 0.1)
-;;   )
-
-;; (leaf copilot-chat
-;;   :ensure t
-;;   :custom
-;;   (copilot-chat-default-model . "claude-sonnet-4.6")
-;;   (copilot-chat-commit-model . "gpt-4.1"))
-
 (leaf agent-shell
   :ensure t)
 
@@ -710,11 +673,6 @@ uv run env -0 2>/dev/null"))
                                     typescript-mode))
   :config
   (smart-jump-setup-default-registers))
-
-;; (leaf git-gutter
-;;   :ensure t
-;;   :config
-;;   (global-git-gutter-mode t))
 
 (leaf diff-hl
   :doc "Git-gutter"
@@ -1215,8 +1173,6 @@ Provide only the revised email text without comments or explanations."))
   (tab-width . 4)            ; default is 8
   (fill-column . 100)
   :hook
-  ;; (prog-mode-hook . display-line-numbers-mode)
-  ;; (sgml-mode-hook . display-line-numbers-mode)
   ;; Use :init instead of :config when using with :hook
   ;; :config with :hook adds eval-after-load and makes unintended behavior
   :init
