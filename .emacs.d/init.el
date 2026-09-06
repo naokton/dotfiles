@@ -61,15 +61,15 @@
 (leaf *read-only-vendor-files
   :doc "Open builtin and installed packages in read-only mode."
   :init
+  (defconst my/vendor-file-regexp
+    (rx (or "/.emacs.d/elpa/"
+            "/Emacs.app/Contents/Resources/"
+            "/.venv/lib/python"))
+    "Regexp matching vendored files that should be opened read-only.")
   (defun my/enable-read-only-for-vendor-files ()
-    (let ((file (or buffer-file-name "")))
-      (when (or
-             (string-prefix-p (expand-file-name "~/.emacs.d/elpa/") (expand-file-name file))
-             (string-match-p
-              "/Emacs.app/Contents/Resources/" (expand-file-name file))
-             (string-match-p
-              "/.venv/lib/python" (expand-file-name file)))
-        (read-only-mode 1))))
+    (when (and buffer-file-name
+               (string-match-p my/vendor-file-regexp buffer-file-name))
+      (read-only-mode 1)))
   :hook
   (find-file-hook . my/enable-read-only-for-vendor-files))
 
