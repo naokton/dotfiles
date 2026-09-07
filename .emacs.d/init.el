@@ -693,7 +693,7 @@ ref: URL `https://github.com/emacs-lsp/lsp-ui/issues/681'"
   :custom-face
   (flycheck-info . '((t (:underline nil :inherit success))))
   :setq
-  (flycheck-global-modes . '(sh-mode bash-ts-mode yaml-mode yaml-ts-mode)))
+  (flycheck-global-modes . '(sh-mode bash-ts-mode yaml-ts-mode)))
 
 (leaf imenu-list
   :ensure t
@@ -1021,9 +1021,6 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   :custom
   (go-ts-mode-indent-offset . 4)) ; align with tab-width of 4
 
-(leaf yaml-mode
-  :ensure t)
-
 (leaf highlight-indent-guides
   :ensure t
   :custom
@@ -1032,7 +1029,7 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (highlight-indent-guides-auto-even-face-perc . 20)
   (highlight-indent-guides-method . 'fill)
   :hook
-  ((yaml-mode-hook yaml-ts-mode-hook) . highlight-indent-guides-mode))
+  (yaml-ts-mode-hook . highlight-indent-guides-mode))
 
 (leaf markdown-mode
   :ensure t
