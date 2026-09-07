@@ -407,23 +407,70 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
 
 (leaf ghostel
   :ensure t
-  :commands (ghostel-buffer-list ghostel-project-buffer-list)
+  :commands (ghostel-buffer-list ghostel-project-buffer-list
+             my/ghostel-toggle my/ghostel-new-here
+             my/ghostel-new-below my/ghostel-new-right)
+  :init
+  (defvar-keymap my/ghostel-map
+    :doc "Orchestration commands for ghostel terminals."
+    "m" #'my/ghostel-toggle
+    "M" #'my/ghostel-new-here
+    "2" #'my/ghostel-new-below
+    "3" #'my/ghostel-new-right)
+  ;; A symbol only acts as a prefix key when its function cell holds the keymap.
+  (defalias 'my/ghostel-map my/ghostel-map)
   :bind
-  ("C-x m" . my/ghostel-toggle)
-  ("C-x M" . my/ghostel-new-here)
+  ("C-x m" . my/ghostel-map)
   :custom
   ;; remove C-u and C-h, add f1
   (ghostel-keymap-exceptions . '("C-c" "C-x" "M-x" "M-:" "C-\\" "<f1>"))
   (ghostel-max-scrollback . 10000000)
   (ghostel-query-before-killing . t)
+  :hook
+  (ghostel-mode-hook . my/ghostel-override-projectile-cycling)
   :config
   (defun my/ghostel-buffer-p (buf &optional _action)
     (with-current-buffer buf (derived-mode-p 'ghostel-mode)))
+  (defmacro my/ghostel-with-this-window (&rest body)
+    "Run BODY, displaying the ghostel buffer it picks in the selected window."
+    (declare (indent 0) (debug t))
+    `(let ((display-buffer-overriding-action
+            '(display-buffer-same-window (inhibit-same-window . nil))))
+       ,@body))
   (defun my/ghostel-new-here ()
     (interactive)
-    (let ((display-buffer-overriding-action
-           '(display-buffer-same-window (inhibit-same-window . nil))))
+    (my/ghostel-with-this-window
       (if (project-current) (ghostel-project t) (ghostel t))))
+  (defun my/ghostel-new-below ()
+    "Split the window below, like \\[split-window-below], and start a ghostel there."
+    (interactive)
+    (select-window (split-window-below))
+    (my/ghostel-new-here))
+  (defun my/ghostel-new-right ()
+    "Split the window right, like \\[split-window-right], and start a ghostel there."
+    (interactive)
+    (select-window (split-window-right))
+    (my/ghostel-new-here))
+  (defun my/ghostel-next-here ()
+    "Show this project's next terminal in the selected window."
+    (interactive)
+    (my/ghostel-with-this-window (ghostel-project-next)))
+  (defun my/ghostel-previous-here ()
+    "Show this project's previous terminal in the selected window."
+    (interactive)
+    (my/ghostel-with-this-window (ghostel-project-previous)))
+  ;; `projectile-mode-map' is a minor mode map, so it shadows the input-mode map
+  ;; ghostel installs with `use-local-map'.  `minor-mode-overriding-map-alist' is
+  ;; what displaces it buffer-locally; the parent keeps the rest of the map.
+  (defvar-keymap my/ghostel-projectile-override-map
+    :doc "Projectile's buffer cycling, rebound to ghostel terminals."
+    :parent projectile-mode-map
+    "C-." #'my/ghostel-next-here
+    "C-," #'my/ghostel-previous-here)
+  (defun my/ghostel-override-projectile-cycling ()
+    "Cycle this project's terminals instead of its file buffers."
+    (setf (alist-get 'projectile-mode minor-mode-overriding-map-alist)
+          my/ghostel-projectile-override-map))
   (defun my/ghostel-side-window ()
     "Return the side window showing a ghostel buffer for the current project, if any."
     (seq-some (lambda (buf)
