@@ -1061,8 +1061,18 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (scroll-bar-mode 0))
 
 (leaf window
+  :bind
+  ("C-x 2" . my/split-window-below-and-select)
+  ("C-x 3" . my/split-window-right-and-select)
   :custom
-  (split-window-preferred-direction . 'horizontal))
+  (split-window-preferred-direction . 'horizontal)
+  :init
+  (defun my/split-window-below-and-select ()
+    (interactive)
+    (select-window (split-window-below)))
+  (defun my/split-window-right-and-select ()
+    (interactive)
+    (select-window (split-window-right))))
 
 (leaf *only-ns
   :when (eq window-system 'ns)
