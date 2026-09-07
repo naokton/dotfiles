@@ -1034,8 +1034,7 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   :mode "[Mm]akefile\\'")
 
 (leaf *install-language-modes-without-config
-  :ensure (go-mode
-           csv-mode
+  :ensure (csv-mode
            dockerfile-mode
            docker-compose-mode
            nginx-mode
