@@ -343,7 +343,6 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   ;; set after load, undo limit remains default until you call undo.
   :leaf-defer nil
   :bind
-  ("C-z" . nil)
   ("C-z" . undo-fu-only-undo)
   ("M-z" . undo-fu-only-redo)
   :setq
