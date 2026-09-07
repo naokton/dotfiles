@@ -1178,7 +1178,6 @@ Provide only the revised email text without comments or explanations."))
 (leaf auto-highlight-symbol
   :ensure t
   :require t
-  :hook go-mode-hook
   :config
   (global-auto-highlight-symbol-mode t))
 
