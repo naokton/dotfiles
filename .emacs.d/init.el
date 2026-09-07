@@ -830,8 +830,7 @@ Provide only the revised email text without comments or explanations."))
   (dired-listing-switches . "-alh")
   (dired-kill-when-opening-new-dired-buffer . t)
   :hook
-  (dired-mode-hook . hl-line-mode)
-  (dired-mode-hook . (lambda () (display-line-numbers-mode -1))))
+  (dired-mode-hook . hl-line-mode))
 
 (leaf dired-sidebar
   :ensure t
