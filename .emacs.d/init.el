@@ -1049,7 +1049,7 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (create-fontset-from-ascii-font "Cica-16:weight=normal:slant=normal" nil "mydefault") ; Create a fontset for ASCII
   (set-fontset-font "fontset-mydefault" nil "Cica") ; Extend coverage for other charset
   (set-fontset-font "fontset-mydefault" 'emoji "Apple Color Emoji") ; Override for emojis
-  (set-fontset-font "fontset-mydefault" 'nil "Iosevka Term" nil 'append) ; Fallback
+  (set-fontset-font "fontset-mydefault" nil "Iosevka Term" nil 'append) ; Fallback
   (add-to-list 'default-frame-alist '(font . "fontset-mydefault"))
   (set-face-attribute 'default nil :font "fontset-mydefault")
   ;; We need to set font family of fixed-pitch face directly, not using fontset, to support
