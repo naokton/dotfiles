@@ -803,7 +803,7 @@ filename if not saved, otherwise save to the current file."
 Provide only the revised email text without comments or explanations."))
   :custom
   (gptel-api-key . #'my/retrieve-openapi-token)
-  (gptel-model . 'claude-sonnet-4-20250514)
+  (gptel-model . 'claude-opus-5)
   (gptel-backend . `,(gptel-make-anthropic "Claude"
                       :stream t
                       :key #'my/retrieve-claude-token))
