@@ -536,14 +536,9 @@ uv run env -0 2>/dev/null"))
   (compilation-filter-hook . ansi-color-compilation-filter) ; colorize output
   )
 
-(leaf treesit-auto
-  :ensure t
-  :require t
+(leaf treesit
   :custom
-  (treesit-auto-install . 'prompt)
-  :config
-  (global-treesit-auto-mode)
-  (treesit-auto-add-to-auto-mode-alist 'all))
+  (treesit-enabled-modes . t))
 
 (leaf lsp-mode
   :ensure t
@@ -602,7 +597,6 @@ uv run env -0 2>/dev/null"))
   :hook
   (lsp-completion-mode . my/lsp-mode-setup-completion)
   (yaml-ts-mode-hook . lsp)             ; npm install -g yaml-language-server
-  (sh-ts-mode-hook . lsp)               ; npm i -g bash-language-server
   (bash-ts-mode-hook . lsp)             ; npm i -g bash-language-server
   ;; (python-ts-mode-hook . lsp-deferred)  ; uv tool install 'python-lsp-server'
   (python-ts-mode-hook . lsp)           ; uv tool install ty
