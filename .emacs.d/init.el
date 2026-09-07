@@ -976,17 +976,17 @@ Provide only the revised email text without comments or explanations."))
   (go-ts-mode-indent-offset . 4)) ; align with tab-width of 4
 
 (leaf yaml-mode
+  :ensure t)
+
+(leaf highlight-indent-guides
   :ensure t
-  :config
-  (leaf highlight-indent-guides
-    :ensure t
-    :custom
-    (highlight-indent-guides-responsive . nil)
-    (highlight-indent-guides-auto-odd-face-perc . 10)
-    (highlight-indent-guides-auto-even-face-perc . 20)
-    (highlight-indent-guides-method . 'fill)
-    :hook
-    ((yaml-mode-hook yaml-ts-mode-hook) . highlight-indent-guides-mode)))
+  :custom
+  (highlight-indent-guides-responsive . nil)
+  (highlight-indent-guides-auto-odd-face-perc . 10)
+  (highlight-indent-guides-auto-even-face-perc . 20)
+  (highlight-indent-guides-method . 'fill)
+  :hook
+  ((yaml-mode-hook yaml-ts-mode-hook) . highlight-indent-guides-mode))
 
 (leaf markdown-mode
   :ensure t
