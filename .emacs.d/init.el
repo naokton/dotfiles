@@ -653,25 +653,6 @@ ref: URL `https://github.com/emacs-lsp/lsp-ui/issues/681'"
   ;; Depth 90 keeps dumb-jump last, so lsp-mode's backend wins where it applies.
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 90))
 
-(leaf smart-jump
-  :ensure t
-  :custom
-  (smart-jump-default-mode-list . '(cc-mode ;; `java-mode', `c-mode', `c++-mode', `objc-mode'
-                                    csharp-mode
-                                    clojure-mode
-                                    elisp-mode
-                                    elixir-mode
-                                    ;; go-mode
-                                    lisp-mode
-                                    lispy
-                                    python
-                                    ruby-mode
-                                    rust-mode
-                                    scheme
-                                    typescript-mode))
-  :config
-  (smart-jump-setup-default-registers))
-
 (leaf diff-hl
   :doc "Git-gutter"
   :ensure t
