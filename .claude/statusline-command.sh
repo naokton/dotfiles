@@ -129,14 +129,14 @@ render_rl "$rl5" "$rl5_reset" 3600  5h
 render_rl "$rl7" "$rl7_reset" 86400 7d
 
 # Cache hit rate
-cache_total=$(( ${cache_read:-0} + ${cache_create:-0} ))
-if [ "$cache_total" -gt 0 ]; then
-    hit_pct=$(( cache_read * 100 / cache_total ))
-    cache_color=$(ramp "$hit_pct" "$orange" "$cyan" "$green")
-    add "cache ${cache_color}${hit_pct}%${cyan}"
-fi
+# cache_total=$(( ${cache_read:-0} + ${cache_create:-0} ))
+# if [ "$cache_total" -gt 0 ]; then
+#     hit_pct=$(( cache_read * 100 / cache_total ))
+#     cache_color=$(ramp "$hit_pct" "$orange" "$cyan" "$green")
+#     add "cache ${cache_color}${hit_pct}%${cyan}"
+# fi
 
 # Total session cost
-[ -n "$cost_usd" ] && add "$(printf '$%.2f' "$cost_usd")"
+# [ -n "$cost_usd" ] && add "$(printf '$%.2f' "$cost_usd")"
 
 printf "%b\n" "${cyan}${out}${reset}"
