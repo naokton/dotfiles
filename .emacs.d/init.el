@@ -41,8 +41,9 @@
     "Copy the current buffer file path to the clipboard."
     (interactive)
     (when buffer-file-name
-      (kill-new (file-truename buffer-file-name))
-      (message "Copied file path: %s" (file-truename buffer-file-name)))))
+      (let ((path (file-truename buffer-file-name)))
+        (kill-new path)
+        (message "Copied file path: %s" path)))))
 
 (leaf exec-path-from-shell
   :ensure t
@@ -154,7 +155,7 @@
     (let ((project-name (projectile-project-name)))
       (if (string= "-" project-name)
           (tab-bar-tab-name-current)
-        (projectile-project-name))))
+        project-name)))
   )
 
 (leaf package
