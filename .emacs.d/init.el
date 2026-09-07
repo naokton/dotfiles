@@ -770,10 +770,9 @@ uv run env -0 2>/dev/null"))
   (defun my/retrieve-password-from-keychain (service account)
     "Retrieve password from macOS Keychain."
     (interactive "sService: \nsAccount: ")
-    (let ((command (format "security find-generic-password -s '%s' -a '%s' -w" service account))
-          (password nil))
-      (setq password (string-trim-right (shell-command-to-string command)))
-      password))
+    (string-trim-right
+     (shell-command-to-string
+      (format "security find-generic-password -s '%s' -a '%s' -w" service account))))
   (defun my/retrieve-openapi-token ()
     (my/retrieve-password-from-keychain "OpenAI API Key" "local"))
   (defun my/retrieve-claude-token ()
