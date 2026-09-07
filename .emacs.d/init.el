@@ -596,10 +596,6 @@ uv run env -0 2>/dev/null"))
   :config
   (recentf-mode 1))
 
-(leaf savehist
-  :setq
-  (savehist-mode . t))
-
 (leaf projectile
   :ensure t
   :require t
