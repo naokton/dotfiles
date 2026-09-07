@@ -561,9 +561,13 @@ uv run env -0 2>/dev/null"))
   :ensure t
   :bind
   ("M-I" . lsp-ui-doc-show)
+  :init
+  (defun my/lsp-ui-ignore-tab-bar-motion ()
+    "Prevent rings when hovering mouse over the tab bar.
+ref: URL `https://github.com/emacs-lsp/lsp-ui/issues/681'"
+    (local-set-key (kbd "<tab-bar> <mouse-movement>") #'ignore))
   :hook
-  ;; Prevent rings when hovering mouse over the tab bar. https://github.com/emacs-lsp/lsp-ui/issues/681
-  (lsp-after-initialize-hook . (lambda () (local-set-key (kbd "<tab-bar> <mouse-movement>") #'ignore)))
+  (lsp-after-initialize-hook . my/lsp-ui-ignore-tab-bar-motion)
   :custom
   (lsp-ui-doc-position . 'at-point))
 
@@ -943,8 +947,7 @@ Provide only the revised email text without comments or explanations."))
         (switch-to-buffer-other-window (process-buffer proc)))))
   (advice-add 'python-pytest--process-sentinel :after #'my/python-pytest--extra-process-sentinel)
   (add-to-list 'display-buffer-alist
-               '((lambda(bufname _)
-                   (string-match-p "\\*pytest\\*" bufname))
+               '("\\*pytest\\*"
                  (display-buffer-reuse-window display-buffer-in-side-window)
                  (side . bottom)
                  (reusable-frames . visible)
@@ -955,9 +958,13 @@ Provide only the revised email text without comments or explanations."))
 
 (leaf vue-mode
   :ensure t
+  :init
+  (defun my/vue-mode-clear-syntax-ppss-table ()
+    "Work around vue-mode fontification breakage.
+ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338222'"
+    (setq syntax-ppss-table nil))
   :hook
-  ;; https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338222
-  (vue-mode-hook . (lambda () (setq syntax-ppss-table nil)))
+  (vue-mode-hook . my/vue-mode-clear-syntax-ppss-table)
   (vue-mode-hook . prettier-mode))
 
 (leaf js-ts-mode
