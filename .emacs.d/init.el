@@ -972,7 +972,7 @@ Provide only the revised email text without comments or explanations."))
 (leaf prettier
   :ensure t
   :hook
-  (js-mode-hook . prettier-mode)
+  (js-base-mode-hook . prettier-mode)
   :custom
   (prettier-prettify-on-save-flag . nil))
 
