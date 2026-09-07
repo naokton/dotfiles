@@ -114,7 +114,8 @@ if command -v fzf >/dev/null 2>&1; then
         done
         [[ ${#search_dirs[@]} -eq 0 ]] && return 1
 
-        repo=$(fd -H -E 'node_modules' -E '.venv' -E '.git/**' '^.git$' $search_dirs -d10 --prune --exec dirname |
+        # -I is required for repositories which has ".*" in its .gitignore
+        repo=$(fd -H -I -E 'node_modules' -E '.venv' -E '.git/**' '^.git$' $search_dirs -d10 --prune --exec dirname |
                 fzf --cycle
             )
         [[ -n "$repo" ]] && cd "$repo"
