@@ -428,6 +428,7 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   (ghostel-query-before-killing . t)
   :hook
   (ghostel-mode-hook . my/ghostel-override-projectile-cycling)
+  (ghostel-exit-functions . my/ghostel-delete-windows-on-exit)
   :config
   (defun my/ghostel-buffer-p (buf &optional _action)
     (with-current-buffer buf (derived-mode-p 'ghostel-mode)))
@@ -485,6 +486,12 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
     (if-let* ((win (my/ghostel-side-window)))
         (delete-window win)
       (if (project-current) (ghostel-project) (ghostel))))
+  (defun my/ghostel-delete-windows-on-exit (buf _event)
+    "Close the windows showing BUF when its shell exits, except a frame's last one."
+    (dolist (win (get-buffer-window-list buf nil t))
+      ;; `window-parent' is nil for a frame's sole window
+      (when (window-parent win)
+        (delete-window win))))
   (add-to-list 'display-buffer-alist
                '(my/ghostel-buffer-p
                 (display-buffer-in-side-window)
