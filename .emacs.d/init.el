@@ -230,52 +230,55 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   (defun my/consult-ripgrep-symbol-at-point (&optional dir)
     (interactive)
     (consult-ripgrep dir (thing-at-point 'symbol)))
+  (defun my/consult-special-buffer-p (buf)
+    "Return non-nil for a special buffer worth listing beside file buffers."
+    (with-current-buffer buf
+      (or (derived-mode-p 'ghostel-mode)
+          (bound-and-true-p gptel-mode)
+          (string-match-p (rx bos "*" (or "scratch" "pytest"))
+                          (buffer-name)))))
+  (defun my/consult-special-buffer-items (&optional directory)
+    "Buffers matching `my/consult-special-buffer-p', optionally under DIRECTORY."
+    (consult--buffer-query :sort 'visibility
+                           :as #'consult--buffer-pair
+                           :exclude nil
+                           :buffer-list t
+                           :directory directory
+                           :predicate #'my/consult-special-buffer-p))
+  (defvar my/consult-source-special-buffer
+    `( :name "Special Buffer"
+       :narrow ?*
+       :category buffer
+       :face consult-buffer
+       :history buffer-name-history
+       :action ,#'consult--buffer-action
+       :items ,(lambda () (my/consult-special-buffer-items)))
+    "The few special buffers worth seeing next to file buffers.")
+  (defvar my/consult-source-project-special-buffer
+    `( :name "Special Buffer"
+       :narrow ?*
+       :category buffer
+       :face consult-buffer
+       :history buffer-name-history
+       :action ,#'consult--buffer-action
+       :items ,(lambda () (my/consult-special-buffer-items 'project)))
+    "Project-scoped counterpart of `my/consult-source-special-buffer'.")
   :custom
   (consult-ripgrep-args . "rg --null --line-buffered --color=never --max-columns=1000 --path-separator /\
                            --smart-case --no-heading --with-filename --line-number --search-zip --sort=path") ; add --sort=path
+  ;; restrict only to include buffer related sources
   (consult-buffer-sources . '(consult-source-buffer
+                              my/consult-source-special-buffer
                               consult-source-hidden-buffer
                               consult-source-modified-buffer
                               consult-source-other-buffer))
-  (consult-project-buffer-sources . '(consult-source-project-buffer consult-source-project-buffer-hidden))
-  (consult-buffer-filter . '("\\` "
-                             "\\`:~"
-                             "\\`\\*Messages\\*"
-                             "\\`\\*Help\\*"
-                             "\\`\\*Ibuffer\\*"
-                             "\\`\\*Buffer List\\*"
-                             "\\`\\*Calendar\\*"
-                             "\\`\\*Backtrace\\*"
-                             "\\`\\*Disabled Command\\*"
-                             "\\`\\*lsp"
-                             "\\`\\*pyright"
-                             "\\`\\*ty-ls"
-                             "\\`\\*ruff"
-                             "\\`\\*yamlls"
-                             "\\`\\*gopls"
-                             "\\`\\*bash-ls"
-                             "\\`\\*vue-semantic-server"
-                             "\\`\\*ts-ls"
-                             "\\`\\*magit"
-                             "\\`\\*prettier"
-                             "\\`\\*Embark"
-                             "\\`\\*Org-journal"
-                             "\\`\\*diff-hl"
-                             "\\`\\*Ediff"
-                             "\\`\\*Diff"
-                             "\\`\\*Ilist\\*"
-                             "\\`\\*gptel-diff"
-                             ;; "\\`\\*copilot events"
-                             ;; "\\`\\*copilot-language-server-log\\*"
-                             ;; "\\`\\*[Cc]opilot-chat-"
-                             "\\`\\*Async-native-compile-log\\*"
-                             "\\`\\*Completions\\*"
-                             "\\`\\*Multiple Choice Help\\*"
-                             "\\`\\*Flymake log\\*"
-                             "\\`\\*Semantic SymRef\\*"
-                             "\\`\\*vc\\*"
-                             "\\`newsrc-dribble" ;; Gnus
-                             "\\`\\*tramp/.*\\*"))
+  ;; restrict only to include buffer related sources
+  (consult-project-buffer-sources . '(consult-source-project-buffer
+                                     my/consult-source-project-special-buffer
+                                     consult-source-project-buffer-hidden))
+  ;; Hide every special buffer. `my/consult-source-special-buffer' adds back the
+  ;; few worth seeing.
+  (consult-buffer-filter . '("\\` " "\\`\\*"))
   :config
   (consult-customize
    consult-recent-file consult-ripgrep consult-xref
