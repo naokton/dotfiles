@@ -647,10 +647,11 @@ uv run env -0 2>/dev/null"))
 
 (leaf dumb-jump
   :ensure t
-  ;; :custom
-  ;; (dumb-jump-selector . 'ivy)
+  :custom
+  (dumb-jump-prefer-searcher . 'rg)
   :config
-  (dumb-jump-mode)) ; enable default keybindings
+  ;; Depth 90 keeps dumb-jump last, so lsp-mode's backend wins where it applies.
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 90))
 
 (leaf smart-jump
   :ensure t
