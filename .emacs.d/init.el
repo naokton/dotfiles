@@ -703,24 +703,25 @@ ref: URL `https://github.com/emacs-lsp/lsp-ui/issues/681'"
   :hook
   (lsp-after-open-hook . lsp-origami-try-enable))
 
-;; https://stackoverflow.com/a/62502758
-;; When called this automatically detects the submode at the current location.
-;; It will then either forward to end of tag(HTML) or end of code block(JS/CSS).
-;; This will be passed to hs-minor-mode to properly navigate and fold the code.
-(defun mhtml-forward (arg)
-  (interactive "P")
-  (pcase (get-text-property (point) `mhtml-submode)
-    (`nil (sgml-skip-tag-forward 1))
-    (submode (forward-sexp))))
-
-;; Adds the tag and curly-brace detection to hs-minor-mode for mhtml.
-(add-to-list 'hs-special-modes-alist
-             '(mhtml-mode
-               "{\\|<[^/>]+?"
-               "}\\|</[^/>]*[^/]>"
-               "<!--"
-               mhtml-forward
-               nil))
+(leaf mhtml-mode
+  :doc "Teach hs-minor-mode to fold both HTML tags and JS/CSS blocks.
+ref: URL `https://stackoverflow.com/a/62502758'"
+  :init
+  (defun my/mhtml-forward (_arg)
+    "Move over the construct at point, whichever submode it belongs to.
+Forwards to the end of the tag in HTML, or to the end of the block in JS/CSS."
+    (interactive "P")
+    (pcase (get-text-property (point) 'mhtml-submode)
+      ('nil (sgml-skip-tag-forward 1))
+      (_ (forward-sexp))))
+  :config
+  (add-to-list 'hs-special-modes-alist
+               '(mhtml-mode
+                 "{\\|<[^/>]+?"
+                 "}\\|</[^/>]*[^/]>"
+                 "<!--"
+                 my/mhtml-forward
+                 nil)))
 
 (leaf browse-at-remote
   :ensure t
