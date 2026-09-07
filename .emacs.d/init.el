@@ -659,11 +659,20 @@ ref: URL `https://github.com/emacs-lsp/lsp-ui/issues/681'"
    ("M-p" . projectile-command-map)
    ("C-." . projectile-next-project-buffer)
    ("C-," . projectile-previous-project-buffer))
+  :init
+  ;; Setting `projectile-buffers-filter-function' changes all projectile buffer related operations.
+  ;; Bind it around the cycling commands instead.
+  (defun my/projectile-file-buffers-only (orig-fun &rest args)
+    "Call ORIG-FUN with ARGS, restricting projectile to file visiting buffers."
+    (let ((projectile-buffers-filter-function #'projectile-buffers-with-file))
+      (apply orig-fun args)))
   :custom
   (consult-project-function . (lambda (_) (projectile-project-root)))
+  (projectile-project-search-path . '("~/src"))
   :config
   (projectile-mode +1)
-  (add-to-list 'projectile-globally-ignored-modes "ghostel-.*mode"))
+  (advice-add 'projectile-next-project-buffer :around #'my/projectile-file-buffers-only)
+  (advice-add 'projectile-previous-project-buffer :around #'my/projectile-file-buffers-only))
 
 (leaf agent-shell
   :ensure t)
