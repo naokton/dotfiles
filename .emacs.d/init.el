@@ -103,33 +103,52 @@
   ("C-S-p" . (lambda () (interactive) (previous-line 3)))
   ("C-S-n" . (lambda () (interactive) (next-line 3)))
   :init
+  (defun my/prev-buffer-skip-function (keep)
+    "Return a `switch-to-prev-buffer-skip' function keeping windows on KEEP buffers.
+Return nil, keeping the Emacs default, when KEEP is empty: `switch-to-prev-buffer'
+applies no fallback of its own to a function valued `switch-to-prev-buffer-skip',
+so a predicate skipping every candidate makes it give up and its caller delete
+the window instead.
+A side window keeps the Emacs default too. It shows a buffer displayed there
+before, or closes when there is none."
+    (when keep
+      (lambda (window buffer _bury-or-kill)
+        (unless (window-parameter window 'window-side)
+          (not (memq buffer keep))))))
+
+  (defun my/file-buffers-to-keep (killed)
+    "Return the file buffers left once KILLED, the buffers about to be killed, are.
+Fall back to `*scratch*', creating it, when they leave no file buffer behind, and
+to nil when even that is being killed."
+    (or (seq-filter (lambda (buffer)
+                      (and (buffer-file-name buffer)
+                           (not (memq buffer killed))))
+                    (buffer-list))
+        (let ((scratch (get-scratch-buffer-create)))
+          (unless (memq scratch killed) (list scratch)))))
+
   (defun my/kill-current-buffer ()
     "Kill this buffer, leaving the window on another file buffer of its project.
-Killing a project's last file buffer also kills all other non-file buffers. Scopes
-`switch-to-prev-buffer-skip' to this command instead of setting it globally."
+Killing a project's last file buffer also kills all other non-file buffers. A
+window never falls back to a special buffer: it shows a file buffer, or
+`*scratch*' when no file buffer is left. Scopes `switch-to-prev-buffer-skip' to
+this command instead of setting it globally."
     (interactive)
     (let* ((target (current-buffer))
            (root (projectile-project-root
                   (buffer-local-value 'default-directory target)))
            (other-buffers (and root (remq target (projectile-project-buffers root))))
-           (other-file-buffers (projectile-buffers-with-file other-buffers)))
-      (cond
-       (other-file-buffers
-        ;; Note: A side window keeps the Emacs default. It shows a buffer
-        ;; displayed there before, or closes when there is none.
-        (let ((switch-to-prev-buffer-skip
-               (let ((truenames (make-hash-table :test 'equal)))
-                 (lambda (window buffer _bury-or-kill)
-                   (unless (window-parameter window 'window-side)
-                     (not (and (buffer-file-name buffer)
-                               (projectile-project-buffer-p buffer root truenames))))))))
-          (kill-current-buffer)))
-       ;; Last file buffer in a project with other non-file project buffers
-       ((and other-buffers (buffer-file-name target))
-        (projectile-kill-buffers))
-       ;; Nothing else to switch to or clean up: non-project buffer, the
-       ;; project's only buffer, or a non-file buffer among non-file buffers
-       (t (kill-current-buffer)))))
+           (other-file-buffers (projectile-buffers-with-file other-buffers))
+           ;; Killing a project's last file buffer takes its non-file buffers along
+           (kill-project (and (not other-file-buffers)
+                              other-buffers
+                              (buffer-file-name target)))
+           (switch-to-prev-buffer-skip
+            (my/prev-buffer-skip-function
+             (or other-file-buffers
+                 (my/file-buffers-to-keep
+                  (if kill-project (cons target other-buffers) (list target)))))))
+      (if kill-project (projectile-kill-buffers) (kill-current-buffer))))
   :custom
   (kill-whole-line . t))
 
