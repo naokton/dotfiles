@@ -99,9 +99,37 @@
   :bind
   ("C-h" . delete-backward-char)
   ("M-h" . backward-kill-word)
-  ("C-x C-k" . kill-current-buffer)
+  ("C-x C-k" . my/kill-current-buffer)
   ("C-S-p" . (lambda () (interactive) (previous-line 3)))
   ("C-S-n" . (lambda () (interactive) (next-line 3)))
+  :init
+  (defun my/kill-current-buffer ()
+    "Kill this buffer, leaving the window on another file buffer of its project.
+Killing a project's last file buffer also kills all other non-file buffers. Scopes
+`switch-to-prev-buffer-skip' to this command instead of setting it globally."
+    (interactive)
+    (let* ((target (current-buffer))
+           (root (projectile-project-root
+                  (buffer-local-value 'default-directory target)))
+           (other-buffers (and root (remq target (projectile-project-buffers root))))
+           (other-file-buffers (projectile-buffers-with-file other-buffers)))
+      (cond
+       (other-file-buffers
+        ;; Note: A side window keeps the Emacs default. It shows a buffer
+        ;; displayed there before, or closes when there is none.
+        (let ((switch-to-prev-buffer-skip
+               (let ((truenames (make-hash-table :test 'equal)))
+                 (lambda (window buffer _bury-or-kill)
+                   (unless (window-parameter window 'window-side)
+                     (not (and (buffer-file-name buffer)
+                               (projectile-project-buffer-p buffer root truenames))))))))
+          (kill-current-buffer)))
+       ;; Last file buffer in a project with other non-file project buffers
+       ((and other-buffers (buffer-file-name target))
+        (projectile-kill-buffers))
+       ;; Nothing else to switch to or clean up: non-project buffer, the
+       ;; project's only buffer, or a non-file buffer among non-file buffers
+       (t (kill-current-buffer)))))
   :custom
   (kill-whole-line . t))
 
