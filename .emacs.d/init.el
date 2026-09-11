@@ -460,14 +460,14 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   :init
   (defvar-keymap my/ghostel-map
     :doc "Orchestration commands for ghostel terminals."
-    "m" #'my/ghostel-toggle
-    "M" #'my/ghostel-new-here
+    "m" #'my/ghostel-new-here
     "2" #'my/ghostel-new-below
     "3" #'my/ghostel-new-right)
   ;; A symbol only acts as a prefix key when its function cell holds the keymap.
   (defalias 'my/ghostel-map my/ghostel-map)
   :bind
   ("C-x m" . my/ghostel-map)
+  ("C-x M" . #'my/ghostel-toggle)
   :custom
   ;; remove C-u and C-h, add f1
   (ghostel-keymap-exceptions . '("C-c" "C-x" "M-x" "M-:" "C-\\" "<f1>"))
