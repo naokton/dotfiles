@@ -921,6 +921,7 @@ Provide only the revised email text without comments or explanations."))
   :custom
   (dired-listing-switches . "-alh")
   (dired-kill-when-opening-new-dired-buffer . t)
+  (dired-free-space . nil)
   :hook
   (dired-mode-hook . hl-line-mode))
 
