@@ -311,6 +311,7 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
        :items ,(lambda () (my/consult-special-buffer-items 'project)))
     "Project-scoped counterpart of `my/consult-source-special-buffer'.")
   :custom
+  (consult-async-min-input . 1)
   (consult-ripgrep-args . "rg --null --line-buffered --color=never --max-columns=1000 --path-separator /\
                            --smart-case --no-heading --with-filename --line-number --search-zip --sort=path") ; add --sort=path
   ;; restrict only to include buffer related sources
