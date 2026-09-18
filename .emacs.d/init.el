@@ -1109,12 +1109,15 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
 (leaf makefile-gmake-mode
   :mode "[Mm]akefile\\'")
 
+(leaf groovy-mode
+  :ensure t
+  :mode "/Jenkinsfile[^/]*\\'" "Jenkinsfile\\'")
+
 (leaf *install-language-modes-without-config
   :ensure (csv-mode
            dockerfile-mode
            docker-compose-mode
            nginx-mode
-           groovy-mode
            powershell))
 
 ;;;;----------------------------------------------------------------
