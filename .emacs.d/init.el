@@ -1313,6 +1313,7 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (doom-modeline-buffer-file-name-style . 'relative-from-project)
   (doom-modeline-height . 28)
   (doom-modeline-env-version . nil)
+  (doom-modeline-workspace-name . nil)
   :config
   (doom-modeline-mode 1)
   (line-number-mode 1)
