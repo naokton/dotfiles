@@ -457,13 +457,15 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   :ensure t
   :commands (ghostel-buffer-list ghostel-project-buffer-list
              my/ghostel-toggle my/ghostel-new-here
-             my/ghostel-new-below my/ghostel-new-right)
+             my/ghostel-new-below my/ghostel-new-right
+             my/ghostel-new-in-project)
   :init
   (defvar-keymap my/ghostel-map
     :doc "Orchestration commands for ghostel terminals."
     "m" #'my/ghostel-new-here
     "2" #'my/ghostel-new-below
-    "3" #'my/ghostel-new-right)
+    "3" #'my/ghostel-new-right
+    "p" #'my/ghostel-new-in-project)
   ;; A symbol only acts as a prefix key when its function cell holds the keymap.
   (defalias 'my/ghostel-map my/ghostel-map)
   :bind
@@ -474,6 +476,7 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   (ghostel-keymap-exceptions . '("C-c" "C-x" "M-x" "M-:" "C-\\" "<f1>"))
   (ghostel-max-scrollback . 10000000)
   (ghostel-query-before-killing . t)
+  (ghostel-buffer-name-function . 'ghostel-buffer-name-by-title)
   :hook
   (ghostel-mode-hook . my/ghostel-override-projectile-cycling)
   (ghostel-exit-functions . my/ghostel-delete-windows-on-exit)
@@ -499,6 +502,14 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
     (interactive)
     (select-window (split-window-right))
     (my/ghostel-new-here))
+  (defun my/ghostel-new-in-project ()
+    "Ask for a known project and start a ghostel in its root, in the selected window."
+    (interactive)
+    (let ((default-directory
+           (projectile-completing-read "Ghostel in project: "
+                                       (projectile-relevant-known-projects)
+                                       :category 'projectile-project)))
+      (my/ghostel-new-here)))
 
   (defun my/ghostel-next-here ()
     "Show this project's next terminal in the selected window."
