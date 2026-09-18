@@ -1295,7 +1295,7 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   :ensure t
   :require t
   :custom
-  (perfect-margin-ignore-regexps . '("^minibuf"))
+  (perfect-margin-ignore-regexps . '("^minibuf" "^\*.*ghostel\*"))
   :config
   (perfect-margin-mode t))
 
