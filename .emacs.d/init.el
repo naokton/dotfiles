@@ -298,7 +298,7 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
        :category buffer
        :face consult-buffer
        :history buffer-name-history
-       :action ,#'consult--buffer-action
+       :state ,#'consult--buffer-state
        :items ,(lambda () (my/consult-special-buffer-items)))
     "The few special buffers worth seeing next to file buffers.")
   (defvar my/consult-source-project-special-buffer
@@ -307,7 +307,7 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
        :category buffer
        :face consult-buffer
        :history buffer-name-history
-       :action ,#'consult--buffer-action
+       :state ,#'consult--buffer-state
        :items ,(lambda () (my/consult-special-buffer-items 'project)))
     "Project-scoped counterpart of `my/consult-source-special-buffer'.")
   :custom
