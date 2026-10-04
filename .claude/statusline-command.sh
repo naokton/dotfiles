@@ -108,7 +108,13 @@ branch=""
 [ -n "$cwd" ] && branch=$(git -C "$cwd" --no-optional-locks symbolic-ref --short HEAD 2>/dev/null)
 if [ -n "$branch" ]; then
     proj=$(git -C "$cwd" --no-optional-locks rev-parse --show-toplevel 2>/dev/null)
-    add "${proj##*/} ⎇ ${branch}"
+    # Dirty markers (as in git-prompt.sh): * unstaged, + staged, % untracked
+    dirty=""
+    git -C "$cwd" --no-optional-locks diff --no-ext-diff --quiet          || dirty+="*"
+    git -C "$cwd" --no-optional-locks diff --no-ext-diff --cached --quiet || dirty+="+"
+    git -C "$cwd" --no-optional-locks ls-files --others --exclude-standard --directory \
+        --no-empty-directory --error-unmatch -- ':/*' >/dev/null 2>&1    && dirty+="%"
+    add "${proj##*/} ⎇ ${branch}${dirty:+${orange}${dirty}${cyan}}"
 elif [ -n "$cwd" ]; then
     add "${cwd##*/}"
 fi
