@@ -471,6 +471,9 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   :bind
   ("C-x m" . my/ghostel-map)
   ("C-x M" . #'my/ghostel-toggle)
+  ;; Stay copy-mode on M-w. C-w exit copy mode.
+  (:ghostel-readonly-mode-map
+   ("M-w" . kill-ring-save))
   :custom
   ;; remove C-u and C-h, add f1
   (ghostel-keymap-exceptions . '("C-c" "C-x" "M-x" "M-:" "C-\\" "<f1>"))
