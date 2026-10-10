@@ -55,6 +55,10 @@ main() {
         ".npmrc"
     )
 
+    for src in "$SRC"/.emacs.d/user-lisp/*.el; do
+        files+=("${src#"$SRC/"}")
+    done
+
     for file in "${files[@]}"; do
         local src="$SRC/$file"
         local dest="$HOME/$file"
