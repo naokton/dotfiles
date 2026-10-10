@@ -458,13 +458,14 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   :commands (ghostel-buffer-list ghostel-project-buffer-list
              my/ghostel-toggle my/ghostel-new-here
              my/ghostel-new-below my/ghostel-new-right
-             my/ghostel-new-in-project)
+             my/ghostel-new-tab my/ghostel-new-in-project)
   :init
   (defvar-keymap my/ghostel-map
     :doc "Orchestration commands for ghostel terminals."
     "m" #'my/ghostel-new-here
     "2" #'my/ghostel-new-below
     "3" #'my/ghostel-new-right
+    "t 2" #'my/ghostel-new-tab
     "p" #'my/ghostel-new-in-project)
   ;; A symbol only acts as a prefix key when its function cell holds the keymap.
   (defalias 'my/ghostel-map my/ghostel-map)
@@ -504,6 +505,11 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
     "Split the window right, like \\[split-window-right], and start a ghostel there."
     (interactive)
     (select-window (split-window-right))
+    (my/ghostel-new-here))
+  (defun my/ghostel-new-tab ()
+    "Open a new tab, like \\[tab-new], and start a ghostel there."
+    (interactive)
+    (tab-bar-new-tab)
     (my/ghostel-new-here))
   (defun my/ghostel-new-in-project ()
     "Ask for a known project and start a ghostel in its root, in the selected window."
