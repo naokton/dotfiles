@@ -1288,6 +1288,7 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (indent-tabs-mode . nil)   ; use spaces
   (tab-width . 4)            ; default is 8
   (fill-column . 100)
+  (show-paren-delay . 0.03)  ; quick highlight
   :init
   (show-paren-mode t))
 
@@ -1305,6 +1306,8 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
 (leaf auto-highlight-symbol
   :ensure t
   :require t
+  :custom
+  (ahs-idle-interval . 0.2)
   :config
   (global-auto-highlight-symbol-mode t))
 
