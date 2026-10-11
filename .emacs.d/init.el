@@ -1172,7 +1172,7 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   :when (eq window-system 'ns)
   :config
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-  ;; (add-to-list 'default-frame-alist '(ns-appearance . dark))  ;; Make fontface white for dark titelbar
+  (add-to-list 'default-frame-alist '(ns-appearance . light))  ;; Make fontface black for dark titelbar
   )
 
 (leaf *font-config
