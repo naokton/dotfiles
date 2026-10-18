@@ -1178,15 +1178,27 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
 (leaf *font-config
   :config
   (set-language-environment "Japanese")
-  (create-fontset-from-ascii-font "Cica-16:weight=normal:slant=normal" nil "mydefault") ; Create a fontset for ASCII
-  (set-fontset-font "fontset-mydefault" nil "Cica") ; Extend coverage for other charset
-  (set-fontset-font "fontset-mydefault" 'emoji "Apple Color Emoji") ; Override for emojis
-  (set-fontset-font "fontset-mydefault" nil "Iosevka Term" nil 'append) ; Fallback
+
+  (create-fontset-from-ascii-font "JetBrains Mono-14:weight=normal:slant=normal" nil "mydefault")
+  ;; Japanese (and other CJK) scripts
+  (dolist (script '(han kana cjk-misc bopomofo kanbun hangul ideographic-description vertical-form))
+    (set-fontset-font "fontset-mydefault" script "Noto Sans Mono CJK JP"))
+  ;; Adjust to match full-width character with exactly two half-width
+  (add-to-list 'face-font-rescale-alist '("Noto Sans Mono CJK JP" . 1.2))
+  ;; Nerd Font Icons
+  (dolist (target '((#xe000 . #xf8ff) (#xf0000 . #xfffff) #x2630 #x2665 (#x276c . #x276d)))
+    (set-fontset-font "fontset-mydefault" target "Symbols Nerd Font Mono" nil 'prepend))
+  (set-fontset-font "fontset-mydefault" 'emoji "Apple Color Emoji")
+  ;; Fallbacks. Need to be registered as explicit ranges since nil target is hidden by default fontset.
+  ;; Everything above ASCII except the Personal Use Area to make NF precede in the range.
+  (dolist (range '((#x80 . #xdfff) (#xf900 . #xeffff)))
+    (set-fontset-font "fontset-mydefault" range "JetBrains Mono" nil 'append)
+    (set-fontset-font "fontset-mydefault" range "Iosevka Term" nil 'append))
+
   (add-to-list 'default-frame-alist '(font . "fontset-mydefault"))
-  (set-face-attribute 'default nil :font "fontset-mydefault")
-  ;; We need to set font family of fixed-pitch face directly, not using fontset, to support
-  ;; variable-pitch-mode
-  (set-face-attribute 'fixed-pitch nil :family "Cica"))
+  (set-face-attribute 'fixed-pitch nil :font "fontset-mydefault")
+  (set-face-attribute 'variable-pitch nil :font "Helvetica")
+  )
 
 (leaf modus-themes
   :ensure t
