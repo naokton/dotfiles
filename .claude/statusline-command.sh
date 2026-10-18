@@ -10,6 +10,8 @@ orange='\033[38;2;255;176;85m'
 yellow='\033[38;2;230;200;0m'
 red='\033[38;2;235;87;87m'
 reset='\033[0m'
+track='\033[38;2;40;42;54m'      # bar track (fg)
+bg_track='\033[48;2;40;42;54m'   # bar track (bg)
 sep="${reset} │ ${cyan}"
 
 # ===== Nerd Font icons =====
@@ -29,12 +31,12 @@ fmt_decimal() {
 # percentage ramp: ramp <pct> <lo> <mid> <hi>  (hi at >=80, mid at >=50, lo below)
 ramp() { [ "$1" -ge 80 ] && printf '%b' "$4" || { [ "$1" -ge 50 ] && printf '%b' "$3" || printf '%b' "$2"; }; }
 
-# percentage -> single block character ▁▂▃▄▅▆▇█
+# percentage -> single block character ▁▂▃▄▅▆▇█ on the track background
 pct_block() {
-    [ "$1" -eq 0 ] && printf ' ' && return
-    local blocks=(▁ ▂ ▃ ▄ ▅ ▆ ▇ █) idx=$(( $1 / 13 ))
+    local blocks=(▁ ▂ ▃ ▄ ▅ ▆ ▇ █) idx=$(( $1 / 13 )) c=' '
     [ "$idx" -gt 7 ] && idx=7
-    printf '%s' "${blocks[$idx]}"
+    [ "$1" -gt 0 ] && c=${blocks[$idx]}
+    printf '%b%s\033[49m' "$bg_track" "$c"
 }
 
 # bar graph: make_bar <pct> <color>
@@ -49,8 +51,6 @@ make_bar() {
     local part=$(( sub % 8 ))
     local empty=$(( total - full - (part > 0) ))
 
-    local track='\033[38;2;40;42;54m'
-    local bg_track='\033[48;2;40;42;54m'
     local partials=(' ' '▏' '▎' '▍' '▌' '▋' '▊' '▉')
 
     local fill pad mid=""
@@ -69,7 +69,7 @@ render_rl() {
     local p t=""
     printf -v p "%.0f" "$1"
     [ -n "$2" ] && [ "$2" -gt "$now" ] 2>/dev/null && t=$(fmt_decimal $(( $2 - now )) "$3")
-    add "$(ramp "$p" "$cyan" "$yellow" "$red")$(pct_block "$p") ${p}%${cyan}${t:+ ↻${t}/$4}"
+    add "$(ramp "$p" "$cyan" "$yellow" "$red")$(pct_block "$p") ${p}%${cyan}${t:+ (${t}/$4)}"
 }
 
 # ===== Extract all fields in one jq pass (one per line; empties preserved) =====
