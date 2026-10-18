@@ -12,6 +12,11 @@ red='\033[38;2;235;87;87m'
 reset='\033[0m'
 sep="${reset} │ ${cyan}"
 
+# ===== Nerd Font icons =====
+i_folder=$' '   # nf-fa-folder
+i_branch=$' '   # nf-fa-code_branch
+i_model=$' '    # nf-fa-microchip
+
 # seconds + seconds-per-unit -> decimal with one place ("4.5")
 #   fmt_decimal <seconds> 3600  -> hours  (e.g. 16200 -> 4.5)
 #   fmt_decimal <seconds> 86400 -> days   (e.g. 276480 -> 3.2)
@@ -114,13 +119,13 @@ if [ -n "$branch" ]; then
     git -C "$cwd" --no-optional-locks diff --no-ext-diff --cached --quiet || dirty+="+"
     git -C "$cwd" --no-optional-locks ls-files --others --exclude-standard --directory \
         --no-empty-directory --error-unmatch -- ':/*' >/dev/null 2>&1    && dirty+="%"
-    add "${proj##*/} ⎇ ${branch}${dirty:+${orange}${dirty}${cyan}}"
+    add "${i_folder} ${proj##*/} ${i_branch} ${branch}${dirty:+${orange}${dirty}${cyan}}"
 elif [ -n "$cwd" ]; then
-    add "${cwd##*/}"
+    add "${i_folder} ${cwd##*/}"
 fi
 
 # Model block — model + effort + agent + context%, grouped as one unit
-mblock="$model"
+mblock="${i_model} ${model}"
 [ -n "$effort" ] && mblock+="${mblock:+ }$effort"
 [ -n "$agent" ]  && mblock+="${mblock:+ }agent:${agent}"
 if [ -n "$used" ]; then
