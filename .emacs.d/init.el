@@ -1319,13 +1319,14 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
 (leaf variable-pitch
   :hook (markdown-mode-hook org-mode-hook))
 
-(leaf perfect-margin
-  :ensure t
-  :require t
+(leaf center-margin
+  :bind
+  (:window-prefix-map
+   ("{" . center-margin-narrow)
+   ("}" . center-margin-widen))
   :custom
-  (perfect-margin-ignore-regexps . '("^minibuf" "^\\*.*ghostel.*\\*" "^\\*keymap-outline.*\\*"))
-  :config
-  (perfect-margin-mode t))
+  (global-center-margin-modes . '((not ghostel-mode keymap-outline-mode) t))
+  :global-minor-mode global-center-margin-mode)
 
 (leaf auto-highlight-symbol
   :ensure t
