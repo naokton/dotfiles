@@ -1184,9 +1184,6 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
     (set-fontset-font "fontset-mydefault" script "Noto Sans Mono CJK JP"))
   ;; Adjust to match full-width character with exactly two half-width
   (add-to-list 'face-font-rescale-alist '("Noto Sans Mono CJK JP" . 1.2))
-  ;; Nerd Font Icons
-  (dolist (target '((#xe000 . #xf8ff) (#xf0000 . #xfffff) #x2630 #x2665 (#x276c . #x276d)))
-    (set-fontset-font "fontset-mydefault" target "Symbols Nerd Font Mono" nil 'prepend))
   (set-fontset-font "fontset-mydefault" 'emoji "Apple Color Emoji")
   ;; Fallbacks. Need to be registered as explicit ranges since nil target is hidden by default fontset.
   ;; Everything above ASCII except the Personal Use Area to make NF precede in the range.
@@ -1194,9 +1191,21 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
     (set-fontset-font "fontset-mydefault" range "JetBrains Mono" nil 'append)
     (set-fontset-font "fontset-mydefault" range "Iosevka Term" nil 'append))
 
+  ;; A separate fontset, so every character Noto Sans JP has uses it, and not the default face's fonts.
+  ;; Iosevka Term for characters Noto Sans JP does not have (e.g. U+1F786).
+  (create-fontset-from-ascii-font "Noto Sans JP" nil "myproportional")
+  (set-fontset-font "fontset-myproportional" '(#x80 . #x10ffff) "Noto Sans JP")
+  (set-fontset-font "fontset-myproportional" '(#x80 . #x10ffff) "Iosevka Term" nil 'append)
+
+  ;; Nerd Font Icons
+  (dolist (fontset '("fontset-mydefault" "fontset-myproportional"))
+    (dolist (target '((#xe000 . #xf8ff) (#xf0000 . #xfffff) #x2630 #x2665 (#x276c . #x276d)))
+      (set-fontset-font fontset target "Symbols Nerd Font Mono" nil 'prepend)))
+
   (add-to-list 'default-frame-alist '(font . "fontset-mydefault"))
   (set-face-attribute 'fixed-pitch nil :font "fontset-mydefault")
-  (set-face-attribute 'variable-pitch nil :font "Helvetica")
+  ;; :family, not :font. With :font, the height is set to 12pt and does not follow the default face.
+  (set-face-attribute 'variable-pitch nil :family "Noto Sans JP" :fontset "fontset-myproportional")
   )
 
 (leaf modus-themes
