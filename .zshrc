@@ -31,17 +31,32 @@ alias vi="vim"
 alias ls="ls --color=auto"
 alias ll="ls --color=auto -l"
 alias la="ls --color=auto -la"
-if [ -e "/Applications/Dev/Emacs.app" ]; then
-    alias emacsclient="/Applications/Dev/Emacs.app/Contents/MacOS/bin/emacsclient"
-    alias em-t="/Applications/Dev/Emacs.app/Contents/MacOS/bin/emacsclient -t"
-    alias em-w="/Applications/Dev/Emacs.app/Contents/MacOS/bin/emacsclient -r"
-    emacs_cmd="/Applications/Dev/Emacs.app/Contents/MacOS/Emacs"
-    alias emacs="$emacs_cmd"
-    # Lite emacs with minimum configuration
-    lemacs_cmd="$emacs_cmd -Q -nw -l ~/.emacs.d/init-lite.el"
-    alias lemacs="$lemacs_cmd"
-    export EDITOR="$lemacs_cmd"
+
+# emacs
+EMACS_APP="/Applications/Dev/Emacs.app/Contents/MacOS"
+
+if [ -d "$EMACS_APP" ]; then
+  add_path "$EMACS_APP/bin"
+
+  alias em-t='emacsclient -t'
+  alias em-w='emacsclient -r'
+  # Lite emacs with minimum configuration
+  lite_emacs="$EMACS_APP/Emacs -Q -nw -l $HOME/.emacs.d/init-lite.el"
+  alias lemacs="$lite_emacs"
+
+  if [ -n "$INSIDE_EMACS" ]; then
+    # Inside an Emacs terminal: send files to the running Emacs
+    export EDITOR='emacsclient'
+    alias emacs='emacsclient -n'
+  else
+    # Regular terminal: use the lite standalone Emacs
+    export EDITOR="$lite_emacs"
+    alias emacs="$EMACS_APP/Emacs"
+  fi
+  export VISUAL="$EDITOR"
 fi
+
+unset EMACS_APP lite_emacs
 
 # completion
 [ -d ~/.zsh/completion ] && fpath=(~/.zsh/completion $fpath)
