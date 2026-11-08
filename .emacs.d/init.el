@@ -477,7 +477,7 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   :custom
   ;; remove C-u and C-h, add f1
   (ghostel-keymap-exceptions . '("C-c" "C-x" "M-x" "M-:" "C-\\" "<f1>"))
-  (ghostel-max-scrollback . 10000000)
+  (ghostel-max-scrollback . 100000000)
   (ghostel-query-before-killing . t)
   (ghostel-buffer-name-function . 'ghostel-buffer-name-by-title)
   :hook
@@ -623,6 +623,7 @@ uv run env -0 2>/dev/null"))
   (lsp-enable-folding . t)
   (lsp-enable-snippet . nil)
   (lsp-enable-symbol-highlighting . t)
+  (lsp-idle-delay . 0.2)
   (lsp-enable-links . nil)
   (lsp-enable-imenu . nil)
   (lsp-pylsp-plugins-pydocstyle-enabled . nil)
@@ -1105,14 +1106,12 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (highlight-indent-guides-responsive . nil)
   (highlight-indent-guides-auto-odd-face-perc . 10)
   (highlight-indent-guides-auto-even-face-perc . 20)
-  (highlight-indent-guides-method . 'fill)
+  (highlight-indent-guides-method . 'column)
   :hook
   (yaml-ts-mode-hook . highlight-indent-guides-mode))
 
-(leaf markdown-mode
-  :ensure t
-  :setq
-  (markdown-fontify-code-blocks-natively . t))
+(leaf markdown-ts-mode
+  :mode "\\.md\\'")
 
 (leaf makefile-gmake-mode
   :mode "[Mm]akefile\\'")
@@ -1317,7 +1316,7 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (show-paren-mode t))
 
 (leaf variable-pitch
-  :hook (markdown-mode-hook org-mode-hook))
+  :hook (markdown-ts-mode-hook markdown-ts-view-mode-hook  org-mode-hook))
 
 (leaf center-margin
   :bind
@@ -1325,6 +1324,7 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
    ("{" . center-margin-narrow)
    ("}" . center-margin-widen))
   :custom
+  (center-margin-width . 100)
   (global-center-margin-modes . '((not ghostel-mode keymap-outline-mode) t))
   :global-minor-mode global-center-margin-mode)
 
