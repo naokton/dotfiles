@@ -308,6 +308,11 @@ QUERY is a plist for `consult--buffer-query'.  It ignores
                                 :directory project)
                               :narrow ?*)
     "Project-scoped counterpart of `my/consult-source-special-buffer'.")
+  (defun my/consult-ghostel-buffer ()
+    "Switch to a ghostel buffer, with preview like `consult-buffer'."
+    (interactive)
+    (consult-buffer
+     (list (my/consult-buffer-source "Ghostel Buffer" '(:mode ghostel-mode)))))
   :custom
   (consult-async-min-input . 1)
   (consult-ripgrep-args . "rg --null --line-buffered --color=never --max-columns=1000 --path-separator /\
@@ -484,7 +489,8 @@ QUERY is a plist for `consult--buffer-query'.  It ignores
     "3" #'my/ghostel-new-right
     "t 2" #'my/ghostel-new-tab
     "p" #'my/ghostel-new-in-project
-    "e" #'my/ghostel-compose)
+    "e" #'my/ghostel-compose
+    "b" #'my/consult-ghostel-buffer)
   ;; A symbol only acts as a prefix key when its function cell holds the keymap.
   (defalias 'my/ghostel-map my/ghostel-map)
   :bind
