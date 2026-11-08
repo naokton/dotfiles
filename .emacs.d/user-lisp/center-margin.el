@@ -98,9 +98,7 @@ selected window.  Turn on `center-margin-mode' if it is off."
          ;; Start from the visible width when the window is narrower.
          (width (+ (min center-margin-width available) (* n center-margin-step))))
     (setq-local center-margin-width (min available (max center-margin-step width))))
-  (if center-margin-mode
-      (center-margin--update-windows)
-    (center-margin-mode))
+  (center-margin-mode 1)
   (message "Text width: %d" center-margin-width))
 
 (defun center-margin-narrow (n)
