@@ -348,7 +348,25 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
    ("M-A" . marginalia-cycle))
   :init
   (marginalia-mode)
-  )
+  :config
+  (defun my/marginalia-buffer-path (buffer root)
+    "Return BUFFER's file or directory, relative to project ROOT when non-nil."
+    (let ((path (or (buffer-file-name buffer)
+                    (buffer-local-value 'default-directory buffer))))
+      (if root (file-relative-name path root) (abbreviate-file-name path))))
+  (defun my/marginalia-annotate-buffer (cand)
+    "Like `marginalia-annotate-buffer', with project name and project-relative path."
+    (when-let* ((buffer (get-buffer cand)))
+      (let ((root (projectile-project-root
+                   (buffer-local-value 'default-directory buffer))))
+        (marginalia--fields
+         ((marginalia--buffer-status buffer))
+         ((if root (projectile-project-name root) "")
+          :width 20 :face 'marginalia-type)
+         ((my/marginalia-buffer-path buffer root)
+          :truncate 0.5 :face 'marginalia-file-name)))))
+  (add-to-list 'marginalia-annotators
+               '(buffer my/marginalia-annotate-buffer builtin none)))
 
 (leaf corfu
   :ensure t
