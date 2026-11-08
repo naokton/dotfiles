@@ -486,6 +486,7 @@ QUERY is a plist for `consult--buffer-query'.  It ignores
              my/ghostel-toggle my/ghostel-new-here
              my/ghostel-new-below my/ghostel-new-right
              my/ghostel-new-tab my/ghostel-new-in-project
+             my/ghostel-claude-here my/ghostel-claude-in-project
              my/ghostel-compose)
   :init
   (defvar-keymap my/ghostel-map
@@ -495,6 +496,8 @@ QUERY is a plist for `consult--buffer-query'.  It ignores
     "3" #'my/ghostel-new-right
     "t 2" #'my/ghostel-new-tab
     "p" #'my/ghostel-new-in-project
+    "c" #'my/ghostel-claude-in-project
+    "C" #'my/ghostel-claude-here
     "e" #'my/ghostel-compose
     "b" #'my/consult-ghostel-buffer
     "B" #'my/consult-project-ghostel-buffer)
@@ -550,6 +553,16 @@ QUERY is a plist for `consult--buffer-query'.  It ignores
                                        (projectile-relevant-known-projects)
                                        :category 'projectile-project)))
       (my/ghostel-new-here)))
+  (defun my/ghostel-claude-here ()
+    "Start a ghostel like `my/ghostel-new-here', and run claude there."
+    (interactive)
+    (with-current-buffer (my/ghostel-new-here)
+      (ghostel-send-string "claude\r")))
+  (defun my/ghostel-claude-in-project ()
+    "Ask for a known project, start a ghostel in its root, and run claude there."
+    (interactive)
+    (with-current-buffer (my/ghostel-new-in-project)
+      (ghostel-send-string "claude\r")))
 
   (defun my/ghostel-compose ()
     "Open a buffer below to compose text for this ghostel terminal."
