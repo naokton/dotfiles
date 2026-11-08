@@ -283,31 +283,30 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
           (bound-and-true-p gptel-mode)
           (string-match-p (rx bos "*" (or "scratch" "pytest"))
                           (buffer-name)))))
-  (defun my/consult-special-buffer-items (&optional directory)
-    "Buffers matching `my/consult-special-buffer-p', optionally under DIRECTORY."
-    (consult--buffer-query :sort 'visibility
-                           :as #'consult--buffer-pair
-                           :exclude nil
-                           :buffer-list t
-                           :directory directory
-                           :predicate #'my/consult-special-buffer-p))
-  (defvar my/consult-source-special-buffer
-    `( :name "Special Buffer"
-       :narrow ?*
+  (defun my/consult-buffer-source (name query &rest props)
+    "Return a `consult-buffer' source NAME for the buffers matching QUERY.
+QUERY is a plist for `consult--buffer-query'.  It ignores
+`consult-buffer-filter'.  PROPS are added to the source."
+    `( :name ,name
        :category buffer
        :face consult-buffer
        :history buffer-name-history
        :state ,#'consult--buffer-state
-       :items ,(lambda () (my/consult-special-buffer-items)))
+       :items ,(lambda ()
+                 (apply #'consult--buffer-query :sort 'visibility
+                        :as #'consult--buffer-pair :exclude nil :buffer-list t
+                        query))
+       ,@props))
+  (defvar my/consult-source-special-buffer
+    (my/consult-buffer-source "Special Buffer"
+                              '(:predicate my/consult-special-buffer-p)
+                              :narrow ?*)
     "The few special buffers worth seeing next to file buffers.")
   (defvar my/consult-source-project-special-buffer
-    `( :name "Special Buffer"
-       :narrow ?*
-       :category buffer
-       :face consult-buffer
-       :history buffer-name-history
-       :state ,#'consult--buffer-state
-       :items ,(lambda () (my/consult-special-buffer-items 'project)))
+    (my/consult-buffer-source "Special Buffer"
+                              '(:predicate my/consult-special-buffer-p
+                                :directory project)
+                              :narrow ?*)
     "Project-scoped counterpart of `my/consult-source-special-buffer'.")
   :custom
   (consult-async-min-input . 1)
