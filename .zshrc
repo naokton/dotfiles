@@ -92,8 +92,16 @@ else
     PROMPT_HOST="%m"
 fi
 
-# [11:49:31 user@host] pdir/dir %
-PROMPT="%B[%F{green}%D{%H:%M:%S}%f %F{cyan}%n%f@${PROMPT_HOST}] %F{green}%2~%f %#%b "
+# git branch via zsh's built-in vcs_info
+autoload -Uz vcs_info add-zsh-hook
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git:*' formats ' %F{magenta}(%b)%f'
+zstyle ':vcs_info:git:*' actionformats ' %F{magenta}(%b|%a)%f'
+add-zsh-hook precmd vcs_info
+setopt PROMPT_SUBST
+
+# [11:49:31 user@host] pdir/dir (master) %
+PROMPT="%B[%F{green}%D{%H:%M:%S}%f %F{cyan}%n%f@${PROMPT_HOST}] %F{green}%2~%f\${vcs_info_msg_0_} %#%b "
 
 # Misc.
 export MANWIDTH=100
