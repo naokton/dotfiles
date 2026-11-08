@@ -1362,7 +1362,7 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (show-paren-mode t))
 
 (leaf variable-pitch
-  :hook (markdown-ts-mode-hook markdown-ts-view-mode-hook  org-mode-hook))
+  :hook (markdown-ts-mode-hook markdown-ts-view-mode-hook org-mode-hook))
 
 (leaf center-margin
   :bind
