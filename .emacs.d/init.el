@@ -457,7 +457,8 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   :commands (ghostel-buffer-list ghostel-project-buffer-list
              my/ghostel-toggle my/ghostel-new-here
              my/ghostel-new-below my/ghostel-new-right
-             my/ghostel-new-tab my/ghostel-new-in-project)
+             my/ghostel-new-tab my/ghostel-new-in-project
+             my/ghostel-compose)
   :init
   (defvar-keymap my/ghostel-map
     :doc "Orchestration commands for ghostel terminals."
@@ -465,7 +466,8 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
     "2" #'my/ghostel-new-below
     "3" #'my/ghostel-new-right
     "t 2" #'my/ghostel-new-tab
-    "p" #'my/ghostel-new-in-project)
+    "p" #'my/ghostel-new-in-project
+    "e" #'my/ghostel-compose)
   ;; A symbol only acts as a prefix key when its function cell holds the keymap.
   (defalias 'my/ghostel-map my/ghostel-map)
   :bind
@@ -518,6 +520,18 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
                                        (projectile-relevant-known-projects)
                                        :category 'projectile-project)))
       (my/ghostel-new-here)))
+
+  (defun my/ghostel-compose ()
+    "Open a buffer below to compose text for this ghostel terminal."
+    (interactive)
+    (unless (derived-mode-p 'ghostel-mode)
+      (user-error "Not in a ghostel buffer"))
+    (let ((target (current-buffer)))
+      (string-edit nil ""
+                   (lambda (text)
+                     (with-current-buffer target
+                       (ghostel-paste-string (string-trim-right text))))
+                   :major-mode-sym #'gfm-mode)))
 
   (defun my/ghostel-next-here ()
     "Show this project's next terminal in the selected window."
