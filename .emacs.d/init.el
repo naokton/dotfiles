@@ -276,9 +276,9 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
     (interactive)
     (let ((sym (thing-at-point 'symbol t)))
       (consult-line (when sym (concat "\\_<" sym "\\_>")))))
-  (defun my/consult-ripgrep-symbol-at-point (&optional dir)
+  (defun my/consult-ripgrep-symbol-at-point ()
     (interactive)
-    (consult-ripgrep dir (thing-at-point 'symbol)))
+    (consult-ripgrep nil (thing-at-point 'symbol)))
   (defun my/consult-special-buffer-p (buf)
     "Return non-nil for a special buffer worth listing beside file buffers."
     (with-current-buffer buf
