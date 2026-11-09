@@ -656,9 +656,7 @@ pipenv run env -0 2>/dev/null"))
                '("/uv\\.lock\\'" . "\
 command -v uv >/dev/null &&
 uv sync --frozen >/dev/null 2>&1 &&
-uv run env -0 2>/dev/null"))
-  (require 'buffer-env)
-  )
+uv run env -0 2>/dev/null")))
 
 (leaf compilation-mode
   :custom
@@ -717,8 +715,7 @@ uv run env -0 2>/dev/null"))
 
   ;; Enable flycheck support for vue-mode
   ;; https://emacs-lsp.github.io/lsp-mode/page/faq/#the-flycheck-does-not-work-in-typescript-html-and-javascript-blocks-in-vue-mode-how-to-fix-that
-  (with-eval-after-load 'lsp-mode
-    (mapc #'lsp-flycheck-add-mode '(typescript-mode js-mode css-mode vue-html-mode)))
+  (mapc #'lsp-flycheck-add-mode '(typescript-mode js-mode css-mode vue-html-mode))
 
   :hook
   (yaml-ts-mode-hook . lsp)             ; npm install -g yaml-language-server
