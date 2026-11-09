@@ -27,7 +27,6 @@
 (leaf *saving
   :setq
   (auto-save-default . nil)
-  (delete-auto-save-files . t)
   (make-backup-files . nil)
   (create-lockfiles . nil)
   :config
@@ -185,7 +184,6 @@ this command instead of setting it globally."
   :custom
   (tab-bar-new-tab-choice . "*scratch*")
   (tab-bar-tab-name-function . #'my/project-name-or-default)
-  (tab-bar-new-button-show . nil)
   (tab-bar-close-button-show . nil)
   ;; Separate tabs evenly. Without this, the last tab occupies whole right space.
   (tab-bar-auto-width-max . nil)
@@ -672,9 +670,7 @@ uv run env -0 2>/dev/null")))
   (lsp-mode-map
    ([remap xref-find-apropos] . consult-lsp-symbols))
   :custom
-  (lsp-enable-folding . t)
   (lsp-enable-snippet . nil)
-  (lsp-enable-symbol-highlighting . t)
   (lsp-idle-delay . 0.2)
   (lsp-enable-links . nil)
   (lsp-enable-imenu . nil)
@@ -1016,7 +1012,6 @@ Provide only the revised email text without comments or explanations."))
   :custom
   (org-startup-truncated . nil)
   (org-startup-indented . t)
-  (org-indent-mode-turns-on-hiding-stars . t)
   (org-startup-with-inline-images . t)
   (org-src-preserve-indentation . t)
   (org-todo-keywords . '((sequence "TODO" "DOING" "DONE")))
@@ -1127,7 +1122,6 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
 (leaf highlight-indent-guides
   :ensure t
   :custom
-  (highlight-indent-guides-responsive . nil)
   (highlight-indent-guides-auto-odd-face-perc . 10)
   (highlight-indent-guides-auto-even-face-perc . 20)
   (highlight-indent-guides-method . 'column)
@@ -1344,9 +1338,7 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (indent-tabs-mode . nil)   ; use spaces
   (tab-width . 4)            ; default is 8
   (fill-column . 100)
-  (show-paren-delay . 0.03)  ; quick highlight
-  :init
-  (show-paren-mode t))
+  (show-paren-delay . 0.03))  ; quick highlight
 
 (leaf variable-pitch
   :hook (markdown-ts-mode-hook markdown-ts-view-mode-hook org-mode-hook))
@@ -1373,15 +1365,11 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   :ensure t
   ;; Initial setup: M-x nerd-icons-install-fonts
   :custom
-  (doom-modeline-major-mode-color-icon . t)
   (doom-modeline-vcs-max-length . 24)
   (doom-modeline-enable-word-count . t)
   (doom-modeline-buffer-encoding . 'nondefault)
   (doom-modeline-buffer-file-name-style . 'relative-from-project)
   (doom-modeline-height . 28)
   (doom-modeline-env-version . nil)
-  (doom-modeline-workspace-name . nil)
   :config
-  (doom-modeline-mode 1)
-  (line-number-mode 1)
-  (column-number-mode 0))
+  (doom-modeline-mode 1))
