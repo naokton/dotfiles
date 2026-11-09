@@ -250,7 +250,10 @@ ref: URL `https://github.com/minad/consult/wiki#minads-orderless-configuration'"
   :custom
   (completion-styles . '(orderless basic))
   (completion-category-defaults . nil)
-  (completion-category-overrides . '((file (styles partial-completion))))
+  ;; lsp-capf: replace lsp-mode's lsp-passthrough with orderless
+  ;; ref: https://github.com/minad/corfu/wiki#basic-example-configuration-with-orderless
+  (completion-category-overrides . '((file (styles partial-completion))
+                                     (lsp-capf (styles orderless))))
   (orderless-matching-styles . '(orderless-literal orderless-regexp))
   (orderless-style-dispatchers . '(my/orderless-consult-dispatch
                                    orderless-affix-dispatch)))
@@ -698,12 +701,6 @@ uv run env -0 2>/dev/null"))
   :config
   (add-to-list 'lsp-language-id-configuration '(docker-compose-mode . "yaml"))
 
-  ;; Use orderless for completion style
-  ;; ref: https://github.com/minad/corfu/wiki#basic-example-configuration-with-orderless
-  (defun my/lsp-mode-setup-completion ()
-    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless)))
-
   (defun my/deno-or-js-lsp ()
     "Configure LSP mode for Deno if deno.json or deno.jsonc exists in project root."
     (when-let* ((proj (project-current)) (root (project-root proj)))
@@ -727,7 +724,6 @@ uv run env -0 2>/dev/null"))
     (mapc #'lsp-flycheck-add-mode '(typescript-mode js-mode css-mode vue-html-mode)))
 
   :hook
-  (lsp-completion-mode . my/lsp-mode-setup-completion)
   (yaml-ts-mode-hook . lsp)             ; npm install -g yaml-language-server
   (bash-ts-mode-hook . lsp)             ; npm i -g bash-language-server
   ;; (python-ts-mode-hook . lsp-deferred)  ; uv tool install 'python-lsp-server'
