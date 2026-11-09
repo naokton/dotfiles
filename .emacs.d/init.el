@@ -485,8 +485,7 @@ QUERY is a plist for `consult--buffer-query'.  It ignores
 
 (leaf ghostel
   :ensure t
-  :commands (ghostel-buffer-list ghostel-project-buffer-list
-             my/ghostel-toggle my/ghostel-new-here
+  :commands (my/ghostel-new-here
              my/ghostel-new-below my/ghostel-new-right
              my/ghostel-new-tab my/ghostel-new-in-project
              my/ghostel-claude-here my/ghostel-claude-in-project
@@ -508,7 +507,7 @@ QUERY is a plist for `consult--buffer-query'.  It ignores
   (defalias 'my/ghostel-map my/ghostel-map)
   :bind
   ("C-x m" . my/ghostel-map)
-  ("C-x M" . #'my/ghostel-toggle)
+  ("C-x M" . my/ghostel-toggle)
   ;; Stay copy-mode on M-w. C-w exit copy mode.
   (:ghostel-readonly-mode-map
    ("M-w" . kill-ring-save))
