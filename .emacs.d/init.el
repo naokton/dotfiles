@@ -910,7 +910,6 @@ ref: URL `https://github.com/emacs-lsp/lsp-ui/issues/681'"
   ;; TODO: use keychain via auth-source
   (defun my/retrieve-password-from-keychain (service account)
     "Retrieve password from macOS Keychain."
-    (interactive "sService: \nsAccount: ")
     (string-trim-right
      (shell-command-to-string
       (format "security find-generic-password -s '%s' -a '%s' -w" service account))))
@@ -925,17 +924,13 @@ filename if not saved, otherwise save to the current file."
     (interactive)
     (if (buffer-file-name)
         (save-buffer)
-      (let* ((mode-to-ext
-              '((org-mode . "org")
-                (markdown-mode . "md")))
-             (file-ext (or (cdr (assoc major-mode mode-to-ext)) "text"))
-             (directory my/save-gptel--directory)
-             (filename (format "%s.%s" (format-time-string "%Y%m%d-%H%M%S") file-ext))
-             (file-path (concat directory filename)))
-        (unless (file-exists-p directory)
-          (make-directory directory t))
-        (write-file file-path)
-        (save-buffer))))
+      (make-directory my/save-gptel--directory t)
+      (write-file (concat my/save-gptel--directory
+                          (format-time-string "%Y%m%d-%H%M%S.")
+                          (pcase major-mode
+                            ('org-mode "org")
+                            ('markdown-mode "md")
+                            (_ "text"))))))
   (add-to-list 'gptel-directives '(email . "You are an expert email editor specializing in natural English communication. Your task is to revise email drafts into clear, slightly casual English while maintaining the original message. When provided with an email draft and context, simply return the corrected version without explanations. Focus on:
 - Converting unnatural expressions into common native English phrases
 - Keeping language simple and concise
