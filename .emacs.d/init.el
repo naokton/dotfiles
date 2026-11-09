@@ -869,26 +869,6 @@ ref: URL `https://github.com/emacs-lsp/lsp-ui/issues/681'"
   :hook
   (lsp-after-open-hook . lsp-origami-try-enable))
 
-(leaf mhtml-mode
-  :doc "Teach hs-minor-mode to fold both HTML tags and JS/CSS blocks.
-ref: URL `https://stackoverflow.com/a/62502758'"
-  :init
-  (defun my/mhtml-forward (_arg)
-    "Move over the construct at point, whichever submode it belongs to.
-Forwards to the end of the tag in HTML, or to the end of the block in JS/CSS."
-    (interactive "P")
-    (pcase (get-text-property (point) 'mhtml-submode)
-      ('nil (sgml-skip-tag-forward 1))
-      (_ (forward-sexp))))
-  :config
-  (add-to-list 'hs-special-modes-alist
-               '(mhtml-mode
-                 "{\\|<[^/>]+?"
-                 "}\\|</[^/>]*[^/]>"
-                 "<!--"
-                 my/mhtml-forward
-                 nil)))
-
 (leaf browse-at-remote
   :ensure t
   :custom
