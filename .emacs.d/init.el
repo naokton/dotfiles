@@ -931,6 +931,10 @@ filename if not saved, otherwise save to the current file."
                             ('org-mode "org")
                             ('markdown-mode "md")
                             (_ "text"))))))
+  :config
+  (setq gptel-backend (gptel-make-anthropic "Claude"
+                        :stream t
+                        :key #'my/retrieve-claude-token))
   (add-to-list 'gptel-directives '(email . "You are an expert email editor specializing in natural English communication. Your task is to revise email drafts into clear, slightly casual English while maintaining the original message. When provided with an email draft and context, simply return the corrected version without explanations. Focus on:
 - Converting unnatural expressions into common native English phrases
 - Keeping language simple and concise
@@ -940,9 +944,6 @@ Provide only the revised email text without comments or explanations."))
   :custom
   (gptel-api-key . #'my/retrieve-openapi-token)
   (gptel-model . 'claude-opus-5)
-  (gptel-backend . `,(gptel-make-anthropic "Claude"
-                      :stream t
-                      :key #'my/retrieve-claude-token))
   (gptel-default-mode . 'org-mode)
   (gptel-prompt-prefix-alist . '((markdown-mode . "## Request\n")
                                  (org-mode . "** Request\n")
