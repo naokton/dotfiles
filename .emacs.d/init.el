@@ -624,10 +624,8 @@ QUERY is a plist for `consult--buffer-query'.  It ignores
       (when (window-parent win)
         (delete-window win))))
 
-  (defun my/ghostel-buffer-p (buf &optional _action)
-    (with-current-buffer buf (derived-mode-p 'ghostel-mode)))
   (add-to-list 'display-buffer-alist
-               '(my/ghostel-buffer-p
+               '((derived-mode . ghostel-mode)
                 (display-buffer-in-side-window)
                 (side . bottom)
                 ;; (dedicated . t)
