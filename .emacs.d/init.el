@@ -119,10 +119,7 @@ before, or closes when there is none."
     "Return the file buffers left once KILLED, the buffers about to be killed, are.
 Fall back to `*scratch*', creating it, when they leave no file buffer behind, and
 to nil when even that is being killed."
-    (or (seq-filter (lambda (buffer)
-                      (and (buffer-file-name buffer)
-                           (not (memq buffer killed))))
-                    (buffer-list))
+    (or (seq-difference (projectile-buffers-with-file (buffer-list)) killed)
         (let ((scratch (get-scratch-buffer-create)))
           (unless (memq scratch killed) (list scratch)))))
 
