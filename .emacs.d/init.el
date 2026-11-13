@@ -784,6 +784,7 @@ ref: URL `https://github.com/emacs-lsp/lsp-ui/issues/681'"
   :custom
   (consult-project-function . (lambda (_) (projectile-project-root)))
   (projectile-project-search-path . '("~/src"))
+  (projectile-current-project-on-switch . 'keep)
   :config
   (projectile-mode +1)
   (advice-add 'projectile-next-project-buffer :around #'my/projectile-file-buffers-only)
