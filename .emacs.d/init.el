@@ -88,6 +88,8 @@
 ;;;; Utilities
 ;;;;----------------------------------------------------------------
 (leaf autorevert
+  :custom
+  (auto-revert-check-vc-info . t)
   :global-minor-mode global-auto-revert-mode)
 
 (leaf delsel
