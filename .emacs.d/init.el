@@ -33,6 +33,11 @@
   (auto-save-visited-mode t) ; Enable auto save (not auto-save-mode)
   )
 
+(leaf *language
+  :config
+  ;; This sets default-input-method, so it must run before the ddskk block.
+  (set-language-environment "Japanese"))
+
 (leaf *path
   :config
   (defun my/copy-file-path ()
@@ -432,9 +437,11 @@ QUERY is a plist for `consult--buffer-query'.  It ignores
 (leaf ddskk
   :ensure t
   :leaf-defer nil
-  :bind
-  ("C-\\" . skk-mode)
+  :hook
+  (isearch-mode-hook . skk-isearch-mode-setup)
+  (isearch-mode-end-hook . skk-isearch-mode-cleanup)
   :setq
+  (default-input-method . "japanese-skk")
   (skk-use-act . t)
   (skk-kakutei-when-unique-candidate . t)
   (skk-extra-jisyo-file-list
@@ -1193,8 +1200,6 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
 
 (leaf *font-config
   :config
-  (set-language-environment "Japanese")
-
   (create-fontset-from-ascii-font "JetBrains Mono-14:weight=normal:slant=normal" nil "mydefault")
   ;; Japanese (and other CJK) scripts
   (dolist (script '(han kana cjk-misc bopomofo kanbun hangul ideographic-description vertical-form))
