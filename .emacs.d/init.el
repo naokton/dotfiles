@@ -580,7 +580,7 @@ QUERY is a plist for `consult--buffer-query'.  It ignores
                    (lambda (text)
                      (with-current-buffer target
                        (ghostel-paste-string (string-trim-right text))))
-                   :major-mode-sym #'gfm-mode)))
+                   :major-mode-sym #'markdown-ts-mode)))
 
   (defun my/ghostel-next-here ()
     "Show this project's next terminal in the selected window."
