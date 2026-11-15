@@ -1135,7 +1135,21 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (yaml-ts-mode-hook . highlight-indent-guides-mode))
 
 (leaf markdown-ts-mode
-  :mode "\\.md\\'")
+  :mode "\\.md\\'"
+  :config
+  ;; Workaround for Emacs 31.1.90. RET in a code block fails with
+  ;; "number-or-marker-p, many" because ddskk advises `newline', and
+  ;; `func-arity' of an advised function returns (0 . many).
+  ;; `markdown-ts--run-command-in-code-block' expects a number there.
+  (defun my/newline (&optional arg interactive)
+    "Call `newline' from a function that has no advice."
+    (interactive "*P\np")
+    (newline arg interactive))
+  (define-advice markdown-ts--run-command-in-code-block
+      (:filter-args (args) my/unadvised-newline)
+    (if (eq (nth 1 args) #'newline)
+        (cons (car args) (cons #'my/newline (nthcdr 2 args)))
+      args)))
 
 (leaf makefile-gmake-mode
   :mode "[Mm]akefile\\'")
