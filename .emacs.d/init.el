@@ -46,7 +46,15 @@
     (when buffer-file-name
       (let ((path (file-truename buffer-file-name)))
         (kill-new path)
-        (message "Copied file path: %s" path)))))
+        (message "Copied file path: %s" path))))
+
+  (defun my/open-in-default-app ()
+    "Open the current buffer file or directory with the macOS `open' command."
+    (interactive)
+    (let ((path (expand-file-name (or buffer-file-name default-directory))))
+      (unless (zerop (call-process "open" nil nil nil path))
+        (user-error "Cannot open %s" path))
+      (message "Opened: %s" path))))
 
 (leaf exec-path-from-shell
   :ensure t
