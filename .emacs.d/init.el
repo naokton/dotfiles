@@ -1147,8 +1147,9 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   :custom
   (markdown-ts-unordered-list-marker . '(("⦁ " . "- ")))
   :config
-  ;; Show list markers in the text color, not in gray.
-  (set-face-attribute 'markdown-ts-list-marker nil :inherit nil)
+  ;; Show list markers in the text color, not in gray. Use fixed-pitch so
+  ;; that the space after the marker is not narrow.
+  (set-face-attribute 'markdown-ts-list-marker nil :inherit 'fixed-pitch)
   ;; Workaround for Emacs 31.1.90. RET in a code block fails with
   ;; "number-or-marker-p, many" because ddskk advises `newline', and
   ;; `func-arity' of an advised function returns (0 . many).
@@ -1378,9 +1379,15 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (defun my/fixed-pitch-indent ()
     "Show leading whitespace with the `fixed-pitch' face."
     (font-lock-add-keywords nil '(("^[ \t]+" 0 'fixed-pitch prepend)) 'append))
+  (defun my/fixed-pitch-org-bullet ()
+    "Show Org list bullets and the space after them with the `fixed-pitch' face."
+    (font-lock-add-keywords nil '(("^[ \t]*\\([-+][ \t]\\)" 1 'fixed-pitch prepend)
+                                  ("^[ \t]+\\(\\*[ \t]\\)" 1 'fixed-pitch prepend))
+                            'append))
   :hook
   ((markdown-ts-mode-hook markdown-ts-view-mode-hook org-mode-hook) . variable-pitch-mode)
-  ((markdown-ts-mode-hook markdown-ts-view-mode-hook org-mode-hook) . my/fixed-pitch-indent))
+  ((markdown-ts-mode-hook markdown-ts-view-mode-hook org-mode-hook) . my/fixed-pitch-indent)
+  (org-mode-hook . my/fixed-pitch-org-bullet))
 
 (leaf center-margin
   :bind
