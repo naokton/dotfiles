@@ -1370,8 +1370,17 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (fill-column . 100)
   (show-paren-delay . 0.03))  ; quick highlight
 
+;; `markdown-ts-view-mode' does not run `markdown-ts-mode-hook'.
 (leaf variable-pitch
-  :hook (markdown-ts-mode-hook markdown-ts-view-mode-hook org-mode-hook))
+  :init
+  ;; With `variable-pitch-mode', spaces are narrow and list levels are
+  ;; hard to see. Show leading whitespace in the fixed-pitch font.
+  (defun my/fixed-pitch-indent ()
+    "Show leading whitespace with the `fixed-pitch' face."
+    (font-lock-add-keywords nil '(("^[ \t]+" 0 'fixed-pitch prepend)) 'append))
+  :hook
+  ((markdown-ts-mode-hook markdown-ts-view-mode-hook org-mode-hook) . variable-pitch-mode)
+  ((markdown-ts-mode-hook markdown-ts-view-mode-hook org-mode-hook) . my/fixed-pitch-indent))
 
 (leaf center-margin
   :bind
