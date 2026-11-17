@@ -1144,7 +1144,11 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
 
 (leaf markdown-ts-mode
   :mode "\\.md\\'"
+  :custom
+  (markdown-ts-unordered-list-marker . '(("⦁ " . "- ")))
   :config
+  ;; Show list markers in the text color, not in gray.
+  (set-face-attribute 'markdown-ts-list-marker nil :inherit nil)
   ;; Workaround for Emacs 31.1.90. RET in a code block fails with
   ;; "number-or-marker-p, many" because ddskk advises `newline', and
   ;; `func-arity' of an advised function returns (0 . many).
