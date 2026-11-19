@@ -128,19 +128,31 @@ if command -v fzf >/dev/null 2>&1; then
     export FZF_DEFAULT_OPTS='--height 40% --tmux bottom,60% --layout reverse --exact'
 
     dev(){
-        # Select from all git repositories under search dirs
-        local repo
-        local -a candidates=(~/src ~/Documents)
-        local -a search_dirs=()
-        for d in $candidates; do
-            [[ -d "$d" ]] && search_dirs+=("$d")
-        done
-        [[ ${#search_dirs[@]} -eq 0 ]] && return 1
+        # Select a git repository from the cache.
+        # "dev update" searches the home directory and rewrites the cache.
+        # "dev" also runs it when the cache is missing or 1 day old or older.
+        local cache=${XDG_CACHE_HOME:-$HOME/.cache}/dev/repos
+        if [[ $1 == update ]]; then
+            mkdir -p ${cache:h}
+            # -I is required for repositories which has ".*" in its .gitignore.
+            # A leading "/" excludes the directory only directly under the home directory.
+            fd -H -I -E 'node_modules' -E '.venv' -E '.git/**' \
+               -E '/Library' -E '/.Trash' \
+               -E '/.cache' -E '/.copilot' -E '/.npm' -E '/.cargo' -E '/.rustup' \
+               -E '/.pyenv' -E '/.homebrew' -E '/.local' -E '/go' \
+               '^.git$' ~ --prune --exec dirname > $cache
+            return
+        fi
 
-        # -I is required for repositories which has ".*" in its .gitignore
-        repo=$(fd -H -I -E 'node_modules' -E '.venv' -E '.git/**' '^.git$' $search_dirs -d10 --prune --exec dirname |
-                fzf --cycle
-            )
+        # md-1 matches a file modified less than 1 day ago
+        local -a fresh=($cache(N.md-1))
+        (( $#fresh )) || dev update
+
+        # Drop the paths of repositories removed after the last update
+        local -a repos=(${(f)"$(<$cache)"})
+        repos=(${^repos}(N/))
+        local repo
+        repo=$(print -l $repos | fzf --cycle)
         [[ -n "$repo" ]] && cd "$repo"
     }
 
