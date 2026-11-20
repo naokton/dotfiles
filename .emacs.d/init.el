@@ -537,7 +537,6 @@ QUERY is a plist for `consult--buffer-query'.  It ignores
   (defalias 'my/ghostel-map my/ghostel-map)
   :bind
   ("C-x m" . my/ghostel-map)
-  ("C-x M" . my/ghostel-toggle)
   ;; Stay copy-mode on M-w. C-w exit copy mode.
   (:ghostel-readonly-mode-map
    ("M-w" . kill-ring-save))
@@ -630,35 +629,12 @@ QUERY is a plist for `consult--buffer-query'.  It ignores
     (setf (alist-get 'projectile-mode minor-mode-overriding-map-alist)
           my/ghostel-projectile-override-map))
 
-  (defun my/ghostel-side-window ()
-    "Return the side window showing a ghostel buffer for the current project, if any."
-    (seq-some (lambda (buf)
-                (seq-find (lambda (win) (window-parameter win 'window-side))
-                          (get-buffer-window-list buf)))
-              (if (project-current)
-                  (ghostel-project-buffer-list)
-                (ghostel-buffer-list))))
-
-  (defun my/ghostel-toggle ()
-    "Toggle the project's ghostel side window, leaving normal windows alone."
-    (interactive)
-    (if-let* ((win (my/ghostel-side-window)))
-        (delete-window win)
-      (if (project-current) (ghostel-project) (ghostel))))
-
   (defun my/ghostel-delete-windows-on-exit (buf _event)
     "Close the windows showing BUF when its shell exits, except a frame's last one."
     (dolist (win (get-buffer-window-list buf nil t))
       ;; `window-parent' is nil for a frame's sole window
       (when (window-parent win)
-        (delete-window win))))
-
-  (add-to-list 'display-buffer-alist
-               '((derived-mode . ghostel-mode)
-                (display-buffer-in-side-window)
-                (side . bottom)
-                ;; (dedicated . t)
-                (window-height . 0.4))))
+        (delete-window win)))))
 
 (leaf ultra-scroll
   :ensure t
