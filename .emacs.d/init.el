@@ -48,6 +48,24 @@
         (kill-new path)
         (message "Copied file path: %s" path))))
 
+  (defun my/copy-region-with-location (beg end)
+    "Copy the region with its file path and line range."
+    (interactive "r")
+    (unless buffer-file-name
+      (user-error "Buffer is not visiting a file"))
+    (let* ((path (if-let* ((root (projectile-project-root)))
+                     (file-relative-name buffer-file-name root)
+                   (abbreviate-file-name buffer-file-name)))
+           (first (line-number-at-pos beg))
+           ;; A region that ends at the start of a line does not include that line.
+           (last (line-number-at-pos (max beg (1- end))))
+           (lines (if (= first last) (format "%d" first) (format "%d-%d" first last))))
+      (kill-new (format "%s:%s\n```\n%s\n```\n"
+                        path lines
+                        (string-trim-right (buffer-substring-no-properties beg end))))
+      (deactivate-mark)
+      (message "Copied %s:%s" path lines)))
+
   (defun my/open-in-default-app ()
     "Open the current buffer file or directory with the macOS `open' command."
     (interactive)
