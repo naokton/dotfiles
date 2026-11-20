@@ -1219,6 +1219,8 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   :bind
   ("C-x 2" . my/split-window-below-and-select)
   ("C-x 3" . my/split-window-right-and-select)
+  (:window-prefix-map
+   ("z" . my/toggle-window-zoom))
   :custom
   (split-window-preferred-direction . 'horizontal)
   :init
@@ -1234,7 +1236,19 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (defun my/split-window-right-and-select ()
     (interactive)
     (select-window (split-window-right))
-    (my/show-project-root-or-scratch)))
+    (my/show-project-root-or-scratch))
+  (defun my/toggle-window-zoom ()
+    "Show only the selected window, or restore the windows from before the zoom."
+    (interactive)
+    (if-let* ((config (window-parameter nil 'my/zoom-config)))
+        (let ((buffer (current-buffer))
+              (pos (point)))
+          (set-window-parameter nil 'my/zoom-config nil)
+          (set-window-configuration config)
+          (switch-to-buffer buffer nil t)
+          (goto-char pos))
+      (set-window-parameter nil 'my/zoom-config (current-window-configuration))
+      (delete-other-windows))))
 
 (leaf *only-ns
   :when (eq window-system 'ns)
