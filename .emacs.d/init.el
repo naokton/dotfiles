@@ -1426,4 +1426,10 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   (doom-modeline-height . 28)
   (doom-modeline-env-version . nil)
   :config
+  (doom-modeline-def-segment zoom-state
+    "Show an icon while the window is zoomed by `my/toggle-window-zoom'."
+    (when (window-parameter nil 'my/zoom-config)
+      (format " %s " (doom-modeline-icon 'mdicon "nf-md-fullscreen" "⛶" "Z"
+                                         :face 'doom-modeline-info))))
+  (doom-modeline-add-segment 'zoom-state 'window-state)
   (doom-modeline-mode 1))
