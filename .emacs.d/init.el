@@ -689,6 +689,7 @@ uv run env -0 2>/dev/null")))
   (lsp-go-build-flags . ["-tags=integration"])
   (lsp-clients-typescript-log-verbosity . "off")
   (lsp-keep-workspace-alive . nil)
+  (lsp-ruff-multi-root . nil)
   ;; Disable completion by company-mode and use corfu
   (lsp-completion-provider . :none)
 
