@@ -1207,19 +1207,14 @@ ref: URL `https://github.com/AdamNiederer/vue-mode/issues/74#issuecomment-577338
   :custom
   (split-window-preferred-direction . 'horizontal)
   :init
-  (defun my/show-project-root-or-scratch ()
-    "Show the project root in Dired, or `*scratch*' outside a project."
-    (if-let* ((root (projectile-project-root)))
-        (dired root)
-      (scratch-buffer)))
   (defun my/split-window-below-and-select ()
     (interactive)
     (select-window (split-window-below))
-    (my/show-project-root-or-scratch))
+    (scratch-buffer))
   (defun my/split-window-right-and-select ()
     (interactive)
     (select-window (split-window-right))
-    (my/show-project-root-or-scratch))
+    (scratch-buffer))
   (defun my/toggle-window-zoom ()
     "Show only the selected window, or restore the windows from before the zoom."
     (interactive)
