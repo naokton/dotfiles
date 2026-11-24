@@ -22,7 +22,17 @@
 ;;;;----------------------------------------------------------------
 (leaf server
   :config
-  (server-mode))
+  (server-mode)
+  ;; Drafts from the emacs-compose mod of Claude Code: on C-x # save without
+  ;; asking and kill the buffer, which also deletes its dedicated window.
+  (setq server-temp-file-regexp
+        (concat server-temp-file-regexp "\\|/claude-draft-[^/]*\\.md\\'"))
+  ;; Show drafts below the terminal, other buffers in the selected window.
+  (setq server-window #'pop-to-buffer-same-window)
+  (add-to-list 'display-buffer-alist
+               '("\\`claude-draft-"
+                 (display-buffer-below-selected)
+                 (dedicated . t))))
 
 (leaf *saving
   :setq
@@ -596,16 +606,12 @@ QUERY is a plist for `consult--buffer-query'.  It ignores
       (ghostel-send-string "claude\r")))
 
   (defun my/ghostel-compose ()
-    "Open a buffer below to compose text for this ghostel terminal."
+    "Edit the Claude Code prompt draft of this ghostel terminal in Emacs.
+Sends C-x C-o, which Claude Code binds to the emacs-compose mod's
+/compose command.  The command opens the draft with emacsclient."
     (interactive)
-    (unless (derived-mode-p 'ghostel-mode)
-      (user-error "Not in a ghostel buffer"))
-    (let ((target (current-buffer)))
-      (string-edit nil ""
-                   (lambda (text)
-                     (with-current-buffer target
-                       (ghostel-paste-string (string-trim-right text))))
-                   :major-mode-sym #'markdown-ts-mode)))
+    (ghostel-send-key "x" "ctrl")
+    (ghostel-send-key "o" "ctrl"))
 
   (defun my/ghostel-next-here ()
     "Show this project's next terminal in the selected window."
