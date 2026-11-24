@@ -63,7 +63,7 @@ make_bar() {
 
 add() { [ -z "$out" ] && out+="$1" || out+="${sep}$1"; }
 
-# rate-limit row: render_rl <pct> <reset_epoch> <seconds_per_unit> <label> [budget]
+# rate-limit row: render_rl <pct> <reset_epoch> <seconds_per_unit> <unit> [budget]
 #   budget: percent of the limit allowed up to the end of today. If set, the color
 #   uses the share of today's 20% (from budget - 20 to budget) that is used.
 render_rl() {
@@ -73,7 +73,7 @@ render_rl() {
     c=$p
     [ -n "$5" ] && c=$(( (p - $5 + 20) * 5 ))
     [ -n "$2" ] && [ "$2" -gt "$now" ] 2>/dev/null && t=$(fmt_decimal $(( $2 - now )) "$3")
-    add "$(ramp "$c" "$cyan" "$yellow" "$red")$(pct_block "$p") ${p}%${cyan}${t:+ (${t}/$4)}"
+    add "$(ramp "$c" "$cyan" "$yellow" "$red")$(pct_block "$p") ${p}%${5:+/$5%}${cyan}${t:+ (${t}$4)}"
 }
 
 # 7d budget: 20% for each weekday slot in the window, summed up to the current slot.
@@ -157,8 +157,8 @@ fi
 [ -n "$mblock" ] && add "$mblock"
 
 # Rate limits — 5h window, 7d window
-render_rl "$rl5" "$rl5_reset" 3600  5h
-render_rl "$rl7" "$rl7_reset" 86400 7d "$(weekly_budget "$rl7_reset")"
+render_rl "$rl5" "$rl5_reset" 3600  h
+render_rl "$rl7" "$rl7_reset" 86400 d "$(weekly_budget "$rl7_reset")"
 
 # Cache hit rate
 # cache_total=$(( ${cache_read:-0} + ${cache_create:-0} ))
