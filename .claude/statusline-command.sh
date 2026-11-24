@@ -63,13 +63,34 @@ make_bar() {
 
 add() { [ -z "$out" ] && out+="$1" || out+="${sep}$1"; }
 
-# rate-limit row: render_rl <pct> <reset_epoch> <seconds_per_unit> <label>
+# rate-limit row: render_rl <pct> <reset_epoch> <seconds_per_unit> <label> [budget]
+#   budget: percent of the limit allowed up to the end of today. If set, the color
+#   uses the share of today's 20% (from budget - 20 to budget) that is used.
 render_rl() {
     [ -z "$1" ] && return
-    local p t=""
+    local p c t=""
     printf -v p "%.0f" "$1"
+    c=$p
+    [ -n "$5" ] && c=$(( (p - $5 + 20) * 5 ))
     [ -n "$2" ] && [ "$2" -gt "$now" ] 2>/dev/null && t=$(fmt_decimal $(( $2 - now )) "$3")
-    add "$(ramp "$p" "$cyan" "$yellow" "$red")$(pct_block "$p") ${p}%${cyan}${t:+ (${t}/$4)}"
+    add "$(ramp "$c" "$cyan" "$yellow" "$red")$(pct_block "$p") ${p}%${cyan}${t:+ (${t}/$4)}"
+}
+
+# 7d budget: 20% for each weekday slot in the window, summed up to the current slot.
+# The window is split into 24-hour slots from its start, and a slot's weekday is
+# the weekday of its start time. A weekend slot uses the budget of the next
+# weekday slot (Monday).
+weekly_budget() {
+    [ -z "$1" ] && return
+    local w s i budget=0
+    w=$(date -d @"$1" +%u)                   # weekday of the first slot = reset weekday
+    s=$(( (now - $1 + 7 * 86400) / 86400 ))  # index of the current slot
+    for ((i = 0; i < 7; i++)); do
+        (( (w - 1 + i) % 7 < 5 )) || continue
+        budget=$(( budget + 20 ))
+        (( i >= s )) && break
+    done
+    echo "$budget"
 }
 
 # ===== Extract all fields in one jq pass (one per line; empties preserved) =====
@@ -137,7 +158,7 @@ fi
 
 # Rate limits — 5h window, 7d window
 render_rl "$rl5" "$rl5_reset" 3600  5h
-render_rl "$rl7" "$rl7_reset" 86400 7d
+render_rl "$rl7" "$rl7_reset" 86400 7d "$(weekly_budget "$rl7_reset")"
 
 # Cache hit rate
 # cache_total=$(( ${cache_read:-0} + ${cache_create:-0} ))
